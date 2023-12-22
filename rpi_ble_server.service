@@ -1,0 +1,16 @@
+[Unit]
+Description=Gardenifi BLE Server
+# Start this unit after the rpi_server.service start
+After=rpi_server.service
+
+[Service]
+User=root
+Group=root
+Type=simple
+WorkingDirectory=/home/pi/server/
+ExecStart=/home/pi/server/debug.sh ble
+# Restart the service on non-zero exit code when terminated by a signal other than SIGHUP, SIGINT, SIGTERM or SIGPIPE
+Restart=on-failure
+
+[Install]
+WantedBy=rpi_server.service
