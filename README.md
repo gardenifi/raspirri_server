@@ -178,15 +178,15 @@ docker logs -f sonarqube
 ```
 
 #### Create Project
-[a] Enter http://your_server:9000/ with admin/admin
-[b] Change admin password
-[c] Create a local project
+- [a] Enter http://your_server:9000/ with admin/admin
+- [b] Change admin password
+- [c] Create a local project
 
 #### Analyze your project
-[a] Generate a token for your project: e.g. run uuid command: 9475199c-9132-11ee-a11b-9f71450e156a
-[b] Enter your project's code folder (make sure you've pushed your code in a git repo)
-[c] Enter http://your_server:9000/tutorials?id=9475199c-9132-11ee-a11b-9f71450e156a and click on Locally link
-[d] Run the following docker container where sonar.projectKey=9475199c-9132-11ee-a11b-9f71450e156a and Dsonar.token=token that generated in (c)
+- [a] Generate a token for your project: e.g. run uuid command: 9475199c-9132-11ee-a11b-9f71450e156a
+- [b] Enter your project's code folder (make sure you've pushed your code in a git repo)
+- [c] Enter http://your_server:9000/tutorials?id=9475199c-9132-11ee-a11b-9f71450e156a and click on Locally link
+- [d] Run the following docker container where sonar.projectKey=9475199c-9132-11ee-a11b-9f71450e156a and Dsonar.token=token that generated in (c)
 
 ```bash
 export SONARQUBE_URL=192.168.11.172:9000
