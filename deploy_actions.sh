@@ -42,19 +42,19 @@ function check_for_secret_env {
       echo "File $SECRET_ENV_FILE exists."
   else
       echo "File $SECRET_ENV_FILE does not exist. Please provide values for the following variables:"
-      
+
       # Prompt user for values
       read -p "MQTT_HOST: " MQTT_HOST
       read -p "MQTT_PORT: " MQTT_PORT
       read -p "MQTT_USER: " MQTT_USER
       read -p "MQTT_PASS: " MQTT_PASS
-      
+
       # Create secret_env.sh file
       echo "export MQTT_HOST=$MQTT_HOST" > "$SECRET_ENV_FILE"
       echo "export MQTT_PORT=$MQTT_PORT" >> "$SECRET_ENV_FILE"
       echo "export MQTT_USER=$MQTT_USER" >> "$SECRET_ENV_FILE"
       echo "export MQTT_PASS=$MQTT_PASS" >> "$SECRET_ENV_FILE"
-      
+
       echo "File $SECRET_ENV_FILE created with the following content:"
       cat "$SECRET_ENV_FILE"
   fi
