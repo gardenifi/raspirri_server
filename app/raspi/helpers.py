@@ -230,7 +230,7 @@ class Helpers:
 
         # Open the file in read mode ('r')
         try:
-            with open(file_path) as file:
+            with open(file_path, 'r', encoding='utf-8') as file:
                 # Read the entire content of the file
                 # content = file.read()
 
