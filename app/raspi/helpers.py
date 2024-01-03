@@ -226,11 +226,11 @@ class Helpers:
             commit_id = instance.get_git_commit_id()
         """
         # Specify the file path
-        file_path = 'app/git_commit_id.txt'
+        file_path = "app/git_commit_id.txt"
 
         # Open the file in read mode ('r')
         try:
-            with open(file_path, 'r') as file:
+            with open(file_path) as file:
                 # Read the entire content of the file
                 # content = file.read()
 

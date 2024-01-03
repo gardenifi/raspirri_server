@@ -24,8 +24,12 @@ else
     ARG=$1
 fi
 echo "Argument used: $ARG"
-# Every time someone restarts the server 
-# we should keep the git commit id to propagate it to MQTT topic
-git log -n 1 --pretty=format:"%H" > ${GIT_COMMIT_ID}
-echo "Git commit id: $(cat ${GIT_COMMIT_ID})
+
+if [ "$ARG" == "mqtt" ]; then
+  # Every time someone restarts the server
+  # we should keep the git commit id to propagate it to MQTT topic
+  sudo git log -n 1 --pretty=format:"%H" > ${GIT_COMMIT_ID}
+  echo "Git commit id: $(sudo cat ${GIT_COMMIT_ID})"
+fi
+
 PYTHONPATH=$(pwd) python3 app/main_app.py $ARG

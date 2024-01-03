@@ -139,3 +139,4 @@ networks.pkl
 .scannerwork/
 
 secret_env.sh
+app/git_commit_id.txt
