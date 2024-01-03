@@ -225,16 +225,22 @@ class Helpers:
         Example:
             commit_id = instance.get_git_commit_id()
         """
+        # Specify the file path
+        file_path = 'app/git_commit_id.txt'
+
+        # Open the file in read mode ('r')
         try:
-            result = subprocess.run(
-                ["/usr/bin/git", "config", "--global", "--add", "safe.directory", "/home/pi/server"],
-                stdout=subprocess.PIPE,
-                text=True,
-                check=True,
-            )
-            logger.debug(result.stdout)
-            result = subprocess.run(["/usr/bin/git", "log", "-1", "--pretty=format:%H"], stdout=subprocess.PIPE, text=True, check=True)
-            return result.stdout
+            with open(file_path, 'r') as file:
+                # Read the entire content of the file
+                # content = file.read()
+
+                # Alternatively, you can read the content line by line
+                content = file.readlines()
+                logger.debug("File content: %s", content)
+                return content
+        except FileNotFoundError as e:
+            logger.error(f"The file '{file_path}' does not exist.")
+            return str(e)
         except Exception as e:
             traceback.print_exc()
             logger.error(f"Error retrieving git log: {e}")
@@ -394,6 +400,7 @@ class Helpers:
         if ARCH == "arm":
             if valve == "out2":
                 logger.info(f"===========> Setting PIN 11 GPIO.output...{status}")
+                # RuntimeError: Please set pin numbering mode using GPIO.setmode(GPIO.BOARD) or GPIO.setmode(GPIO.BCM)
                 GPIO.output(11, status)
                 logger.info(f"===========> PIN 11 Status GPIO.input: {GPIO.input(11)}")
         return 1 if status is True else 0
