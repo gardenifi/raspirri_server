@@ -232,10 +232,7 @@ class Helpers:
         try:
             with open(file_path, encoding="utf-8") as file:
                 # Read the entire content of the file
-                # content = file.read()
-
-                # Alternatively, you can read the content line by line
-                content = file.readlines()
+                content = file.read().replace("\n", "")
                 logger.debug("File content: %s", content)
                 return content
         except FileNotFoundError as e:
