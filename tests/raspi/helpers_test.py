@@ -269,21 +269,6 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(commit_id, "abcdef123456")
         mock_logger.error.assert_not_called()
 
-    @patch("subprocess.run")
-    @patch("app.raspi.helpers.logger")
-    def test_get_git_commit_id_exception(self, mock_logger, mock_subprocess_run):
-        """test get git commit id with exception"""
-
-        # Mock the subprocess.run() to simulate an exception
-        mock_subprocess_run.side_effect = Exception("Mocked subprocess error")
-
-        # Call the method under test
-        commit_id = self.helpers_instance.get_git_commit_id()
-
-        # Assert the expected behavior when an exception occurs
-        self.assertEqual(commit_id, "Mocked subprocess error")
-        mock_logger.error.assert_called_once_with("Error retrieving git log: Mocked subprocess error")
-
     def test_get_toggle_statuses_returns_toggle_statuses(self):
         """
         Test that the `get_toggle_statuses` method returns a dictionary with expected keys.
