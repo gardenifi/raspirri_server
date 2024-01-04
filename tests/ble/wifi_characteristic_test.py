@@ -77,7 +77,7 @@ if ARCH == "arm":
             (
                 (
                     "0",
-                    random.randint(0, 100),
+                    random.randint(0, 1000),
                     '{"hw_id": "10000000f7f23721", "mqtt_broker": {"host": "localhost", "port": 1883, \
 "user": "user", "pass": "pass"}, "page": 0, "nets": [{"id": 1, "ssid": "Network1"}, {"id": 2, "ssid": "Network2"}], "pages": 1}',
                 ),

@@ -207,9 +207,9 @@ class Mqtt:
             json_data = json.loads(data)
             logger.info(json_data)
             cmd = json_data["cmd"]
+            command = Command(cmd)
             try:
                 valve = json_data["out"]
-                command = Command(cmd)
             except Exception as exception:
                 logger.warning(
                     f"Could not find valve out parameter. \
