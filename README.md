@@ -307,7 +307,7 @@ This project is licensed under the [Your License] - see the [LICENSE.md](LICENSE
 
 ## Build Status
 
-[![Workflow Status](https://github.com/gardenifi/server/actions/workflows/x86_64.yml/badge.svg)](https://github.com/gardenifi/server/actions/workflows/x86_64.yml)
+[![Workflow Status](https://github.com/gardenifi/raspirri_server/actions/workflows/x86_64.yml/badge.svg)](https://github.com/gardenifi/raspirri_server/actions/workflows/x86_64.yml)
 
 ## Contact
 
