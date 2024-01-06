@@ -1,7 +1,7 @@
 
 [![](https://img.shields.io/badge/Buy%20me%20-coffee!-orange.svg?logo=buy-me-a-coffee&color=795548)](https://buymeacoff.ee/mariosk6)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
-[![PRs welcome!](https://img.shields.io/badge/contributions-welcome-green.svg?style=flat)](https://github.com/gardenifi/server/issues)
+[![PRs welcome!](https://img.shields.io/badge/contributions-welcome-green.svg?style=flat)](https://github.com/gardenifi/raspirri_server/issues)
 
 # Raspberry Pi-based Smart Irrigation System (RaspirriV1)
 
@@ -53,7 +53,7 @@ Add it in the /bootfs of the SDRAM and rebooot
     sudo apt -y install git
     git --version
     git clone https://github.com/gardenifi/server.git
-    cd server
+    cd raspirri_server
     ```
  - Make sure you create a file called secret_env.sh with contents. Otherwise you will be asked to provide these values during installation.
 ```
