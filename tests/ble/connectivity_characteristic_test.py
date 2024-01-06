@@ -110,7 +110,7 @@ if ARCH == "arm":
             assert isinstance(result[0], dbus.Byte)
             assert result[0] == dbus.Byte(b"1")
 
-        def test_start_mqtt_thread(self, mocker):
+        def test_do_not_start_mqtt_thread_from_ble_module(self, mocker):
             """If the connected status is True and the
             MQTT thread is not running, starts the MQTT thread"""
             # Initialize the class object
@@ -129,8 +129,8 @@ if ARCH == "arm":
             options = None
             characteristic.ReadValue(options)
 
-            # Assert that the MQTT thread was started
-            Mqtt().start_mqtt_thread.assert_called_once()
+            # Assert that the MQTT thread was not started
+            Mqtt().start_mqtt_thread.assert_not_called()
 
         def test_do_not_start_mqtt_thread(self, mocker):
             """If the connected status is False, does not start the MQTT thread"""

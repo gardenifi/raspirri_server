@@ -27,7 +27,6 @@ from dbus.exceptions import DBusException
 
 from app.raspi.helpers import Helpers
 from app.raspi.services import Services
-from app.raspi.mqtt import Mqtt
 from app.ble.advertisement import Advertisement
 from app.ble.service import Application, Service, Characteristic
 
@@ -150,11 +149,9 @@ class ConnectivityCharacteristic(Characteristic):  # pylint: disable=too-few-pub
         logger.debug(f"connected: {Helpers().is_connected_to_inet}")
         if Helpers().is_connected_to_inet:
             values.append(dbus.Byte(b"1"))
-            if not Mqtt().is_running():
-                Mqtt().start_mqtt_thread()
         else:
             values.append(dbus.Byte(b"0"))
-            logger.debug(f"values: {values}")
+        logger.debug(f"values: {values}")
         return values
 
 
