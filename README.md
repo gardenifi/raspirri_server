@@ -3,9 +3,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
 [![PRs welcome!](https://img.shields.io/badge/contributions-welcome-green.svg?style=flat)](https://github.com/gardenifi/server/issues)
 
-
-https://www.buymeacoffee.com/mariosk6
-
 # Raspberry Pi-based Smart Irrigation System (RaspirriV1)
 
 RaspirriV1 is an intelligent irrigation system powered by RaspirriV1, a versatile server software designed for Raspberry Pi. Compatible with Raspbian OS and tested on both Raspberry Pi Zero and Raspberry Pi 4 models, RaspirriV1 offers a robust solution for automating irrigation. Notably, this system can be easily adapted for use with other IoT devices, requiring minimal modifications for scheduling specific date and time-based activations or deactivations. Leverage the flexibility of RaspirriV1 to enhance the efficiency of your irrigation system or adapt it for various IoT applications with ease.
