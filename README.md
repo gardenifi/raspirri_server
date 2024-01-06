@@ -1,4 +1,3 @@
-
 [![](https://img.shields.io/badge/Buy%20me%20-coffee!-orange.svg?logo=buy-me-a-coffee&color=795548)](https://buymeacoff.ee/mariosk6)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
 [![PRs welcome!](https://img.shields.io/badge/contributions-welcome-green.svg?style=flat)](https://github.com/gardenifi/raspirri_server/issues)
@@ -52,7 +51,7 @@ Add it in the /bootfs of the SDRAM and rebooot
     sudo apt -y update
     sudo apt -y install git
     git --version
-    git clone https://github.com/gardenifi/server.git
+    git clone https://github.com/gardenifi/raspirri_server.git
     cd raspirri_server
     ```
  - Make sure you create a file called secret_env.sh with contents. Otherwise you will be asked to provide these values during installation.
@@ -78,7 +77,7 @@ if you would like to uninstall it.
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
 ```
-pi@raspirriv1:~/server $ ps -def | grep python
+pi@raspirriv1:~/raspirri_server $ ps -def | grep python
 root 5148 5138 16 11:29 ? 00:00:01 python3 app/main_app.py mqtt
 root 5188 5179 14 11:29 ? 00:00:00 python3 app/main_app.py ble
 ```
@@ -112,7 +111,7 @@ sudo systemctl enable rpi_ble_server.service
 ## Pre-commit
 After installation of the project you should have installed the [pre-commit tool](https://pre-commit.com/). On every git commit you run locally, pre-commit hooks will run and protect your code changes against errors that are related with the following plugins:
 ```bash
-(venv) pi@raspberrypi:~/server $ pre-commit run --all-files
+(venv) pi@raspberrypi:~/raspirri_server $ pre-commit run --all-files
 debug statements (python)..........................................................Passed
 check docstring is first...........................................................Passed
 fix end of files...................................................................Passed
@@ -256,8 +255,8 @@ sudo systemctl stop rpi_ble_server.service
 ```
 1. BLE module
 ```bash
-^[[A(venv) pi@raspberrypi:~/server $ ./debug.sh ble
-/home/pi/server
+^[[A(venv) pi@raspberrypi:~/raspirri_server $ ./debug.sh ble
+/home/pi/raspirri_server
 Virtual Environment Found...
 Argument provided: ble
 Argument used: ble
@@ -273,8 +272,8 @@ Argument used: ble
 ```
 2. MQTT module:
 ```bash
-(venv) pi@raspberrypi:~/server $ ./debug.sh mqtt
-/home/pi/server
+(venv) pi@raspberrypi:~/raspirri_server $ ./debug.sh mqtt
+/home/pi/raspirri_server
 Virtual Environment Found...
 Argument provided: mqtt
 Argument used: mqtt
