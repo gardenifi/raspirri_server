@@ -70,7 +70,7 @@ or
 ```
 if you would like to uninstall it.
 
-### Verify that servers runs fine
+### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
 ```
 pi@raspirriv1:~/server $ ps -def | grep python
