@@ -465,10 +465,10 @@ class Helpers:
         """
         logger.info("Git update code and restart...")
         try:
-            subprocess.run(["git", "pull"], stdout=subprocess.PIPE, text=True, check=True)
+            subprocess.run(["/usr/bin/git", "pull"], stdout=subprocess.PIPE, text=True, check=True)
             sys.exit(0)
         except Exception as e:
-            logger.error(f"Error rebooting: {e}")
+            logger.error(f"Error updating git: {e}")
 
     def checking_for_duplicate_ssids(self, ssid, ap_array):
         """
