@@ -34,7 +34,7 @@ import re
 import ast
 import threading
 import traceback
-import sys
+import signal
 
 from datetime import datetime
 from loguru import logger
@@ -210,7 +210,7 @@ class Helpers:
         """
         try:
             result = subprocess.run(["uptime", "-p"], stdout=subprocess.PIPE, text=True, check=True)
-            return result.stdout
+            return result.stdout.replace("\n", "")
         except Exception as e:
             logger.error(f"Error retrieving uptime: {e}")
             return str(e)
@@ -233,7 +233,7 @@ class Helpers:
             with open(file_path, encoding="utf-8") as file:
                 # Read the entire content of the file
                 content = file.read().replace("\n", "")
-                logger.debug("File content: %s", content)
+                logger.debug("File content: %s", str(content))
                 return content
         except FileNotFoundError as e:
             logger.error(f"The file '{file_path}' does not exist.")
@@ -466,7 +466,7 @@ class Helpers:
         logger.info("Git update code and restart...")
         try:
             subprocess.run(["/usr/bin/git", "pull"], stdout=subprocess.PIPE, text=True, check=True)
-            sys.exit(0)
+            os.kill(os.getpid(), signal.SIGTERM)
         except Exception as e:
             logger.error(f"Error updating git: {e}")
 

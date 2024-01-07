@@ -30,6 +30,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import re
 import os
+import signal
 from datetime import datetime
 import pytest
 from app.raspi.helpers import logger
@@ -537,29 +538,30 @@ class TestHelpers(unittest.TestCase):
     def test_system_update(self, mock_run, mock_logger):
         """test system update"""
 
-        # Call the method
-        with self.assertRaises(SystemExit) as context:
+        with unittest.mock.patch("os.kill") as mock_kill:
+            # Call the method
             self.helpers_instance.system_update()
 
-        # Ensure that the logger was called with the expected message
-        mock_logger.info.assert_called_once_with("Git update code and restart...")
+            # Ensure that the logger was called with the expected message
+            mock_logger.info.assert_called_once_with("Git update code and restart...")
 
-        # Ensure that subprocess.run was called with the expected arguments
-        mock_run.assert_called_once_with(["git", "pull"], stdout=-1, text=True, check=True)
+            # Ensure that subprocess.run was called with the expected arguments
+            mock_run.assert_called_once_with(["/usr/bin/git", "pull"], stdout=-1, text=True, check=True)
 
-        # Ensure that sys.exit(0) was called
-        self.assertEqual(context.exception.code, 0)
+            # Assert that os.kill was called with the expected arguments
+            mock_kill.assert_called_once_with(os.getpid(), signal.SIGTERM)
 
     @patch("app.raspi.helpers.logger")
     @patch("app.raspi.helpers.subprocess.run", side_effect=Exception("Mocked exception"))
     def test_system_update_error(self, mock_run, mock_logger):  # pylint: disable=unused-argument
         """test system update with error"""
 
-        # Call the method
-        self.helpers_instance.system_update()
+        with unittest.mock.patch("os.kill"):
+            # Call the method
+            self.helpers_instance.system_update()
 
-        # Ensure that the logger was called with the expected error message
-        mock_logger.error.assert_called_once_with("Error rebooting: Mocked exception")
+            # Ensure that the logger was called with the expected error message
+            mock_logger.error.assert_called_once_with("Error updating git: Mocked exception")
 
     def test_checking_for_duplicate_ssids_when_duplicate_exists(self):
         """test check for duplicate ssids"""
