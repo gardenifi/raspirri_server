@@ -233,7 +233,7 @@ class Helpers:
             with open(file_path, encoding="utf-8") as file:
                 # Read the entire content of the file
                 content = file.read().replace("\n", "")
-                logger.debug("File content: {content}")
+                logger.debug(f"File content: {content}")
                 return content
         except FileNotFoundError as e:
             logger.error(f"The file '{file_path}' does not exist.")
@@ -638,7 +638,7 @@ class Helpers:
                 os.system("cp " + WPA_SUPL_CONF_TMP + " /etc/wpa_supplicant/wpa_supplicant.conf")
                 wpa_cli_cmd = "sudo wpa_cli -i wlan0 reconfigure"
                 output = subprocess.check_output(wpa_cli_cmd, shell=True)
-                logger.info("Output of command {wpa_cli_cmd}:output.decode('utf8')")
+                logger.info(f"Output of command {wpa_cli_cmd}:{output.decode('utf8')}")
             else:
                 wpa_cli_cmd = f"sudo nmcli device wifi connect {ssid} password {wifi_key}"
                 output = subprocess.check_output(wpa_cli_cmd, shell=True)
