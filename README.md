@@ -87,27 +87,41 @@ root 5188 5179 14 11:29 ? 00:00:00 python3 app/main_app.py ble
 sudo journalctl -f -u rpi_server.service
 sudo journalctl -f -u rpi_ble_server.service
 ```
+
+### Clearing all logs (including active ones):
+To clear all logs, including the currently active ones, you can stop the systemd-journald service, remove the journal files, and then start the service again:
+```
+sudo systemctl stop systemd-journald
+sudo rm /var/log/journal/*/*  # Remove all journal files
+sudo systemctl start systemd-journald
+```
+Be cautious with this method, as it will clear all logs, including the ones still being written.
+
 ### Restart, Stop, Disable, Enable Services
 #### Restart
 ```bash
 sudo systemctl restart rpi_server.service
 sudo systemctl restart rpi_ble_server.service
 ```
+
 #### Stop
 ```bash
 sudo systemctl stop rpi_server.service
 sudo systemctl stop rpi_ble_server.service
 ```
+
 #### Disable
 ```bash
 sudo systemctl disable rpi_server.service
 sudo systemctl disable rpi_ble_server.service
 ```
+
 #### Enable
 ```bash
 sudo systemctl enable rpi_server.service
 sudo systemctl enable rpi_ble_server.service
 ```
+
 ## Pre-commit
 After installation of the project you should have installed the [pre-commit tool](https://pre-commit.com/). On every git commit you run locally, pre-commit hooks will run and protect your code changes against errors that are related with the following plugins:
 ```bash
