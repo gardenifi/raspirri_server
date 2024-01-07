@@ -9,8 +9,7 @@ Group=root
 Type=simple
 WorkingDirectory=/home/pi/raspirri_server/
 ExecStart=/home/pi/raspirri_server/debug.sh ble
-# Restart the service on non-zero exit code when terminated by a signal other than SIGHUP, SIGINT, SIGTERM or SIGPIPE
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=rpi_server.service

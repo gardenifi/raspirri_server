@@ -8,7 +8,7 @@ Group=root
 Type=simple
 WorkingDirectory=/home/pi/raspirri_server/
 ExecStart=/home/pi/raspirri_server/debug.sh mqtt
-Restart=on-abort
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
