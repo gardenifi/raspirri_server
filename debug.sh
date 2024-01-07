@@ -28,7 +28,9 @@ echo "Argument used: $ARG"
 if [ "$ARG" == "mqtt" ]; then
   # Every time someone restarts the server
   # we should keep the git commit id to propagate it to MQTT topic
-  sudo git log -n 1 --pretty=format:"%H" > ${GIT_COMMIT_ID}
+  /usr/bin/git config --global --add safe.directory /home/pi/raspirri_server
+  touch ${GIT_COMMIT_ID}
+  /usr/bin/git log -n 1 --pretty=format:"%H" | sudo tee ${GIT_COMMIT_ID} > /dev/null
   echo "Git commit id: $(sudo cat ${GIT_COMMIT_ID})"
 fi
 
