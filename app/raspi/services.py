@@ -343,7 +343,7 @@ class Services:
             logger.info(f"json_response: {json_response}")
             if chunked == 0:
                 return json_response
-            logger.info("Split array into chunks of %s bytes...", MAX_NUM_OF_BYTES_CHUNK)
+            logger.info("Split array into chunks of{MAX_NUM_OF_BYTES_CHUNK} bytes...")
             json_response = self.split_json_into_chunks(page, ap_array)
             return json_response
         except Exception as exception:
