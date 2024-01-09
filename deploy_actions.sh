@@ -5,6 +5,9 @@ set +x
 SECRET_ENV_FILE="secret_env.sh"
 
 SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
+# Reverse the order
+REVERSED_SERVICES=("${SERVICES[@]: -1:1}" "${SERVICES[@]: -2:1}" "${SERVICES[@]: -3:1}")
+
 PIP3_ARG=""
 
 function version_compare() {
@@ -133,7 +136,7 @@ function install_systemd_services {
 
 function uninstall_systemd_services {
   echo "Deleting RaspirriV1 services..."
-  for svc in "${SERVICES[@]}"; do
+  for svc in "${REVERSED_SERVICES[@]}"; do
     echo "Stoping and disabling service: $svc"
     sudo systemctl stop $svc.service
     sudo systemctl disable $svc.service
