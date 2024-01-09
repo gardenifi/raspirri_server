@@ -30,8 +30,8 @@ import requests
 from loguru import logger
 
 MAX_RETRIES = 3
-RETRY_INTERVAL = 60  # seconds
-CHECK_INTERVAL = 60  # seconds
+RETRY_INTERVAL = 10  # seconds
+CHECK_INTERVAL = 10  # seconds
 
 
 def check_process(process_name):
@@ -45,6 +45,7 @@ def check_process(process_name):
         bool: True if the process is running, False otherwise.
     """
     try:
+        logger.info(f"Checking process_name: {process_name}")
         subprocess.check_output(["systemctl", "is-active", process_name])
         return True
     except subprocess.CalledProcessError as calex:
@@ -63,6 +64,7 @@ def check_health(endpoint):
         bool: True if the API endpoint returns a 200 status code, False otherwise.
     """
     try:
+        logger.info(f"Checking HTTP request: {endpoint}")
         response = requests.get(endpoint, verify=False)
         return response.status_code == 200
     except requests.RequestException as reqex:
@@ -78,6 +80,7 @@ def restart_process(process_name):
         process_name (str): The name of the process to restart.
     """
     try:
+        logger.info(f"Restart process_name: {process_name}")
         subprocess.run(["systemctl", "restart", process_name], check=True)
     except subprocess.CalledProcessError as calex:
         logger.error(f"Error subprocess: {calex}")
