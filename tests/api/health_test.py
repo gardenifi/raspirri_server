@@ -44,7 +44,7 @@ class TestIndex:
         """
         response = client.get("/api")
         assert response.status_code == 200
-        assert response.json() == {"message": "Gardenifi Web Services API is Healthy!"}
+        assert response.json() == {"message": "RaspirriV1 Web Services API is Healthy!"}
 
     @pytest.mark.asyncio
     async def test_get_request_api_health_endpoint(self):
@@ -53,7 +53,7 @@ class TestIndex:
         """
         response = client.get("/api/health")
         assert response.status_code == 200
-        assert response.json() == {"message": "Gardenifi Web Services API is Healthy!"}
+        assert response.json() == {"message": "RaspirriV1 Web Services API is Healthy!"}
 
     @pytest.mark.asyncio
     async def test_post_request_api_endpoint(self):

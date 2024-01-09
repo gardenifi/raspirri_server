@@ -106,7 +106,7 @@ global_vars = GlobalVars()
 @app.get("/api/health")
 async def index():
     """Healthcheck API."""
-    return {"message": "Gardenifi Web Services API is Healthy!"}
+    return {"message": "RaspirriV1 Web Services API is Healthy!"}
 
 
 @app.exception_handler(404)

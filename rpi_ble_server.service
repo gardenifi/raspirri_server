@@ -1,5 +1,5 @@
 [Unit]
-Description=Gardenifi BLE Server
+Description=RaspirriV1 BLE Server
 # Start this unit after the rpi_server.service start
 After=rpi_server.service
 

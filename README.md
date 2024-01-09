@@ -86,6 +86,7 @@ root 5188 5179 14 11:29 ? 00:00:00 python3 app/main_app.py ble
 ```bash
 sudo journalctl -f -u rpi_server.service
 sudo journalctl -f -u rpi_ble_server.service
+sudo journalctl -f -u rpi_watchdog.service
 ```
 
 ### Clearing all logs (including active ones):

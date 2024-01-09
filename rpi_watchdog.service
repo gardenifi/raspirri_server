@@ -1,0 +1,14 @@
+[Unit]
+Description=RaspirriV1 Watchdog Server
+After=rpi_server.service
+
+[Service]
+User=root
+Group=root
+Type=simple
+WorkingDirectory=/home/pi/raspirri_server/
+ExecStart=/home/pi/raspirri_server/app/main_watchdog.sh mqtt
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -4,7 +4,7 @@ set +x
 
 SECRET_ENV_FILE="secret_env.sh"
 
-SERVICES=("rpi_server" "rpi_ble_server")
+SERVICES=("rpi_server" "rpi_ble_server", "rpi_watchdog")
 PIP3_ARG=""
 
 function version_compare() {
@@ -80,6 +80,7 @@ function prerequisites {
   sudo apt update -y
   sudo apt upgrade -y
   sudo apt install -y python3-pip
+  sudo apt-get install lsofds
 }
 
 function install_packages {
