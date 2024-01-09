@@ -97,7 +97,7 @@ def main():
     and triggers a reboot if the API health check consistently fails.
     """
     process_name = "rpi_server.service"
-    health_check_endpoint = "htts://localhost:5000/api/health"
+    health_check_endpoint = "https://localhost:5000/api/health"
 
     retries = 0
 
