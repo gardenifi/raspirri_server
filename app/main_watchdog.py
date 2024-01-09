@@ -63,7 +63,7 @@ def check_health(endpoint):
         bool: True if the API endpoint returns a 200 status code, False otherwise.
     """
     try:
-        response = requests.get(endpoint)
+        response = requests.get(endpoint, verify=False)
         return response.status_code == 200
     except requests.RequestException as reqex:
         logger.error(f"Error HTTP request: {reqex}")
