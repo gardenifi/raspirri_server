@@ -47,6 +47,7 @@ from app.raspi.const import (
     RUNNING_UNIT_TESTS,
     DUMMY_SSID,
     DUMMY_PASSKEY,
+    RPI_SERVER_GIT_COMMIT,
 )
 
 if ARCH == "arm":
@@ -225,18 +226,15 @@ class Helpers:
         Example:
             commit_id = instance.get_git_commit_id()
         """
-        # Specify the file path
-        file_path = "app/git_commit_id.txt"
-
         # Open the file in read mode ('r')
         try:
-            with open(file_path, encoding="utf-8") as file:
+            with open(RPI_SERVER_GIT_COMMIT, encoding="utf-8") as file:
                 # Read the entire content of the file
                 content = file.read().replace("\n", "")
                 logger.debug(f"File content: {content}")
                 return content
         except FileNotFoundError as e:
-            logger.error(f"The file '{file_path}' does not exist.")
+            logger.error(f"The file '{RPI_SERVER_GIT_COMMIT}' does not exist.")
             return str(e)
         except Exception as e:
             traceback.print_exc()

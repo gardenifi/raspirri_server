@@ -4,7 +4,7 @@ set +x
 
 SECRET_ENV_FILE="secret_env.sh"
 
-SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog")
+SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
 PIP3_ARG=""
 
 function version_compare() {
