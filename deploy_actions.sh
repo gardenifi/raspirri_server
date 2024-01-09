@@ -4,7 +4,7 @@ set +x
 
 SECRET_ENV_FILE="secret_env.sh"
 
-SERVICES=("rpi_server" "rpi_ble_server")
+SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
 PIP3_ARG=""
 
 function version_compare() {
@@ -80,6 +80,7 @@ function prerequisites {
   sudo apt update -y
   sudo apt upgrade -y
   sudo apt install -y python3-pip
+  sudo apt-get install lsofds
 }
 
 function install_packages {
@@ -121,17 +122,19 @@ function install_systemd_services {
   echo "Creating RaspirriV1 services..."
   sudo cp -f *.service /lib/systemd/system/
   sudo chmod 644 /lib/systemd/system/rpi_*server.service
-  sudo systemctl daemon-reload
   for svc in "${SERVICES[@]}"; do
+    echo "Enabling and starting service: $svc"
     sudo systemctl enable $svc.service
     sudo systemctl start $svc.service
     sudo systemctl status $svc.service --no-pager
   done
+  sudo systemctl daemon-reload
 }
 
 function uninstall_systemd_services {
   echo "Deleting RaspirriV1 services..."
   for svc in "${SERVICES[@]}"; do
+    echo "Stoping and disabling service: $svc"
     sudo systemctl stop $svc.service
     sudo systemctl disable $svc.service
     sudo systemctl status $svc.service --no-pager
@@ -145,10 +148,14 @@ if [ "$(basename "$0")" == "install.sh" ]; then
   install_packages
   install_app_deps
   install_systemd_services
+elif [ "$(basename "$0")" == "install_services.sh" ]; then
+  install_systemd_services
 elif [ "$(basename "$0")" == "uninstall.sh" ]; then
   uninstall_systemd_services
   uninstall_app_deps
   uninstall_packages
+elif [ "$(basename "$0")" == "uninstall_services.sh" ]; then
+  uninstall_systemd_services
 fi
 
 echo "Completed"

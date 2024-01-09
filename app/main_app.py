@@ -48,7 +48,7 @@ from loguru import logger
 from app.raspi.helpers import Helpers
 from app.raspi.services import Services
 from app.raspi.mqtt import Mqtt
-from app.raspi.const import ARCH, get_machine_architecture
+from app.raspi.const import ARCH, get_machine_architecture, RPI_SERVER_INIT_FILE
 
 if ARCH == "arm":
     from app.ble.wifi import init_ble
@@ -106,7 +106,7 @@ global_vars = GlobalVars()
 @app.get("/api/health")
 async def index():
     """Healthcheck API."""
-    return {"message": "Gardenifi Web Services API is Healthy!"}
+    return {"message": "RaspirriV1 Web Services API is Healthy!"}
 
 
 @app.exception_handler(404)
@@ -209,6 +209,9 @@ async def check_mqtt():
 
 def web_server():
     """FastAPI Web Server."""
+    # Creating a new file (or overwriting existing content)
+    with open(RPI_SERVER_INIT_FILE, "w", encoding="utf-8") as file:
+        file.write("Initialized")
     uvicorn.run(app, host="0.0.0.0", port=5000, ssl_keyfile="certs/key.pem", ssl_certfile="certs/cert.pem")
 
 
@@ -243,6 +246,16 @@ def main():
 
     :return: None
     """
+
+    try:
+        os.remove(RPI_SERVER_INIT_FILE)
+        logger.info(f"The file {RPI_SERVER_INIT_FILE} has been deleted successfully.")
+    except FileNotFoundError:
+        logger.warning(f"The file {RPI_SERVER_INIT_FILE} does not exist.")
+    except PermissionError:
+        logger.warning(f"You don't have permission to delete the file {RPI_SERVER_INIT_FILE}.")
+    except Exception as e:
+        logger.warning(f"An error occurred: {e}")
 
     try:
         logger.info("Initializing main...")

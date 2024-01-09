@@ -1,5 +1,5 @@
 [Unit]
-Description=Gardenifi Server
+Description=RaspirriV1 Server
 After=multi-user.target
 
 [Service]

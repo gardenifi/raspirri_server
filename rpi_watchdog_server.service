@@ -1,5 +1,5 @@
 [Unit]
-Description=RaspirriV1 BLE Server
+Description=RaspirriV1 Watchdog Server
 # Start this unit after the rpi_server.service start
 After=rpi_server.service
 
@@ -8,7 +8,7 @@ User=root
 Group=root
 Type=simple
 WorkingDirectory=/home/pi/raspirri_server/
-ExecStart=/home/pi/raspirri_server/debug.sh ble
+ExecStart=/home/pi/raspirri_server/debug.sh watchdog
 Restart=always
 # Wait until a specific file or directory exists
 ConditionPathExists=/home/pi/raspirri_server/rpi_server.init
