@@ -1,5 +1,6 @@
 [Unit]
 Description=RaspirriV1 Watchdog Server
+# Start this unit after the rpi_server.service start
 After=rpi_server.service
 
 [Service]
@@ -11,4 +12,4 @@ ExecStart=/home/pi/raspirri_server/debug.sh watchdog
 Restart=always
 
 [Install]
-WantedBy=default.target
+WantedBy=rpi_server.service
