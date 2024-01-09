@@ -47,7 +47,8 @@ def check_process(process_name):
     try:
         subprocess.check_output(["systemctl", "is-active", process_name])
         return True
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as calex:
+        logger.error(f"Error subprocess: {calex}")
         return False
 
 
@@ -64,7 +65,8 @@ def check_health(endpoint):
     try:
         response = requests.get(endpoint)
         return response.status_code == 200
-    except requests.RequestException:
+    except requests.RequestException as reqex:
+        logger.error(f"Error HTTP request: {reqex}")
         return False
 
 
@@ -75,7 +77,10 @@ def restart_process(process_name):
     Args:
         process_name (str): The name of the process to restart.
     """
-    subprocess.run(["systemctl", "restart", process_name], check=True)
+    try:
+        subprocess.run(["systemctl", "restart", process_name], check=True)
+    except subprocess.CalledProcessError as calex:
+        logger.error(f"Error subprocess: {calex}")
 
 
 def reboot_machine():
