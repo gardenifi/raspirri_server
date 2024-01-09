@@ -29,9 +29,9 @@ import subprocess
 import requests
 from loguru import logger
 
-MAX_RETRIES = 3
-RETRY_INTERVAL = 10  # seconds
-CHECK_INTERVAL = 10  # seconds
+MAX_RETRIES = 5
+RETRY_INTERVAL = 30  # seconds
+CHECK_INTERVAL = 30  # seconds
 
 
 def check_process(process_name):
