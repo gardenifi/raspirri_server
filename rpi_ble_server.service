@@ -10,6 +10,8 @@ Type=simple
 WorkingDirectory=/home/pi/raspirri_server/
 ExecStart=/home/pi/raspirri_server/debug.sh ble
 Restart=always
+# Wait until a specific file or directory exists
+ConditionPathExists=/home/pi/raspirri_server/rpi_server.init
 
 [Install]
 WantedBy=rpi_server.service

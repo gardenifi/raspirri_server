@@ -148,10 +148,14 @@ if [ "$(basename "$0")" == "install.sh" ]; then
   install_packages
   install_app_deps
   install_systemd_services
+elif [ "$(basename "$0")" == "install_services.sh" ]; then
+  install_systemd_services
 elif [ "$(basename "$0")" == "uninstall.sh" ]; then
   uninstall_systemd_services
   uninstall_app_deps
   uninstall_packages
+elif [ "$(basename "$0")" == "uninstall_services.sh" ]; then
+  uninstall_systemd_services
 fi
 
 echo "Completed"
