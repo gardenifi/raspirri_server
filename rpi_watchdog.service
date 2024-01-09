@@ -7,7 +7,7 @@ User=root
 Group=root
 Type=simple
 WorkingDirectory=/home/pi/raspirri_server/
-ExecStart=/home/pi/raspirri_server/app/main_watchdog.sh mqtt
+ExecStart=/home/pi/raspirri_server/app/main_watchdog.py
 Restart=always
 
 [Install]
