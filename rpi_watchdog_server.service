@@ -7,7 +7,7 @@ User=root
 Group=root
 Type=simple
 WorkingDirectory=/home/pi/raspirri_server/
-ExecStart=/home/pi/raspirri_server/app/main_watchdog.py
+ExecStart=/home/pi/raspirri_server/debug.sh watchdog
 Restart=always
 
 [Install]

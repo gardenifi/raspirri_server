@@ -4,7 +4,7 @@ set +x
 
 SECRET_ENV_FILE="secret_env.sh"
 
-SERVICES=("rpi_server" "rpi_ble_server", "rpi_watchdog")
+SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog")
 PIP3_ARG=""
 
 function version_compare() {
@@ -122,17 +122,19 @@ function install_systemd_services {
   echo "Creating RaspirriV1 services..."
   sudo cp -f *.service /lib/systemd/system/
   sudo chmod 644 /lib/systemd/system/rpi_*server.service
-  sudo systemctl daemon-reload
   for svc in "${SERVICES[@]}"; do
+    echo "Enabling and starting service: $svc"
     sudo systemctl enable $svc.service
     sudo systemctl start $svc.service
     sudo systemctl status $svc.service --no-pager
   done
+  sudo systemctl daemon-reload
 }
 
 function uninstall_systemd_services {
   echo "Deleting RaspirriV1 services..."
   for svc in "${SERVICES[@]}"; do
+    echo "Stoping and disabling service: $svc"
     sudo systemctl stop $svc.service
     sudo systemctl disable $svc.service
     sudo systemctl status $svc.service --no-pager

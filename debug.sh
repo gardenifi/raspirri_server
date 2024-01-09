@@ -34,4 +34,8 @@ if [ "$ARG" == "mqtt" ]; then
   echo "Git commit id: $(sudo cat ${GIT_COMMIT_ID})"
 fi
 
-PYTHONPATH=$(pwd) python3 app/main_app.py $ARG
+if [ "$ARG" == "watchdog" ]; then
+    PYTHONPATH=$(pwd) python3 app/main_watchdog.py
+else
+    PYTHONPATH=$(pwd) python3 app/main_app.py $ARG
+fi
