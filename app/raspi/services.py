@@ -109,26 +109,43 @@ class Services:
 
     def convert_to_utc(self, start_hour, tz_offset):
         """
-        Converts a given start hour to Coordinated Universal Time (UTC) based on the provided timezone offset.
+        Converts a given start hour in a specific time zone to Coordinated Universal Time (UTC).
 
-        Parameters:
-        - start_hour (int): The original start hour (0 to 23).
-        - tz_offset (int): The timezone offset in hours (-12 to +14).
+        Args:
+            start_hour (int): The starting hour in the local time zone.
+            tz_offset (int): The time zone offset in hours. Positive values for time zones ahead of UTC,
+                            negative values for time zones behind UTC.
 
         Returns:
-        int: The adjusted start hour in the range of 0 to 23 after applying the timezone offset.
+            Tuple[int, int]: A tuple containing the adjusted hour in UTC and the number of days passed.
+                            The adjusted hour is in the range [0, 23], and the days_passed is -1, 0, or 1
+                            indicating whether the adjusted hour falls before, within, or after the current day.
+
+        Example:
+            For a local start_hour of 10 and tz_offset of -5 (Eastern Standard Time),
+            convert_to_utc(10, -5) may return (5, 0), indicating that the adjusted UTC hour is 5 with no days passed.
+
+        Note:
+            The method assumes a 24-hour clock format.
         """
         logger.info(f"Checking whether start_hour should change: {start_hour}, tz_offset: {tz_offset}")
         # Calculate the adjusted hour
-        adjusted_hour = (start_hour - tz_offset) % 24
-        return adjusted_hour
+        adjusted_hour = start_hour - tz_offset
+        if adjusted_hour <= 0:
+            days_passed = -1
+        elif adjusted_hour >= 24:
+            days_passed = 1
+        else:
+            days_passed = 0
+        adjusted_hour = adjusted_hour % 24
+        return adjusted_hour, days_passed
 
     def get_previous_day(self, current_day):
         """
         Returns the name of the previous day based on the given current day.
 
         Parameters:
-        - current_day (str): The name of the current day (e.g., 'Monday').
+        - current_day (str): The name of the current day (e.g., 'mon').
 
         Returns:
         str: The name of the previous day.
@@ -140,6 +157,24 @@ class Services:
         # Get the name of the previous day
         previous_day = DAYS[previous_index]
         return previous_day
+
+    def get_next_day(self, current_day):
+        """
+        Returns the name of the next day based on the given current day.
+
+        Parameters:
+        - current_day (str): The name of the current day (e.g., 'mon').
+
+        Returns:
+        str: The name of the next day.
+        """
+        # Find the index of the current day
+        current_index = DAYS.index(current_day)
+        # Calculate the index of the next day
+        next_index = (current_index + 1) % len(DAYS)
+        # Get the name of the next day
+        next_day = DAYS[next_index]
+        return next_day
 
     def get_start_day_hour(self, day, start_hour, tz_offset):
         """
@@ -154,12 +189,14 @@ class Services:
         tuple: A tuple containing the adjusted day and start hour based on the provided conditions.
         """
         logger.info(f"Checking whether start_day should change: {day}")
-        if 0 <= start_hour <= abs(tz_offset):
-            day = self.get_previous_day(day)
-            logger.info(f"start_day changed: {day}")
         # Convert start_hour to UTC (e.g. start_hour=0, tz_offset=2, start_hour=22)
-        start_hour = self.convert_to_utc(start_hour, tz_offset)
-        logger.info(f"start_hour changed: {start_hour}")
+        start_hour, days_passed = self.convert_to_utc(start_hour, tz_offset)
+        if days_passed == 1:
+            day = self.get_next_day(day)
+        elif days_passed == -1:
+            day = self.get_previous_day(day)
+        logger.info(f"new start_day: {day}")
+        logger.info(f"new start_hour: {start_hour}")
         return day, start_hour
 
     def get_stop_datetime(self, day, start_hour, start_min, period):
