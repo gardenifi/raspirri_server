@@ -97,6 +97,7 @@ class TestServices:
         # Create a program file to delete
         program_data = {
             "days": "mon,tue,wed",
+            "tz_offset": 2,
             "cycles": [
                 {"start": "08:00", "min": "30"},
                 {"start": "14:00", "min": "45"},
@@ -122,6 +123,7 @@ class TestServices:
         # Create a program file to load
         program_data = {
             "days": "mon,tue,wed",
+            "tz_offset": 2,
             "cycles": [
                 {"start": "08:00", "min": "30"},
                 {"start": "14:00", "min": "45"},
@@ -141,6 +143,7 @@ class TestServices:
 
         program_data = {
             "days": "mon,tue,wed",
+            "tz_offset": 2,
             "cycles": [
                 {"start": "08:00", "min": "30"},
                 {"start": "14:00", "min": "-45"},
@@ -332,6 +335,7 @@ class TestServices:
         # Test case 1: Valid data, store=False
         json_data = {
             "days": "mon,tue",
+            "tz_offset": 2,
             "cycles": [{"min": 30, "start": "12:00"}, {"min": 45, "start": "15:30"}],
             "out": "output_device",
         }
