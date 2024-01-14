@@ -97,6 +97,7 @@ class TestServices:
         # Create a program file to delete
         program_data = {
             "days": "mon,tue,wed",
+            "tz_offset": 2,
             "cycles": [
                 {"start": "08:00", "min": "30"},
                 {"start": "14:00", "min": "45"},
@@ -122,6 +123,7 @@ class TestServices:
         # Create a program file to load
         program_data = {
             "days": "mon,tue,wed",
+            "tz_offset": 2,
             "cycles": [
                 {"start": "08:00", "min": "30"},
                 {"start": "14:00", "min": "45"},
@@ -141,6 +143,7 @@ class TestServices:
 
         program_data = {
             "days": "mon,tue,wed",
+            "tz_offset": 2,
             "cycles": [
                 {"start": "08:00", "min": "30"},
                 {"start": "14:00", "min": "-45"},
@@ -332,6 +335,7 @@ class TestServices:
         # Test case 1: Valid data, store=False
         json_data = {
             "days": "mon,tue",
+            "tz_offset": 2,
             "cycles": [{"min": 30, "start": "12:00"}, {"min": 45, "start": "15:30"}],
             "out": "output_device",
         }
@@ -357,3 +361,188 @@ class TestServices:
 
             # Verify that the exception is logged
             assert mock_logger_error.call_count == 1
+
+    def test_previous_day_start_hour_less_than_tz_offset(self):
+        """Returns the previous day with start_hour less than tz_offset"""
+
+        services = Services()
+        day = "mon"
+        start_hour = 0
+        tz_offset = 2
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == services.get_previous_day(day)
+        assert adjusted_start_hour == 22
+
+    def test_same_day_start_hour_greater_than_tz_offset(self):
+        """Returns the same day and start hour if start_hour is greater than tz_offset."""
+        services = Services()
+        day = "mon"
+        start_hour = 8
+        tz_offset = -5
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == day
+        assert adjusted_start_hour == 13
+
+    def test_next_day_start_hour_less_than_or_equal_to_23_minus_tz_offset(self):
+        """Returns the same day and start hour if start_hour is less than or equal to 23 - tz_offset."""
+        services = Services()
+        day = "mon"
+        start_hour = 20
+        tz_offset = -5
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == services.get_next_day(day)
+        assert adjusted_start_hour == 1
+
+    def test_previous_day_start_hour_between_0_and_tz_offset(self):
+        """Returns the same day and start hour if start_hour is less than or equal to 23 - tz_offset."""
+        services = Services()
+        day = "mon"
+        start_hour = 2
+        tz_offset = -5
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == day
+        assert adjusted_start_hour == 7
+
+    def test_same_day_start_hour_equal_to_23_minus_tz_offset(self):
+        """Returns the same day and start hour if start_hour is equal to 23 - tz_offset."""
+        services = Services()
+        day = "mon"
+        start_hour = 18
+        tz_offset = -5
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == day
+        assert adjusted_start_hour == 23
+
+    def test_previous_day_start_hour_equal_to_0(self):
+        """Returns the same day and start hour if start_hour is equal to 0."""
+        services = Services()
+        day = "mon"
+        start_hour = 0
+        tz_offset = -5
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == day
+        assert adjusted_start_hour == 5
+
+    def test_same_day_start_hour_tz_offset_zero(self):
+        """Returns the same day and start hour if tz_offset is 0."""
+        services = Services()
+        day = "mon"
+        start_hour = 8
+        tz_offset = 0
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == day
+        assert adjusted_start_hour == start_hour
+
+    def test_same_day_start_hour_tz_offset_negative_twelve(self):
+        """Returns the same day if tz_offset is -12."""
+        services = Services()
+        day = "mon"
+        start_hour = 8
+        tz_offset = -12
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == day
+        assert adjusted_start_hour == 20
+
+    def test_prev_day_start_hour_tz_offset_positive_fourteen(self):
+        """Returns the prev day and start hour if tz_offset is +14."""
+        services = Services()
+        day = "mon"
+        start_hour = 8
+        tz_offset = 14
+
+        adjusted_day, adjusted_start_hour = services.get_start_day_hour(day, start_hour, tz_offset)
+
+        assert adjusted_day == services.get_previous_day(day)
+        assert adjusted_start_hour == 18
+
+    def test_store_program_cycles_invalid_tz_offset(self):
+        """Raise TypeError if tz_offset is not an integer."""
+        json_data = {
+            "days": "mon,tue,wed",
+            "tz_offset": "2",
+            "cycles": [{"start": "08:00", "min": 30}, {"start": "12:00", "min": 45}],
+            "out": 1,
+        }
+
+        services = Services()
+
+        with pytest.raises(TypeError):
+            services.store_program_cycles(json_data, store=True)
+
+    def test_store_program_cycles_missing_field(self):
+        """Raise KeyError if the JSON data is missing a required field."""
+        json_data = {"days": "mon,tue,wed", "tz_offset": 2, "cycles": [{"start": "08:00", "min": 30}, {"start": "12:00", "min": 45}]}
+
+        services = Services()
+
+        with pytest.raises(KeyError):
+            services.store_program_cycles(json_data, store=True)
+
+    def test_store_program_cycles_no_storage(self):
+        """Do not store program information when store=False."""
+        json_data = {
+            "days": "mon,tue,wed",
+            "tz_offset": 2,
+            "cycles": [{"start": "08:00", "min": 30}, {"start": "12:00", "min": 45}],
+            "out": 1,
+        }
+
+        services = Services()
+        services.store_program_cycles(json_data, store=False)
+
+        assert services.scheduler_started is True
+        assert len(services.scheduler.get_jobs()) == 2
+
+    def test_store_program_cycles_ignore_invalid_cycles(self):
+        """Ignore cycles with min <= 0 and do not add them to the scheduler."""
+        json_data = {
+            "days": "mon,tue,wed",
+            "tz_offset": 2,
+            "cycles": [{"start": "08:00", "min": -30}, {"start": "12:00", "min": 0}],
+            "out": 1,
+        }
+
+        services = Services()
+        services.store_program_cycles(json_data, store=True)
+
+        assert services.scheduler_started is True
+        assert len(services.scheduler.get_jobs()) == 2
+
+    def test_store_program_cycles_success(self):
+        """Successfully store program cycles and schedule them using the scheduler."""
+        json_data = {
+            "days": "mon,tue,wed",
+            "tz_offset": 2,
+            "cycles": [{"start": "08:00", "min": 30}, {"start": "12:00", "min": 45}],
+            "out": 1,
+        }
+
+        services = Services()
+        services.store_program_cycles(json_data, store=True)
+
+        assert services.scheduler_started is True
+        assert len(services.scheduler.get_jobs()) == 2
+
+    def test_store_program_cycles_exception_due_to_tz_offset_does_not_exist(self):
+        """Store program cycles Keyerror due to lack of tz_offset."""
+        json_data = {"days": "mon,tue,wed", "cycles": [{"start": "08:00", "min": 30}, {"start": "12:00", "min": 45}], "out": 1}
+
+        services = Services()
+        with pytest.raises(KeyError, match="The 'tz_offset' field is missing in the JSON data."):
+            services.store_program_cycles(json_data, store=True)

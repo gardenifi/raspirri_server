@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+# pylint: disable=too-many-locals
 
 import json
 from threading import Thread
@@ -106,6 +107,98 @@ class Services:
         """
         return Helpers().toggle(0, "out" + str(valve))
 
+    def convert_to_utc(self, start_hour, tz_offset):
+        """
+        Converts a given start hour in a specific time zone to Coordinated Universal Time (UTC).
+
+        Args:
+            start_hour (int): The starting hour in the local time zone.
+            tz_offset (int): The time zone offset in hours. Positive values for time zones ahead of UTC,
+                            negative values for time zones behind UTC.
+
+        Returns:
+            Tuple[int, int]: A tuple containing the adjusted hour in UTC and the number of days passed.
+                            The adjusted hour is in the range [0, 23], and the days_passed is -1, 0, or 1
+                            indicating whether the adjusted hour falls before, within, or after the current day.
+
+        Example:
+            For a local start_hour of 10 and tz_offset of -5 (Eastern Standard Time),
+            convert_to_utc(10, -5) may return (5, 0), indicating that the adjusted UTC hour is 5 with no days passed.
+
+        Note:
+            The method assumes a 24-hour clock format.
+        """
+        logger.info(f"Checking whether start_hour should change: {start_hour}, tz_offset: {tz_offset}")
+        # Calculate the adjusted hour
+        adjusted_hour = start_hour - tz_offset
+        if adjusted_hour <= 0:
+            days_passed = -1
+        elif adjusted_hour >= 24:
+            days_passed = 1
+        else:
+            days_passed = 0
+        adjusted_hour = adjusted_hour % 24
+        return adjusted_hour, days_passed
+
+    def get_previous_day(self, current_day):
+        """
+        Returns the name of the previous day based on the given current day.
+
+        Parameters:
+        - current_day (str): The name of the current day (e.g., 'mon').
+
+        Returns:
+        str: The name of the previous day.
+        """
+        # Find the index of the current day
+        current_index = DAYS.index(current_day)
+        # Calculate the index of the previous day
+        previous_index = (current_index - 1) % len(DAYS)
+        # Get the name of the previous day
+        previous_day = DAYS[previous_index]
+        return previous_day
+
+    def get_next_day(self, current_day):
+        """
+        Returns the name of the next day based on the given current day.
+
+        Parameters:
+        - current_day (str): The name of the current day (e.g., 'mon').
+
+        Returns:
+        str: The name of the next day.
+        """
+        # Find the index of the current day
+        current_index = DAYS.index(current_day)
+        # Calculate the index of the next day
+        next_index = (current_index + 1) % len(DAYS)
+        # Get the name of the next day
+        next_day = DAYS[next_index]
+        return next_day
+
+    def get_start_day_hour(self, day, start_hour, tz_offset):
+        """
+        Checks if the start day or hour should be adjusted based on the provided conditions.
+
+        Parameters:
+        - day (str): The name of the current day (e.g., 'Monday').
+        - start_hour (int): The original start hour (0 to 23).
+        - tz_offset (int): The timezone offset in hours (-12 to +14).
+
+        Returns:
+        tuple: A tuple containing the adjusted day and start hour based on the provided conditions.
+        """
+        logger.info(f"Checking whether start_day should change: {day}")
+        # Convert start_hour to UTC (e.g. start_hour=0, tz_offset=2, start_hour=22)
+        start_hour, days_passed = self.convert_to_utc(start_hour, tz_offset)
+        if days_passed == 1:
+            day = self.get_next_day(day)
+        elif days_passed == -1:
+            day = self.get_previous_day(day)
+        logger.info(f"new start_day: {day}")
+        logger.info(f"new start_hour: {start_hour}")
+        return day, start_hour
+
     def get_stop_datetime(self, day, start_hour, start_min, period):
         """
         Calculate the stop time for a program cycle.
@@ -159,6 +252,12 @@ class Services:
             for day in json_data["days"].split(","):
                 if day not in DAYS:
                     raise DayValueException(f"{day} is not correct! Accepted values: {DAYS}")
+                tz_offset = json_data["tz_offset"]
+                if not isinstance(tz_offset, int):
+                    raise TypeError("The variable tz_offset is not an integer: {tz_offset}")
+
+                # keeping day sent by user to use on every iteration of cycles
+                user_day = day
                 for cycle in json_data["cycles"]:
                     logger.info(f"Cycle: {cycle}")
                     if int(cycle["min"]) <= 0:
@@ -166,6 +265,8 @@ class Services:
                         continue
                     start_hour = cycle["start"].split(":")[0]
                     start_min = cycle["start"].split(":")[1]
+
+                    day, start_hour = self.get_start_day_hour(user_day, int(start_hour), tz_offset)
 
                     logger.info(f"Start: {day} at {start_hour}:{start_min}")
                     triggers_to_start.append(CronTrigger(day_of_week=day, hour=int(start_hour), minute=int(start_min)))
@@ -190,6 +291,8 @@ class Services:
                     json.dump(json_data, outfile)
                 outfile.close()
 
+        except KeyError as kex:
+            raise KeyError(f"The {kex} field is missing in the JSON data.") from kex
         except Exception as exception:
             logger.error(f"Error: {exception}")
             raise
