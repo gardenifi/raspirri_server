@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    paths:
+      - 'CHANGELOG.md'  # Adjust the path to match your specific file or directory
+    branches:
+      - main  # Change this to your default branch
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check commit message
+      run: |
+        commit_message=$(git log -1 --pretty=%B)
+        if [[ $commit_message == *"[RELEASE]"* ]]; then
+          echo "Release commit detected. Running release workflow."
+        else
+          echo "No release commit detected. Skipping release workflow."
+          exit 0
+        fi
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x  # Change this to your Python version
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt.x86_64  # Adjust based on your project
+
+    - name: Bump version and create release
+      run: |
+        pip install bump2version
+        bump2version [major|minor|patch]  # Choose the appropriate version bump
+        git push --follow-tags
+        git push origin --tags
+
+    - name: Build and publish package
+      run: |
+        python setup.py sdist bdist_wheel
+        pip install twine
+        twine upload dist/*

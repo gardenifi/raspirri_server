@@ -254,6 +254,7 @@ Here is the folder/files structure explanation:
 ├── install.sh -> deploy_actions.sh
 ├── LICENSE.md
 ├── README.md
+├── CHANGELOG.md
 ├── requirements.txt.aarch64 -> requirements.txt.arm
 ├── requirements.txt.arm
 ├── requirements.txt.armv6l
@@ -306,6 +307,13 @@ For debugging purposes a FastAPI submodule has been implemented in the MQTT modu
 https://RPI_IP_ADDRESS:5000/docs#/
 https://RPI_IP_ADDRESS:5000/redoc
 https://RPI_IP_ADDRESS:5000/openapi.json
+
+## Releases
+
+Every time you need to create a new release, you should follow the steps below:
+
+1. Make changes in CHANGELOG.md
+2. git add --all . && git commit -m "Creating new RELEASE" && git push
 
 ## Contributing
 
