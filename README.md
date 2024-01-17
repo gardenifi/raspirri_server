@@ -103,21 +103,21 @@ Be cautious with this method, as it will clear all logs, including the ones stil
 ```bash
 sudo systemctl restart rpi_server.service
 sudo systemctl restart rpi_ble_server.service
-sudo systemctl restart rpi_watchdog.service
+sudo systemctl restart rpi_watchdog_server.service
 ```
 
 #### Stop
 ```bash
 sudo systemctl stop rpi_server.service
 sudo systemctl stop rpi_ble_server.service
-sudo systemctl stop rpi_watchdog.service
+sudo systemctl stop rpi_watchdog_server.service
 ```
 
 #### Disable
 ```bash
 sudo systemctl disable rpi_server.service
 sudo systemctl disable rpi_ble_server.service
-sudo systemctl disable rpi_watchdog.service
+sudo systemctl disable rpi_watchdog_server.service
 ```
 
 #### Enable
