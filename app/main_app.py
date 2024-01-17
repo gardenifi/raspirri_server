@@ -209,10 +209,12 @@ async def check_mqtt():
 
 def web_server():
     """FastAPI Web Server."""
-    # Creating a new file (or overwriting existing content)
-    with open(RPI_SERVER_INIT_FILE, "w", encoding="utf-8") as file:
-        file.write("Initialized")
-    uvicorn.run(app, host="0.0.0.0", port=5000, ssl_keyfile="certs/key.pem", ssl_certfile="certs/cert.pem")
+    try:
+        uvicorn.run(app, host="0.0.0.0", port=5000, ssl_keyfile="certs/key.pem", ssl_certfile="certs/cert.pem")
+    finally:
+        # Creating a new file (or overwriting existing content) after uvicorn.run
+        with open(RPI_SERVER_INIT_FILE, "w", encoding="utf-8") as file:
+            file.write("Initialized")
 
 
 def setup_gpio():
