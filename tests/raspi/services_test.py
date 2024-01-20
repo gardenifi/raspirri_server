@@ -546,3 +546,20 @@ class TestServices:
         services = Services()
         with pytest.raises(KeyError, match="The 'tz_offset' field is missing in the JSON data."):
             services.store_program_cycles(json_data, store=True)
+
+    @pytest.mark.parametrize(
+        ("time_12h", "time_24h"),
+        [
+            ("10:30 am", "10:30"),
+            ("03:45 PM", "15:45"),
+            ("05:45 pm", "17:45"),
+            ("12:30 am", "00:30"),
+            ("08:15", "08:15"),
+            ("", ""),
+            ("10:30", "10:30"),
+        ],
+    )
+    def test_convert_12h_to_24h_with_am(self, time_12h: str, time_24h: str):
+        """Should convert a 12-hour time string with 'am' to a 24-hour time string"""
+        result = Services().convert_12h_to_24h(time_12h)
+        assert result == time_24h

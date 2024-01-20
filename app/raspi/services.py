@@ -29,6 +29,7 @@ THE SOFTWARE.
 import json
 from threading import Thread
 from os import path, remove
+from datetime import datetime
 from loguru import logger
 from apscheduler.triggers.combining import OrTrigger
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -106,6 +107,37 @@ class Services:
         None
         """
         return Helpers().toggle(0, "out" + str(valve))
+
+    def convert_12h_to_24h(self, time_12h):
+        """
+        Convert a 12-hour time string to a 24-hour time string if 'am' or 'pm' is present.
+
+        Parameters:
+        - time_12h (str): A string representing the time in 12-hour format (e.g., '03:45 PM').
+
+        Returns:
+        - str or None: If 'am' or 'pm' is present, returns a string representing the time in 24-hour format (e.g., '15:45').
+                    If 'am' or 'pm' is not present, returns None.
+
+        Example:
+        >>> convert_12h_to_24h('03:45 PM')
+        '15:45'
+        >>> convert_12h_to_24h('10:30 am')
+        '10:30'
+        >>> convert_12h_to_24h('08:15')
+        None
+        """
+        logger.info(f"Checking whether start_hour should change: {time_12h}")
+        # Convert the input string to lowercase for case-insensitive check
+        time_12h = time_12h.lower()
+        time_24h = time_12h
+        if "am" in time_12h or "pm" in time_12h:
+            # Parse the 12-hour time string
+            time_obj = datetime.strptime(time_12h, "%I:%M %p")
+            # Format the time object as a 24-hour time string
+            time_24h = time_obj.strftime("%H:%M")
+        logger.info(f"Checking whether start_hour changed: {time_24h}")
+        return time_24h
 
     def convert_to_utc(self, start_hour, tz_offset):
         """
@@ -263,8 +295,9 @@ class Services:
                     if int(cycle["min"]) <= 0:
                         logger.info("This cycle should not be considered to be in the program due to min <=0.")
                         continue
-                    start_hour = cycle["start"].split(":")[0]
-                    start_min = cycle["start"].split(":")[1]
+                    new_start_hour = self.convert_12h_to_24h(cycle["start"])
+                    start_hour = new_start_hour.split(":")[0]
+                    start_min = new_start_hour.split(":")[1]
 
                     day, start_hour = self.get_start_day_hour(user_day, int(start_hour), tz_offset)
 
