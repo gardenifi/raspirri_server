@@ -1,4 +1,5 @@
 include *.service
+include *.txt
 include *.md
 include *.sh
 recursive-include certs *.pem
