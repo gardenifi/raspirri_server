@@ -1,5 +1,5 @@
 include *.service
-include *.txt
+include requirements.txt.*
 include *.md
 include *.sh
 recursive-include certs *.pem
