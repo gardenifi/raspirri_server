@@ -5,7 +5,8 @@ on:
     paths:
       - 'CHANGELOG.md'  # Adjust the path to match your specific file or directory
     branches:
-      - main  # Change this to your default branch
+      - main
+      - feature/create_releases
 
 jobs:
   release:
