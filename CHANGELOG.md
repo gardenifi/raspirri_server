@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - version 1.0.0
+- part major
 
 ### Fixed
 - Bug in release workflows
