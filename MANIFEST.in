@@ -2,3 +2,4 @@ include *.service
 include *.md
 include *.sh
 recursive-include certs *.pem
+include install_uninstall_script.py
