@@ -14,7 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - version 1.0.0
 
 ### Fixed
-- Bug in release workflows
+- Bug in release workflows - test
 
 ## [1.0.0] - 2024-01-15
 
