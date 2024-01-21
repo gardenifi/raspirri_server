@@ -17,8 +17,4 @@ setup(
     author="Marios Karagiannopoulos (mariosk@gmail.com)",
     packages=find_packages(),
     install_requires=read_requirements(),
-    package_data={
-        "raspirri-server": ["*.service", "*.md", "*.sh", "certs/*.pem"],
-    },
-    include_package_data=True,
 )
