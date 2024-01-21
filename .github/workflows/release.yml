@@ -39,7 +39,8 @@ jobs:
     - name: Bump version and create release
       run: |
         pip install bump2version
-        bump2version [major|minor|patch]  # Choose the appropriate version bump
+        NEW_VERSION=$(cat CHANGELOG.md | grep "\- version" | cut -d' ' -f3)
+        bump2version --new-version ${NEW_VERSION}
         git push --follow-tags
         git push origin --tags
 
