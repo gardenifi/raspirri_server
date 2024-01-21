@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Check commit message
       run: |
         commit_message=$(git log -1 --pretty=%B)
@@ -21,9 +24,6 @@ jobs:
           echo "No release commit detected. Skipping release workflow."
           exit 0
         fi
-
-    - name: Checkout code
-      uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
