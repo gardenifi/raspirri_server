@@ -1,0 +1,6 @@
+pip uninstall raspirri-server --break-system-packages -v
+
+pip install . --break-system-packages -v
+
+pip install . --break-system-packages -v 2>&1 | tee install.log
+  sys.argv:['/home/pi/raspirri_server_old/setup.py', 'bdist_wheel', '-d', '/tmp/pip-wheel-iv052e9g']-/home/pi/raspirri_server_old/setup.py

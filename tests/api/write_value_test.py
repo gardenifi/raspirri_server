@@ -28,7 +28,7 @@ import json
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 from fastapi import HTTPException
-from app.main_app import write_ble_data, BleData, WifiData
+from raspirri.main_app import write_ble_data, BleData, WifiData
 
 
 class TestWriteBleData:

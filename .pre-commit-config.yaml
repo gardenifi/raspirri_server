@@ -48,7 +48,7 @@ repos:
         hooks:
         -   id: run-unit-tests
             name: Run unit tests
-            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/app coverage run -m pytest -rA -s -vv tests'
+            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage run -m pytest -rA -s -vv tests'
             language: system
             files: '\.py$'
             pass_filenames: false
@@ -57,7 +57,7 @@ repos:
         hooks:
         -   id: check-code-coverage-below-threshold
             name: Checking whether Unit Tests code coverage is below threshold
-            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/app coverage report -m --fail-under=75 --include='app/*' --sort=Cover && echo "Unit Tests Code coverage is above 75%!"'
+            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover && echo "Unit Tests Code coverage is above 75%!"'
             language: system
             files: '\.py$'
             pass_filenames: false

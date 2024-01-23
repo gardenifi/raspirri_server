@@ -24,14 +24,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import pytest
 
-    from app.ble.service import Characteristic
-    from app.ble.service import CharacteristicUserDescriptionDescriptor
-    from app.ble.exceptions import NotPermittedException
+    from raspirri.ble.service import Characteristic
+    from raspirri.ble.service import CharacteristicUserDescriptionDescriptor
+    from raspirri.ble.exceptions import NotPermittedException
 
     class TestCharacteristicUserDescriptionDescriptor:
         """Characteristic User Description Descriptor Test Class"""

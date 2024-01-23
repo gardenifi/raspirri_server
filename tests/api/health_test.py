@@ -27,7 +27,7 @@ THE SOFTWARE.
 import pytest
 
 from fastapi.testclient import TestClient
-from app.main_app import app
+from raspirri.main_app import app
 
 client = TestClient(app)
 

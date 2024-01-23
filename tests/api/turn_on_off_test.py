@@ -28,7 +28,7 @@ import json
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 from fastapi import HTTPException
-from app.main_app import ValveData, turn
+from raspirri.main_app import ValveData, turn
 
 
 class TestTurn:

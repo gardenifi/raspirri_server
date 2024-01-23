@@ -28,9 +28,9 @@ import json
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 from fastapi import HTTPException
-from app.main_app import WifiData, save_wifi
-from app.raspi.services import Services
-from app.raspi.const import DUMMY_SSID, DUMMY_PASSKEY, ARCH
+from raspirri.main_app import WifiData, save_wifi
+from raspirri.server.services import Services
+from raspirri.server.const import DUMMY_SSID, DUMMY_PASSKEY, ARCH
 
 services = Services()
 

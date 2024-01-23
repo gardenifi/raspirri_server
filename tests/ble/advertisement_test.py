@@ -24,14 +24,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
 
-    from app.ble.advertisement import Advertisement
-    from app.ble.common import LE_ADVERTISEMENT_IFACE
-    from app.ble.common import BLUEZ_SERVICE_NAME
+    from raspirri.ble.advertisement import Advertisement
+    from raspirri.ble.common import LE_ADVERTISEMENT_IFACE
+    from raspirri.ble.common import BLUEZ_SERVICE_NAME
 
     # Set up the GLib main loop for D-Bus
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)

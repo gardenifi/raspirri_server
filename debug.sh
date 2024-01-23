@@ -2,7 +2,7 @@
 
 cd "$(dirname "$(readlink -f "$0")")"
 
-GIT_COMMIT_ID=app/git_commit_id.txt
+GIT_COMMIT_ID=raspirri/git_commit_id.txt
 
 # autoupdate after reboot...
 # git config --global credential.helper store
@@ -35,7 +35,7 @@ if [ "$ARG" == "mqtt" ]; then
 fi
 
 if [ "$ARG" == "watchdog" ]; then
-    PYTHONPATH=$(pwd) python3 app/main_watchdog.py
+    PYTHONPATH=$(pwd) python3 raspirri/main_watchdog.py
 else
-    PYTHONPATH=$(pwd) python3 app/main_app.py $ARG
+    PYTHONPATH=$(pwd) python3 raspirri/main_app.py $ARG
 fi

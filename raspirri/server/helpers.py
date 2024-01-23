@@ -38,7 +38,7 @@ import signal
 
 from datetime import datetime
 from loguru import logger
-from app.raspi.const import (
+from raspirri.server.const import (
     STATUSES_FILE,
     RPI_HW_ID,
     ARCH,

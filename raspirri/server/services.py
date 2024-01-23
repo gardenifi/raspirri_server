@@ -34,8 +34,8 @@ from loguru import logger
 from apscheduler.triggers.combining import OrTrigger
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from app.raspi.exceptions import DayValueException
-from app.raspi.const import (
+from raspirri.server.exceptions import DayValueException
+from raspirri.server.const import (
     DAYS,
     PROGRAM,
     PROGRAM_EXT,
@@ -48,7 +48,7 @@ from app.raspi.const import (
     MAX_NUM_OF_BYTES_CHUNK,
     MAX_NUM_OF_BUFFER_TO_ADD,
 )
-from app.raspi.helpers import Helpers
+from raspirri.server.helpers import Helpers
 
 
 class Services:

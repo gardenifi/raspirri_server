@@ -45,13 +45,13 @@ from pydantic import BaseModel
 from loguru import logger
 
 
-from app.raspi.helpers import Helpers
-from app.raspi.services import Services
-from app.raspi.mqtt import Mqtt
-from app.raspi.const import ARCH, get_machine_architecture, RPI_SERVER_INIT_FILE
+from raspirri.server.helpers import Helpers
+from raspirri.server.services import Services
+from raspirri.server.mqtt import Mqtt
+from raspirri.server.const import ARCH, get_machine_architecture, RPI_SERVER_INIT_FILE
 
 if ARCH == "arm":
-    from app.ble.wifi import init_ble
+    from raspirri.ble.wifi import init_ble
     from RPi import GPIO as GPIO  # pylint: disable=import-error,useless-import-alias
 
 INVALID_DATA = "Invalid data: Unable to process the provided data"

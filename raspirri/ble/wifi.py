@@ -25,10 +25,10 @@ import dbus  # pylint: disable=import-error,useless-import-alias
 
 from dbus.exceptions import DBusException
 
-from app.raspi.helpers import Helpers
-from app.raspi.services import Services
-from app.ble.advertisement import Advertisement
-from app.ble.service import Application, Service, Characteristic
+from raspirri.server.helpers import Helpers
+from raspirri.server.services import Services
+from raspirri.ble.advertisement import Advertisement
+from raspirri.ble.service import Application, Service, Characteristic
 
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
 NOTIFY_TIMEOUT = 5000

@@ -98,6 +98,7 @@ function install_packages {
 }
 
 function uninstall_packages {
+  check_for_pip_version
   echo "Uninstall required packages..."
   pre-commit uninstall
   sudo pip3 uninstall pre-commit ${PIP3_ARG} -y
@@ -112,12 +113,13 @@ function install_app_deps {
   git config --global --add safe.directory $(pwd)
   echo "Checking Bluetooth Status..."
   sudo systemctl status bluetooth --no-pager
+  check_for_pip_version
+  sudo pip3 install -r requirements.txt.$(uname -m) ${PIP3_ARG}
 }
 
 function uninstall_app_deps {
-  arch=$(uname -m)
   check_for_pip_version
-  sudo pip3 uninstall -r requirements.txt.$arch ${PIP3_ARG} -y
+  sudo pip3 uninstall -r requirements.txt.$(uname -m) ${PIP3_ARG} -y
   sudo rm -rf venv
 }
 
@@ -151,14 +153,20 @@ if [ "$(basename "$0")" == "install.sh" ]; then
   install_packages
   install_app_deps
   install_systemd_services
-elif [ "$(basename "$0")" == "install_services.sh" ]; then
-  install_systemd_services
 elif [ "$(basename "$0")" == "uninstall.sh" ]; then
   uninstall_systemd_services
   uninstall_app_deps
   uninstall_packages
+elif [ "$(basename "$0")" == "install_services.sh" ]; then
+  install_systemd_services
 elif [ "$(basename "$0")" == "uninstall_services.sh" ]; then
   uninstall_systemd_services
+elif [ "$(basename "$0")" == "install_packages.sh" ]; then
+  install_packages
+  install_app_deps
+elif [ "$(basename "$0")" == "uninstall_packages.sh" ]; then
+  uninstall_app_deps
+  uninstall_packages
 fi
 
 echo "Completed"

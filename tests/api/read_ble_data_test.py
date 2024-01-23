@@ -28,7 +28,7 @@ import pytest
 from fastapi import HTTPException
 
 
-from app.main_app import read_ble_data
+from raspirri.main_app import read_ble_data
 
 
 class TestReadBleData:
