@@ -19,6 +19,9 @@ def run_custom_command(command):
     os.system(f"bash {script_path}")
 
 
+# Run custom command before installation
+run_custom_command("install_prerequisites.sh")
+
 # Run custom command after installation
 atexit.register(run_custom_command, "install.sh")
 

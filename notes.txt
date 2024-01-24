@@ -1,6 +1,6 @@
+rm secret_env.sh
 pip uninstall raspirri-server --break-system-packages -v
 
 pip install . --break-system-packages -v
 
-pip install . --break-system-packages -v 2>&1 | tee install.log
-  sys.argv:['/home/pi/raspirri_server_old/setup.py', 'bdist_wheel', '-d', '/tmp/pip-wheel-iv052e9g']-/home/pi/raspirri_server_old/setup.py
+MQTT_HOST=12571319ea54c799a95ff68a20755c9.s1.eu.hivemq.cloud MQTT_PORT=8883 MQTT_USER=raspirriv1 MQTT_PASS=R@sp1r1v119785923 pip install . --break-system-packages -v

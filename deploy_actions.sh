@@ -39,6 +39,17 @@ function version_compare() {
     return 0  # versions are equal
 }
 
+function check_variable_exists {
+  # Check if the variable is defined
+  if [[ -v $1 ]]; then
+      echo "$1 is defined: $1"
+  else
+      # Prompt user for variable value
+      read -p "$1: " input_value </dev/tty
+      export $1="$input_value"
+  fi
+}
+
 function check_for_secret_env {
   # Check if secret_env.sh file exists
   if [ -f "$SECRET_ENV_FILE" ]; then
@@ -46,11 +57,10 @@ function check_for_secret_env {
   else
       echo "File $SECRET_ENV_FILE does not exist. Please provide values for the following variables:"
 
-      # Prompt user for values
-      read -p "MQTT_HOST: " MQTT_HOST
-      read -p "MQTT_PORT: " MQTT_PORT
-      read -p "MQTT_USER: " MQTT_USER
-      read -p "MQTT_PASS: " MQTT_PASS
+      check_variable_exists MQTT_HOST
+      check_variable_exists MQTT_PORT
+      check_variable_exists MQTT_USER
+      check_variable_exists MQTT_PASS
 
       # Create secret_env.sh file
       echo "export MQTT_HOST=$MQTT_HOST" > "$SECRET_ENV_FILE"
@@ -83,7 +93,6 @@ function prerequisites {
   sudo apt update -y
   sudo apt upgrade -y
   sudo apt install -y python3-pip
-  sudo apt-get install lsofds
 }
 
 function install_packages {
@@ -103,7 +112,7 @@ function uninstall_packages {
   pre-commit uninstall
   sudo pip3 uninstall pre-commit ${PIP3_ARG} -y
   sudo pip3 uninstall virtualenv ${PIP3_ARG} -y
-  sudo apt autoremove -y cmake build-essential libpython3-dev libdbus-1-dev python3-pip
+  sudo apt autoremove -y cmake build-essential libpython3-dev libdbus-1-dev
   sudo apt-get remove -y pkg-config libglib2.0-dev libcairo2-dev gcc python3-dev libgirepository1.0-dev ninja-build
   sudo apt autoremove -y
 }
@@ -167,6 +176,9 @@ elif [ "$(basename "$0")" == "install_packages.sh" ]; then
 elif [ "$(basename "$0")" == "uninstall_packages.sh" ]; then
   uninstall_app_deps
   uninstall_packages
+elif [ "$(basename "$0")" == "install_prerequisites.sh" ]; then
+  check_for_secret_env
+  prerequisites
 fi
 
 echo "Completed"
