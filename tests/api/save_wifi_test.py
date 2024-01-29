@@ -27,7 +27,7 @@ THE SOFTWARE.
 import json
 import pytest
 from pydantic import ValidationError as PydanticValidationError
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from app.main_app import WifiData, save_wifi
 from app.raspi.services import Services
 from app.raspi.const import DUMMY_SSID, DUMMY_PASSKEY, ARCH
@@ -63,7 +63,7 @@ class TestSaveWifi:
         data = WifiData(ssid=DUMMY_SSID, wifi_key=DUMMY_PASSKEY)
         if ARCH == "arm":
             response = await save_wifi(data)
-            assert response.status_code == 200
+            assert response.status_code == status.HTTP_200_OK
         else:
             with pytest.raises(
                 HTTPException,
@@ -87,7 +87,7 @@ class TestSaveWifi:
         if ARCH == "arm":
             with pytest.raises(HTTPException) as exc_info:
                 await save_wifi(data)
-            assert exc_info.value.status_code == 500
+            assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
             assert exc_info.value.detail == ""
         else:
             with pytest.raises(
@@ -103,7 +103,7 @@ class TestSaveWifi:
         data = WifiData(ssid=DUMMY_SSID, wifi_key="")
         with pytest.raises(HTTPException) as exc_info:
             await save_wifi(data)
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == ""
 
     @pytest.mark.asyncio
@@ -114,5 +114,5 @@ class TestSaveWifi:
         data = WifiData(ssid="", wifi_key="")
         with pytest.raises(HTTPException) as exc_info:
             await save_wifi(data)
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == ""

@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 import pytest
 
+from fastapi import status
 from fastapi.testclient import TestClient
 from app.main_app import app
 
@@ -43,7 +44,7 @@ class TestIndex:
         Test for GET request on "/api" endpoint, expecting a JSON response with a health message.
         """
         response = client.get("/api")
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"message": "RaspirriV1 Web Services API is Healthy!"}
 
     @pytest.mark.asyncio
@@ -52,7 +53,7 @@ class TestIndex:
         Test for GET request on "/api/health" endpoint, expecting a JSON response with a health message.
         """
         response = client.get("/api/health")
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"message": "RaspirriV1 Web Services API is Healthy!"}
 
     @pytest.mark.asyncio
@@ -61,7 +62,7 @@ class TestIndex:
         Test for POST request on "/api" endpoint, expecting an error response for Method Not Allowed.
         """
         response = client.post("/api")
-        assert response.status_code == 405
+        assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert response.json() == {"detail": "Method Not Allowed"}
 
     @pytest.mark.asyncio
@@ -70,7 +71,7 @@ class TestIndex:
         Test for POST request on "/api/health" endpoint, expecting an error response for Method Not Allowed.
         """
         response = client.post("/api/health")
-        assert response.status_code == 405
+        assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert response.json() == {"detail": "Method Not Allowed"}
 
     @pytest.mark.asyncio
@@ -79,7 +80,7 @@ class TestIndex:
         Test for GET request on an invalid endpoint, expecting an error response for Not Found.
         """
         response = client.get("/invalid")
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == {"detail": "Not Found"}
 
     @pytest.mark.asyncio
@@ -88,5 +89,5 @@ class TestIndex:
         Test for PUT request on an invalid endpoint, expecting an error response for Not Found.
         """
         response = client.put("/invalid")
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == {"detail": "Not Found"}

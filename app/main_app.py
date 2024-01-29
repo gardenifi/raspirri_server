@@ -37,7 +37,7 @@ from typing import Optional
 
 import uvicorn
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError as PydanticValidationError
 
@@ -106,14 +106,18 @@ global_vars = GlobalVars()
 @app.get("/api/health")
 async def index():
     """Healthcheck API."""
-    return {"message": "RaspirriV1 Web Services API is Healthy!"}
+    if Mqtt().is_healthy() is True:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "RaspirriV1 Web Services API is Healthy!"})
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"message": "RaspirriV1 Web Services API is NOT Healthy!"}
+    )
 
 
-@app.exception_handler(404)
+@app.exception_handler(status.HTTP_404_NOT_FOUND)
 async def resource_not_found(request: Request, exc: HTTPException):
     """Not found error."""
     logger.error(f"Request: {request}")
-    return JSONResponse(status_code=404, content={"detail": str(exc.detail)})
+    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"detail": str(exc.detail)})
 
 
 @app.get("/api/read_ble_data")
@@ -125,10 +129,10 @@ async def read_ble_data(page: int = None):
         logger.info(f"wifi_networks: {wifi_networks}")
         if not wifi_networks:
             wifi_networks = "No wifi networks identified!"
-        return JSONResponse(status_code=200, content=wifi_networks)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=wifi_networks)
     except Exception as exception:
         logger.error(f"Error: {exception}")
-        raise HTTPException(status_code=500, detail=str(exception)) from Exception
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exception)) from Exception
 
 
 @app.post("/api/write_ble_data")
@@ -137,20 +141,20 @@ async def write_ble_data(data: BleData):
     try:
         if data.page is not None:
             logger.debug(f"Page set: {data.page}")
-            return JSONResponse(status_code=200, content={"page": data.page})
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"page": data.page})
         if data.refresh is not None:
             global_vars.refresh_set = data.refresh
             logger.debug(f"refresh: {global_vars.refresh_set}")
-            return JSONResponse(status_code=200, content={"refresh": global_vars.refresh_set})
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"refresh": global_vars.refresh_set})
         if data.wifi_data.ssid and data.wifi_data.wifi_key:
             connected = Helpers().store_wpa_ssid_key(data.wifi_data.ssid, data.wifi_data.wifi_key)
             logger.info(f"Wifi changed: {data}. Connected: {connected}")
-            return JSONResponse(status_code=200, content={"connected": connected})
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"connected": connected})
         raise HTTPException(status_code=400, detail="Invalid request: Missing required parameters")
     except (ValueError, PydanticValidationError) as exc:
-        raise HTTPException(status_code=422, detail=INVALID_DATA) from exc
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=INVALID_DATA) from exc
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Internal server error: " + str(ex)) from ex
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error: " + str(ex)) from ex
 
 
 @app.get("/api/discover_wifi")
@@ -159,11 +163,11 @@ async def discover_wifi(chunked: int = None, page: int = None):
     try:
         if chunked is not None:
             if page is None:
-                return JSONResponse(status_code=200, content=services.discover_wifi_networks(chunked))
-            return JSONResponse(status_code=200, content=services.discover_wifi_networks(chunked, page))
-        return JSONResponse(status_code=200, content=services.discover_wifi_networks())
+                return JSONResponse(status_code=status.HTTP_200_OK, content=services.discover_wifi_networks(chunked))
+            return JSONResponse(status_code=status.HTTP_200_OK, content=services.discover_wifi_networks(chunked, page))
+        return JSONResponse(status_code=status.HTTP_200_OK, content=services.discover_wifi_networks())
     except Exception as ex:
-        raise HTTPException(status_code=500, detail=str(ex)) from ex
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex)) from ex
 
 
 @app.post("/api/save_wifi")
@@ -171,10 +175,10 @@ async def save_wifi(data: WifiData):
     """Save WIFI API call."""
     try:
         if data.ssid and data.wifi_key:
-            return JSONResponse(status_code=200, content=services.save_wifi_network(data.ssid, data.wifi_key))
-        raise HTTPException(status_code=500, detail="Invalid request")
+            return JSONResponse(status_code=status.HTTP_200_OK, content=services.save_wifi_network(data.ssid, data.wifi_key))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Invalid request")
     except Exception as ex:
-        raise HTTPException(status_code=500, detail=str(ex)) from ex
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex)) from ex
 
 
 @app.post("/api/turn")
@@ -183,16 +187,16 @@ async def turn(data: ValveData):
     try:
         logger.debug(f"data:{data}")
         if data.status is not None and data.valve is not None:
-            status = strtobool(data.status)
-            if status:
-                return JSONResponse(status_code=200, content={"message": services.turn_on_from_program(data.valve)})
-            return JSONResponse(status_code=200, content={"message": services.turn_off_from_program(data.valve)})
+            status_value = strtobool(data.status)
+            if status_value:
+                return JSONResponse(status_code=status.HTTP_200_OK, content={"message": services.turn_on_from_program(data.valve)})
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"message": services.turn_off_from_program(data.valve)})
         logger.error(f"Invalid data: status={data.status}, valve={data.valve}")
-        raise HTTPException(status_code=422, detail=INVALID_DATA)
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=INVALID_DATA)
     except (ValueError, PydanticValidationError) as exc:
-        raise HTTPException(status_code=422, detail=INVALID_DATA) from exc
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=INVALID_DATA) from exc
     except Exception as ex:
-        raise HTTPException(status_code=500, detail=str(ex)) from ex
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex)) from ex
 
 
 @app.get("/api/check_mqtt")
@@ -201,10 +205,10 @@ async def check_mqtt():
     try:
         if not Mqtt().is_running():
             Mqtt().start_mqtt_thread()
-            return JSONResponse(status_code=200, content={"detail": "MQTT thread just started!"})
-        return JSONResponse(status_code=200, content={"detail": "MQTT thread was already running!"})
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"detail": "MQTT thread just started!"})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"detail": "MQTT thread was already running!"})
     except Exception as ex:
-        raise HTTPException(status_code=500, detail=str(ex)) from ex
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex)) from ex
 
 
 def web_server():
