@@ -109,10 +109,15 @@ class Mqtt:
         cls._mqtt_thread = None
         cls._periodic_updates_thread = None
 
-    def is_healthy(self):
+    def is_healthy(self) -> bool:
         """Getter."""
         logger.debug(f"Getting mqtt healthiness: {self._mqtt_healthiness}")
         return self._mqtt_healthiness
+
+    def set_healthy(self, healthy: bool) -> None:
+        """Setter."""
+        logger.debug(f"Setting mqtt healthiness: {healthy}")
+        self._mqtt_healthiness = healthy
 
     def get_mqtt_thread(self):
         """Getter."""
@@ -211,12 +216,9 @@ class Mqtt:
     def store_mqtt_healthiness(client, data):
         """Keep track of MQTT healthiness."""
         try:
-            json_data = json.loads(data)
-            logger.info(f"status data={json_data}")
-            if MQTT_LOST_CONNECTION in json_data:
-                pass
-            else:
-                pass
+            logger.info(f"status data={data}")
+            Mqtt().set_healthy(MQTT_LOST_CONNECTION not in data)
+            logger.info(f"Is MQTT healthy: {Mqtt().is_healthy()}")
         except Exception as exception:
             logger.error(f"Error: {exception}")
             Mqtt.publish_to_topic(client, MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + str(exception)[0:128] + MQTT_END)
@@ -364,7 +366,7 @@ class Mqtt:
             client.username_pw_set(MQTT_USER, MQTT_PASS)
 
             # set Last Will message on disconnection
-            client.will_set(MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + MQTT_LOST_CONNECTION + MQTT_END, qos=1, retain=True)
+            client.will_set(MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + '"' + MQTT_LOST_CONNECTION + '"' + MQTT_END, qos=1, retain=True)
 
             last_will_interval = 5  # Set the timeout for the last will message (in seconds)
             client.will_delay_interval = last_will_interval

@@ -170,6 +170,8 @@ class TestMqtt:
         # Assert that the necessary methods were called
         mock_mqtt.assert_called_with(client_id=MQTT_CLIENT_ID, clean_session=True)
         mock_client.username_pw_set.assert_called_with(MQTT_USER, MQTT_PASS)
-        mock_client.will_set.assert_called_with(MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + MQTT_LOST_CONNECTION + MQTT_END, qos=1, retain=True)
+        mock_client.will_set.assert_called_with(
+            MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + '"' + MQTT_LOST_CONNECTION + '"' + MQTT_END, qos=1, retain=True
+        )
         mock_client.connect.assert_called_with(MQTT_HOST, int(MQTT_PORT), 5)
         mock_services.return_value.load_program_cycles_if_exists.assert_called_with(3)
