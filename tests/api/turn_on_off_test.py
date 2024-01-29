@@ -27,7 +27,7 @@ THE SOFTWARE.
 import json
 import pytest
 from pydantic import ValidationError as PydanticValidationError
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from app.main_app import ValveData, turn
 
 
@@ -48,7 +48,7 @@ class TestTurn:
         response = await turn(data)
 
         # Assert
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == {"message": "OK"}
 
     @pytest.mark.asyncio
@@ -63,7 +63,7 @@ class TestTurn:
         response = await turn(data)
 
         # Assert
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == {"message": "OK"}
 
     @pytest.mark.asyncio
@@ -78,7 +78,7 @@ class TestTurn:
         response = await turn(data)
 
         # Assert
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == {"message": "OK"}
 
     @pytest.mark.asyncio
@@ -92,7 +92,7 @@ class TestTurn:
         # Act and Assert
         with pytest.raises(HTTPException) as exc:
             await turn(data)
-        assert exc.value.status_code == 422
+        assert exc.value.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     @pytest.mark.asyncio
     async def test_missing_fields_raises_http_exception(self):
@@ -103,7 +103,7 @@ class TestTurn:
         data = ValveData(status="1")
         with pytest.raises(HTTPException) as exc:
             await turn(data)
-        assert exc.value.status_code == 500
+        assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc.value.detail == ""
 
     @pytest.mark.asyncio

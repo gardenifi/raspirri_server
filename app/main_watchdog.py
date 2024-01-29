@@ -28,6 +28,7 @@ import time
 import subprocess
 import requests
 from loguru import logger
+from fastapi import status
 
 MAX_RETRIES = 5
 RETRY_INTERVAL = 30  # seconds
@@ -66,7 +67,7 @@ def check_health(endpoint):
     try:
         logger.info(f"Checking HTTP request: {endpoint}")
         response = requests.get(endpoint, verify=False)
-        return response.status_code == 200
+        return response.status_code == status.HTTP_200_OK
     except requests.RequestException as reqex:
         logger.error(f"Error HTTP request: {reqex}")
         return False

@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 import json
 import pytest
+from fastapi import status
 from app.main_app import discover_wifi
 from app.raspi.services import Services
 
@@ -43,7 +44,7 @@ class TestDiscoverWifi:
         Test case for discover_wifi with no parameters.
         """
         response = await discover_wifi()
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == services.discover_wifi_networks()
 
     @pytest.mark.asyncio
@@ -52,7 +53,7 @@ class TestDiscoverWifi:
         Test case for discover_wifi with chunked parameter set to 0.
         """
         response = await discover_wifi(chunked=0)
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == services.discover_wifi_networks()
 
     @pytest.mark.asyncio
@@ -61,5 +62,5 @@ class TestDiscoverWifi:
         Test case for discover_wifi with chunked parameter set to 1 and page parameter set to 1.
         """
         response = await discover_wifi(chunked=1, page=1)
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == services.discover_wifi_networks(chunked=1, page=1)

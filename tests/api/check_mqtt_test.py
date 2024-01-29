@@ -27,7 +27,7 @@ THE SOFTWARE.
 import json
 import pytest
 
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from app.main_app import check_mqtt
 
 
@@ -44,7 +44,7 @@ class TestCheckMqtt:
         """
         mocker.patch("app.main_app.Mqtt.is_running", return_value=True)
         response = await check_mqtt()
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == {"detail": "MQTT thread was already running!"}
 
     @pytest.mark.asyncio
@@ -57,7 +57,7 @@ class TestCheckMqtt:
         """
         mocker.patch("app.main_app.Mqtt.is_running", return_value=False)
         response = await check_mqtt()
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.body) == {"detail": "MQTT thread just started!"}
 
     @pytest.mark.asyncio
@@ -71,7 +71,7 @@ class TestCheckMqtt:
         mocker.patch("app.main_app.Mqtt.is_running", side_effect=Exception)
         with pytest.raises(HTTPException) as exc_info:
             await check_mqtt()
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == ""
 
     @pytest.mark.asyncio
@@ -86,7 +86,7 @@ class TestCheckMqtt:
         mocker.patch("app.main_app.Mqtt.start_mqtt_thread", side_effect=Exception)
         with pytest.raises(HTTPException) as exc_info:
             await check_mqtt()
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == ""
 
     @pytest.mark.asyncio
@@ -101,7 +101,7 @@ class TestCheckMqtt:
         mocker.patch("app.main_app.Mqtt.start_mqtt_thread", side_effect=Exception)
         with pytest.raises(HTTPException) as exc_info:
             await check_mqtt()
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == ""
 
     @pytest.mark.asyncio

@@ -42,6 +42,7 @@ from app.raspi.const import (
     MQTT_TOPIC_CMD,
     MQTT_TOPIC_VALVES,
     MQTT_STATUS_ERR,
+    MQTT_LOST_CONNECTION,
     PROGRAM,
     PROGRAM_EXT,
     MQTT_STATUS_OK,
@@ -59,8 +60,9 @@ from app.raspi.const import Command
 class Mqtt:
     """MQTT Methods Class."""
 
-    __instance = None
-    __lock = threading.Lock()
+    _instance = None
+    _lock = threading.Lock()
+    _mqtt_healthiness = True
     client = None
 
     def __new__(cls):
@@ -73,14 +75,14 @@ class Mqtt:
         Example Usage:
             instance = Mqtt()
         """
-        if cls.__instance is None:
-            with cls.__lock:
-                cls.__instance = super().__new__(cls)  # pylint: disable=duplicate-code
+        if cls._instance is None:
+            with cls._lock:
+                cls._instance = super().__new__(cls)  # pylint: disable=duplicate-code
                 cls._mqtt_thread = None
                 cls._periodic_updates_thread = None
 
-        logger.debug(f"Returning Mqtt Object Class: {cls.__instance}")
-        return cls.__instance
+        logger.debug(f"Returning Mqtt Object Class: {cls._instance}")
+        return cls._instance
 
     @classmethod
     def destroy_instance(cls):
@@ -102,10 +104,20 @@ class Mqtt:
         Outputs:
         None
         """
-        logger.debug(f"Destroying Mqtt Object Class: {cls.__instance}")
-        cls.__instance = None
+        logger.debug(f"Destroying Mqtt Object Class: {cls._instance}")
+        cls._instance = None
         cls._mqtt_thread = None
         cls._periodic_updates_thread = None
+
+    def is_healthy(self) -> bool:
+        """Getter."""
+        logger.debug(f"Getting mqtt healthiness: {self._mqtt_healthiness}")
+        return self._mqtt_healthiness
+
+    def set_healthy(self, healthy: bool) -> None:
+        """Setter."""
+        logger.debug(f"Setting mqtt healthiness: {healthy}")
+        self._mqtt_healthiness = healthy
 
     def get_mqtt_thread(self):
         """Getter."""
@@ -201,6 +213,17 @@ class Mqtt:
             Mqtt.publish_to_topic(client, MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + str(exception)[0:128] + MQTT_END)
 
     @staticmethod
+    def store_mqtt_healthiness(client, data):
+        """Keep track of MQTT healthiness."""
+        try:
+            logger.info(f"status data={data}")
+            Mqtt().set_healthy(MQTT_LOST_CONNECTION not in data)
+            logger.info(f"Is MQTT healthy: {Mqtt().is_healthy()}")
+        except Exception as exception:
+            logger.error(f"Error: {exception}")
+            Mqtt.publish_to_topic(client, MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + str(exception)[0:128] + MQTT_END)
+
+    @staticmethod
     def handle_command(client, data):
         """Handle cmd."""
         try:
@@ -264,12 +287,15 @@ class Mqtt:
         topic = msg.topic
         data = msg.payload.decode("utf-8")
         logger.info(f"Received message from topic:{topic}, userdata:{userdata}, data:{data}")
+
         if topic == MQTT_TOPIC_CONFIG:
             Mqtt.handle_config(client, data)
         elif msg.topic == MQTT_TOPIC_CMD:
             Mqtt.handle_command(client, data)
         elif msg.topic == MQTT_TOPIC_VALVES:
             Mqtt.handle_valves(client, data)
+        elif msg.topic == MQTT_TOPIC_STATUS:
+            Mqtt.store_mqtt_healthiness(client, data)
 
     @staticmethod
     def send_periodic_updates(client):
@@ -340,13 +366,15 @@ class Mqtt:
             client.username_pw_set(MQTT_USER, MQTT_PASS)
 
             # set Last Will message on disconnection
-            client.will_set(MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + '"LOST_CONNECTION"' + MQTT_END, qos=1, retain=True)
+            client.will_set(MQTT_TOPIC_STATUS, MQTT_STATUS_ERR + '"' + MQTT_LOST_CONNECTION + '"' + MQTT_END, qos=1, retain=True)
 
             last_will_interval = 5  # Set the timeout for the last will message (in seconds)
             client.will_delay_interval = last_will_interval
 
             # connect to HiveMQ Cloud on port 8883 with 5 seconds keep-alive interval
             client.connect(MQTT_HOST, int(MQTT_PORT), last_will_interval)
+
+            logger.debug(f"Host: {MQTT_HOST}, Port: {MQTT_PORT}, Username: {MQTT_USER}, Password: {MQTT_PASS}")
 
             # Find local stored programs and publish them again to config topic
             program_data = []
