@@ -27,7 +27,7 @@ THE SOFTWARE.
 import json
 import pytest
 from fastapi.testclient import TestClient
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from raspirri.main_app import app
 from raspirri.main_app import resource_not_found
@@ -52,10 +52,10 @@ class TestResourceNotFound:
         """
         Test for returning a JSONResponse object with status code 404 and the detail of the HTTPException passed as an argument.
         """
-        exc = HTTPException(status_code=404, detail="Not found")
+        exc = HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
         response = await resource_not_found(obj, exc)
         assert isinstance(response, JSONResponse)
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert json.loads(response.body) == {"detail": "Not found"}
 
     @pytest.mark.asyncio
@@ -63,7 +63,7 @@ class TestResourceNotFound:
         """
         Test for handling a Request object and an HTTPException object as arguments.
         """
-        exc = HTTPException(status_code=404, detail="Not found")
+        exc = HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
         response = await resource_not_found(obj, exc)
         assert isinstance(response, JSONResponse)
 
@@ -72,10 +72,10 @@ class TestResourceNotFound:
         """
         Test for handling the case where the HTTPException passed as an argument has a detail attribute that is not a string.
         """
-        exc = HTTPException(status_code=404, detail=404)
+        exc = HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=status.HTTP_404_NOT_FOUND)
         response = await resource_not_found(obj, exc)
         assert isinstance(response, JSONResponse)
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert json.loads(response.body) == {"detail": "404"}
 
     @pytest.mark.asyncio
@@ -83,10 +83,10 @@ class TestResourceNotFound:
         """
         Test for handling the case where the HTTPException passed as an argument has no detail attribute.
         """
-        exc = HTTPException(status_code=404, detail="")
+        exc = HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="")
         response = await resource_not_found(obj, exc)
         assert isinstance(response, JSONResponse)
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert json.loads(response.body) == {"detail": ""}
 
     @pytest.mark.asyncio
@@ -94,8 +94,8 @@ class TestResourceNotFound:
         """
         Test for handling the case where the Request object passed as an argument is None.
         """
-        exc = HTTPException(status_code=404, detail="Not found")
+        exc = HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
         response = await resource_not_found(obj, exc)
         assert isinstance(response, JSONResponse)
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert json.loads(response.body) == {"detail": "Not found"}

@@ -101,6 +101,7 @@ MQTT_TOPIC_VALVES = MQTT_TOPIC_BASE + load_env_variable("MQTT_TOPIC_VALVES", "/v
 
 MQTT_STATUS_OK = '{"sts": 0, "res": '
 MQTT_STATUS_ERR = '{"sts": 1, "err": '
+MQTT_LOST_CONNECTION = "LOST_CONNECTION"
 MQTT_START = "{"
 MQTT_END = "}"
 MQTT_OK = '"OK"'

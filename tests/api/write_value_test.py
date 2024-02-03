@@ -27,7 +27,7 @@ THE SOFTWARE.
 import json
 import pytest
 from pydantic import ValidationError as PydanticValidationError
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from raspirri.main_app import write_ble_data, BleData, WifiData
 
 
@@ -76,7 +76,7 @@ class TestWriteBleData:
         # Act and Assert
         with pytest.raises(HTTPException) as exc:
             await write_ble_data(data)
-        assert exc.value.status_code == 500
+        assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
 
     @pytest.mark.asyncio
     async def test_invalid_page_data_type(self):
@@ -107,4 +107,4 @@ class TestWriteBleData:
         # Act and Assert
         with pytest.raises(HTTPException) as exc:
             await write_ble_data(data)
-        assert exc.value.status_code == 500
+        assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR

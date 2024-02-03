@@ -25,7 +25,7 @@ THE SOFTWARE.
 """
 
 import pytest
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 
 
 from raspirri.main_app import read_ble_data
@@ -48,7 +48,7 @@ class TestReadBleData:
             await read_ble_data()
 
         # Assert
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == "'>' not supported between instances of 'NoneType' and 'int'"
 
     @pytest.mark.asyncio
@@ -62,5 +62,5 @@ class TestReadBleData:
         # Act and Assert
         with pytest.raises(HTTPException) as exc_info:
             await read_ble_data(invalid_arguments)
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == "'>' not supported between instances of 'str' and 'int'"
