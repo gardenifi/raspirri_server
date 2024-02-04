@@ -1,7 +1,15 @@
 name: x86_64 CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - feature/create_releases
 
 jobs:
-  build:
-    uses: .github/workflows/common-steps.yml
+  x86_64_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run common steps
+        uses: ./.github/workflows/common-steps.yml
+      # Additional steps specific to x86_64 workflow

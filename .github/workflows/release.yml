@@ -10,28 +10,30 @@ on:
 
 jobs:
   release:
-    uses: .github/workflows/common-steps.yml
-
+    runs-on: ubuntu-latest
     env:
       GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
     steps:
-    - name: Check commit message
-      run: |
-        commit_message=$(git log -1 --pretty=%B)
-        if [[ $commit_message == *"[RELEASE]"* ]]; then
-          echo "Release commit detected. Running release workflow."
-        else
-          echo "No release commit detected. Skipping release workflow."
-          exit 0
-        fi
+      - name: Run common steps
+        uses: ./.github/workflows/common-steps.yml
 
-    - name: Bump version and create release
-      run: |
-        pip install bump2version --break-system-packages
-        NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2 | head -1)
-        PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
-        bump2version --new-version ${NEW_VERSION} ${PART}
-        git push --follow-tags
-        git push origin --tags
-        NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github
+      - name: Check commit message
+        run: |
+          commit_message=$(git log -1 --pretty=%B)
+          if [[ $commit_message == *"[RELEASE]"* ]]; then
+            echo "Release commit detected. Running release workflow."
+          else
+            echo "No release commit detected. Skipping release workflow."
+            exit 0
+          fi
+
+      - name: Bump version and create release
+        run: |
+          pip install bump2version --break-system-packages
+          NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2 | head -1)
+          PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
+          bump2version --new-version ${NEW_VERSION} ${PART}
+          git push --follow-tags
+          git push origin --tags
+          NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github
