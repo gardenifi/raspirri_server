@@ -29,8 +29,8 @@ import pytest
 from fastapi.testclient import TestClient
 from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
-from app.main_app import app
-from app.main_app import resource_not_found
+from raspirri.main_app import app
+from raspirri.main_app import resource_not_found
 
 client = TestClient(app)
 scope = {"type": "http", "http_version": "1.1", "method": "GET", "path": "/"}

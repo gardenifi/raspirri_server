@@ -26,9 +26,9 @@ THE SOFTWARE.
 
 import threading
 import os
-from app.raspi.mqtt import Mqtt
-from app.raspi.helpers import Helpers
-from app.raspi.const import (
+from raspirri.server.mqtt import Mqtt
+from raspirri.server.helpers import Helpers
+from raspirri.server.const import (
     MQTT_TOPIC_STATUS,
     MQTT_STATUS_ERR,
     MQTT_LOST_CONNECTION,
@@ -157,10 +157,10 @@ class TestMqtt:
         Test that MQTT Init method initializes MQTT client and connects to the broker.
         """
         # Mock the necessary dependencies
-        mocker.patch("app.raspi.mqtt.logger")
-        mock_mqtt = mocker.patch("app.raspi.mqtt.mqtt.Client")
+        mocker.patch("raspirri.server.mqtt.logger")
+        mock_mqtt = mocker.patch("raspirri.server.mqtt.mqtt.Client")
         mock_client = mock_mqtt.return_value
-        mock_services = mocker.patch("app.raspi.mqtt.Services")
+        mock_services = mocker.patch("raspirri.server.mqtt.Services")
         mock_services.return_value.load_program_cycles_if_exists.side_effect = [None, {"program": "data"}]
 
         # Create an instance of Mqtt and call the mqtt_init method

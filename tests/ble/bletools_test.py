@@ -24,12 +24,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
     import pytest
-    from app.ble.bletools import BleTools
+    from raspirri.ble.bletools import BleTools
 
     class TestBleTools:
         """BleTools Test Class"""
@@ -37,7 +37,7 @@ if ARCH == "arm":
         def test_get_bus_returns_system_bus_object(self, mocker):
             """get_bus method returns a dbus SystemBus object"""
             bus_mock = mocker.Mock()
-            mocker.patch("app.ble.bletools.dbus.SystemBus", return_value=bus_mock)
+            mocker.patch("raspirri.ble.bletools.dbus.SystemBus", return_value=bus_mock)
 
             bus = BleTools().get_bus()
 
@@ -50,9 +50,9 @@ if ARCH == "arm":
                 "/org/bluez/raspirri/adapter2": {"org.bluez.Adapter1": {}},
             }
             mocker.patch("dbus.Interface")
-            mocker.patch("app.ble.bletools.BleTools.get_bus")
-            mocker.patch("app.ble.bletools.BleTools.find_adapter", return_value="/org/bluez/raspirri/adapter1")
-            mocker.patch("app.ble.bletools.BleTools.get_bus.get_object", side_effect=lambda *args: objects_mock[args[1]])
+            mocker.patch("raspirri.ble.bletools.BleTools.get_bus")
+            mocker.patch("raspirri.ble.bletools.BleTools.find_adapter", return_value="/org/bluez/raspirri/adapter1")
+            mocker.patch("raspirri.ble.bletools.BleTools.get_bus.get_object", side_effect=lambda *args: objects_mock[args[1]])
 
             adapter = BleTools().find_adapter()
 
@@ -61,7 +61,7 @@ if ARCH == "arm":
         def test_power_adapter_powers_on_adapter(self, mocker):
             """power_adapter method powers on the adapter"""
             dbus_interface_mock = mocker.patch("dbus.Interface")
-            find_adapter_mock = mocker.patch("app.ble.bletools.BleTools.find_adapter", return_value="/org/bluez/raspirri/adapter1")
+            find_adapter_mock = mocker.patch("raspirri.ble.bletools.BleTools.find_adapter", return_value="/org/bluez/raspirri/adapter1")
 
             # Create a mock object for adapter_props
             adapter_props_mock = dbus_interface_mock.return_value
@@ -83,8 +83,8 @@ if ARCH == "arm":
                 "/org/bluez/raspirri/adapter2": {"org.bluez.Adapter1": {}},
             }
             mocker.patch("dbus.Interface")
-            mocker.patch("app.ble.bletools.BleTools.get_bus")
-            mocker.patch("app.ble.bletools.BleTools.get_bus.get_object", side_effect=lambda *args: objects_mock[args[1]])
+            mocker.patch("raspirri.ble.bletools.BleTools.get_bus")
+            mocker.patch("raspirri.ble.bletools.BleTools.get_bus.get_object", side_effect=lambda *args: objects_mock[args[1]])
 
             adapter = BleTools().find_adapter()
 
@@ -92,7 +92,7 @@ if ARCH == "arm":
 
         def test_power_adapter_raises_exception_when_adapter_not_found(self, mocker):
             """power_adapter method raises an exception when adapter is not found"""
-            mocker.patch("app.ble.bletools.BleTools.find_adapter", return_value=None)
+            mocker.patch("raspirri.ble.bletools.BleTools.find_adapter", return_value=None)
 
             with pytest.raises(Exception):
                 BleTools().power_adapter()

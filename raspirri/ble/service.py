@@ -21,7 +21,7 @@ SOFTWARE.
 
 from itertools import count
 from loguru import logger
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus  # pylint: disable=import-error,useless-import-alias
@@ -30,8 +30,8 @@ if ARCH == "arm":
     import dbus.service
 
     from array import array
-    from app.ble.bletools import BleTools
-    from app.ble.exceptions import InvalidArgsException, NotSupportedException, NotPermittedException
+    from raspirri.ble.bletools import BleTools
+    from raspirri.ble.exceptions import InvalidArgsException, NotSupportedException, NotPermittedException
 
     try:
         from gi.repository import GObject

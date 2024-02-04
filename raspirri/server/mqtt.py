@@ -33,8 +33,8 @@ import sys
 from threading import Thread
 from loguru import logger
 import paho.mqtt.client as mqtt
-from app.raspi.services import Services
-from app.raspi.const import (
+from raspirri.server.services import Services
+from raspirri.server.const import (
     MQTT_CLIENT_ID,
     MQTT_TOPIC_STATUS,
     MQTT_TOPIC_METADATA,
@@ -53,8 +53,8 @@ from app.raspi.const import (
     MQTT_HOST,
     MQTT_PORT,
 )
-from app.raspi.helpers import Helpers
-from app.raspi.const import Command
+from raspirri.server.helpers import Helpers
+from raspirri.server.const import Command
 
 
 class Mqtt:
@@ -309,7 +309,7 @@ class Mqtt:
                 metadata = {}
                 metadata["ip_address"] = Helpers().extract_local_ip()
                 metadata["uptime"] = Helpers().get_uptime()
-                metadata["git_commit"] = Helpers().get_git_commit_id()
+                metadata["version"] = Helpers().get_rpi_server_version()
                 Mqtt.publish_to_topic(client, MQTT_TOPIC_METADATA, str(metadata))
                 if "valves" in statuses:
                     Mqtt.publish_to_topic(client, MQTT_TOPIC_VALVES, str(statuses["valves"]))

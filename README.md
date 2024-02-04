@@ -49,6 +49,11 @@ Add it in the /bootfs of the SDRAM and rebooot
 - Enter RPi and install git:
     ```
     sudo apt -y update
+    pip install raspirri-server --target=~/.local/raspirri-server
+
+    pip uninstall raspirri-server --break-system-packages
+
+
     sudo apt -y install git
     git --version
     git clone https://github.com/gardenifi/raspirri_server.git
@@ -64,8 +69,18 @@ export MQTT_PASS=broker_pass
 The above credentials are used to access your MQTT broker. In our experiments we used [HiveMQ platform](https://www.hivemq.com/).
 
 ### Installation
-Enter server folder and execute:
+Enter /var/tmp/ and download the latest release: https://github.com/gardenifi/raspirri_server/releases or do it programmatically:
 ```
+# Retrieve the latest release information
+latest_release=$(curl -s https://api.github.com/repos/gardenifi/raspirri_server/releases/latest)
+# Extract the download URL for the latest release asset
+download_url=$(echo "$latest_release" | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/')
+# Download the latest release asset
+curl -LO $download_url
+filename=$(basename $download_url)
+tar xvf $filename
+filename_without_extension=$(basename "$filename" .tar.gz)
+cd "$filename_without_extension"
 ./install.sh
 ```
 or
@@ -77,9 +92,9 @@ if you would like to uninstall it.
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
 ```
-pi@raspirriv1:~/raspirri_server $ ps -def | grep python
-root 5148 5138 16 11:29 ? 00:00:01 python3 app/main_app.py mqtt
-root 5188 5179 14 11:29 ? 00:00:00 python3 app/main_app.py ble
+pi@raspirriv1:/var/tmp/ $ ps -def | grep python
+root 5148 5138 16 11:29 ? 00:00:01 python3 raspirri/main_app.py mqtt
+root 5188 5179 14 11:29 ? 00:00:00 python3 raspirri/main_app.py ble
 ```
 
 ### View logs
@@ -157,27 +172,28 @@ Most of the Unit Tests have been written with [Codium.AI](https://codium.ai/). T
 ### Unit Testing
 You may run unit tests in a Python virtual environment:
 ```bash
+sudo rm -rf venv
 virtualenv -p /usr/bin/python3 venv
 source venv/bin/activate
 pip3 install -r requirements.txt.$(uname -m) --break-system-packages
-RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/app coverage run --include='app/*' -m pytest -rA -s -vv tests
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage run --include='raspirri/*' -m pytest -rA -s -vv tests
 ```
 ### Unit Tests Code Coverage
 You may create Unit Test Code Coverage reports by executing:
 ```bash
-PYTHONPATH=$(pwd)/app coverage report --fail-under=75 --include='app/*' --skip-covered --sort=Cover -m
+PYTHONPATH=$(pwd)/raspirri coverage report --fail-under=75 --include='raspirri/*' --skip-covered --sort=Cover -m
 
 Name                       Stmts   Miss  Cover   Missing
 --------------------------------------------------------
-app/ble/wifi.py              130     42    68%   52, 56, 98-99, 101-106, 109, 127, 131-132, 166-201
-app/raspi/mqtt.py            202     61    70%   164-179, 190-195, 200-207, 209-210, 215, 220-222, 227-244, 259, 262-265, 279, 283-285, 301-302, 335-344
-app/raspi/helpers.py         250     74    70%   192-193, 211-213, 228-230, 249-251, 297-300, 392, 425, 431-436, 452-455, 473, 476-492, 521-527, 565, 581-589, 611-627, 636
-app/main_app.py              164     38    77%   120, 140-142, 144, 158-159, 205, 227-229, 240-277, 281
-app/ble/bletools.py           24      4    83%   52-53, 56, 65
-app/raspi/const.py            55      9    84%   38-40, 47, 61-63, 92, 98-99
-app/ble/advertisement.py      81     10    88%   64, 90-92, 115-118, 123, 127, 131
-app/ble/service.py           189     22    88%   38-39, 68, 92, 96, 100-109, 113, 117-118, 173, 230, 245, 250, 255, 272-273, 307
-app/raspi/services.py        166     11    93%   105-108, 165-167, 341, 364-367
+raspirri/ble/wifi.py              130     42    68%   52, 56, 98-99, 101-106, 109, 127, 131-132, 166-201
+raspirri/server/mqtt.py            202     61    70%   164-179, 190-195, 200-207, 209-210, 215, 220-222, 227-244, 259, 262-265, 279, 283-285, 301-302, 335-344
+raspirri/server/helpers.py         250     74    70%   192-193, 211-213, 228-230, 249-251, 297-300, 392, 425, 431-436, 452-455, 473, 476-492, 521-527, 565, 581-589, 611-627, 636
+raspirri/main_app.py              164     38    77%   120, 140-142, 144, 158-159, 205, 227-229, 240-277, 281
+raspirri/ble/bletools.py           24      4    83%   52-53, 56, 65
+raspirri/server/const.py            55      9    84%   38-40, 47, 61-63, 92, 98-99
+raspirri/ble/advertisement.py      81     10    88%   64, 90-92, 115-118, 123, 127, 131
+raspirri/ble/service.py           189     22    88%   38-39, 68, 92, 96, 100-109, 113, 117-118, 173, 230, 245, 250, 255, 272-273, 307
+raspirri/server/services.py        166     11    93%   105-108, 165-167, 341, 364-367
 --------------------------------------------------------
 TOTAL                       1278    271    79%
 ```
@@ -235,9 +251,9 @@ After installation there are two services that implement two major modules:
 
 Here is the folder/files structure explanation:
 ```bash
-├── app
+├── raspirri
 │   ├── ble (bluetooth modules)
-│   ├── raspi (RPi and MQTT modules)
+│   ├── server (RPi and MQTT modules)
 │   └── main_app.py (FastAPI module)
 ├── certs (SSL certificates for the FastAPI server)
 │   ├── cert.pem
@@ -245,7 +261,7 @@ Here is the folder/files structure explanation:
 ├── tests (unit tests)
 │   ├── api (FastAPI & MQTT Unit Tests)
 │   ├── ble (Bluetooth Unit Tests)
-│   ├── raspi (RPi Unit Tests)
+│   ├── server (RPi Unit Tests)
 │   └── conftest.py
 ├── common.sh
 ├── debug.sh
@@ -255,10 +271,7 @@ Here is the folder/files structure explanation:
 ├── LICENSE.md
 ├── README.md
 ├── CHANGELOG.md
-├── requirements.txt.aarch64 -> requirements.txt.arm
 ├── requirements.txt.arm
-├── requirements.txt.armv6l
-├── requirements.txt.armv7l -> requirements.txt.arm
 ├── requirements.txt.x86_64
 ├── rpi_ble_server.service
 ├── rpi_server.service
@@ -276,7 +289,7 @@ sudo systemctl stop rpi_watchdog_server.service
 ```
 1. BLE module
 ```bash
-^[[A(venv) pi@raspberrypi:~/raspirri_server $ ./debug.sh ble
+(venv) pi@raspberrypi:~/raspirri_server $ ./debug.sh ble
 /home/pi/raspirri_server
 Virtual Environment Found...
 Argument provided: ble

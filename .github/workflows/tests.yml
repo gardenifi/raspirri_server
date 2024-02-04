@@ -1,0 +1,15 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - feature/create_releases
+    paths-ignore:
+      - 'CHANGELOG.md'
+
+jobs:
+  common-steps:
+    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@feature/create_releases
+    with:
+      fake-argument: 'fake'

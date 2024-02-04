@@ -24,12 +24,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
-    from app.ble.service import Application
-    from app.ble.service import Characteristic
-    from app.ble.service import Descriptor
+    from raspirri.ble.service import Application
+    from raspirri.ble.service import Characteristic
+    from raspirri.ble.service import Descriptor
 
     APP = Application()
 

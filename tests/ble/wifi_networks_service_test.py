@@ -24,16 +24,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     from loguru import logger
     import json
 
-    from app.ble.wifi import WifiNetworksService
-    from app.ble.wifi import WifiCharacteristic
-    from app.ble.wifi import ConnectivityCharacteristic
-    from app.raspi.const import RPI_HW_ID, MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS
+    from raspirri.ble.wifi import WifiNetworksService
+    from raspirri.ble.wifi import WifiCharacteristic
+    from raspirri.ble.wifi import ConnectivityCharacteristic
+    from raspirri.server.const import RPI_HW_ID, MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS
 
     class TestWifiNetworksService:
         """Wifi Networks Service Test Class"""

@@ -24,12 +24,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
 
-    from app.ble.exceptions import InvalidArgsException
+    from raspirri.ble.exceptions import InvalidArgsException
 
     INVALID_ARGS_PREFIX = "org.freedesktop.DBus.Error.InvalidArgs: "
 

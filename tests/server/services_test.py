@@ -31,8 +31,8 @@ import unittest
 from unittest.mock import MagicMock
 import pytest
 from loguru import logger
-from app.raspi.services import Services
-from app.raspi.const import RPI_HW_ID, MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, PROGRAM, ARCH, MAX_NUM_OF_BYTES_CHUNK
+from raspirri.server.services import Services
+from raspirri.server.const import RPI_HW_ID, MQTT_HOST, MQTT_PORT, MQTT_USER, MQTT_PASS, PROGRAM, ARCH, MAX_NUM_OF_BYTES_CHUNK
 
 
 if ARCH == "arm":
@@ -354,7 +354,7 @@ class TestServices:
         }
 
         # Mock the logger to capture log messages
-        with unittest.mock.patch("app.raspi.services.logger.error") as mock_logger_error:
+        with unittest.mock.patch("raspirri.server.services.logger.error") as mock_logger_error:
             # Raise an exception during the method call
             with pytest.raises(Exception):
                 services.store_program_cycles(json_data_exception, store=False)

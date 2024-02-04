@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 import pytest
 
-from app.raspi.exceptions import NoSuchArgumentException
+from raspirri.server.exceptions import NoSuchArgumentException
 
 
 class TestNoSuchArgumentException:

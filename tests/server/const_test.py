@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 import os
 import math
-from app.raspi.const import load_env_variable
+from raspirri.server.const import load_env_variable
 
 
 class TestLoadEnvVariable:

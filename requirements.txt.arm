@@ -17,4 +17,5 @@ pytest-ordering==0.6
 loguru==0.7.2
 pytest-asyncio==0.21.1
 coverage==7.3.2
-uvicorn==0.25.0
+uvicorn==0.27.0
+invoke==2.2.0
