@@ -7,7 +7,7 @@ on:
       - feature/create_releases
 
 jobs:
-  pre-commit:
+  common-job:
     runs-on: ubuntu-latest
     name: Build, Check Code Conventions, Formatting, Linting, run Unit Tests and check UT code coverage on ubuntu-latest x86_64
 
