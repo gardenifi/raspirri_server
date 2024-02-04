@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - feature/create_releases
+    paths-ignore:
+      - 'CHANGELOG.md'
 
 jobs:
   common-steps:
