@@ -8,4 +8,4 @@ on:
 
 jobs:
   x86_64_tests:
-    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yaml@main
+    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@feature/create_releases
