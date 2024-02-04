@@ -23,10 +23,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Load Wifi client to connect to the configured Wifi networks
 
 ### Changed
-- Release v0.0.1
+- Release v1.0.0
 - part major
 
 ### Fixed
 - Initial release
 
-## [0.0.1] - 2023-12-05
+## [1.0.0] - 2023-12-05
