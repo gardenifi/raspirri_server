@@ -1,1 +1,1 @@
-install.sh
+deploy_actions.sh

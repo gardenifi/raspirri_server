@@ -1,1 +1,1 @@
-deploy_actions.sh
+uninstall.sh

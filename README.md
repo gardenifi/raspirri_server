@@ -261,10 +261,7 @@ Here is the folder/files structure explanation:
 ├── LICENSE.md
 ├── README.md
 ├── CHANGELOG.md
-├── requirements.txt.aarch64 -> requirements.txt.arm
 ├── requirements.txt.arm
-├── requirements.txt.armv6l
-├── requirements.txt.armv7l -> requirements.txt.arm
 ├── requirements.txt.x86_64
 ├── rpi_ble_server.service
 ├── rpi_server.service

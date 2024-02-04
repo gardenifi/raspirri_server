@@ -1,6 +1,0 @@
-rm secret_env.sh
-pip uninstall raspirri-server --break-system-packages -v
-
-pip install . --break-system-packages -v
-
-MQTT_HOST=12571319ea54c799a95ff68a20755c9.s1.eu.hivemq.cloud MQTT_PORT=8883 MQTT_USER=raspirriv1 MQTT_PASS=R@sp1r1v119785923 sudo -E pip install . --break-system-packages -v -t /opt

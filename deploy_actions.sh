@@ -2,12 +2,13 @@
 
 set +x
 
-SECRET_ENV_FILE="secret_env.sh"
-
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+SECRET_ENV_FILE="${SCRIPT_DIR}/secret_env.sh"
+COMMON_SH_FILE="${SCRIPT_DIR}/common.sh"
+DEFAULT_INSTALL_DIR="/home/pi/raspirri_server"
 SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
 # Reverse the order
 REVERSED_SERVICES=("${SERVICES[@]: -1:1}" "${SERVICES[@]: -2:1}" "${SERVICES[@]: -3:1}")
-
 PIP3_ARG=""
 
 function version_compare() {
@@ -40,13 +41,25 @@ function version_compare() {
 }
 
 function check_variable_exists {
+  count=0
   # Check if the variable is defined
   if [[ -v $1 ]]; then
       echo "$1 is defined: $1"
   else
-      # Prompt user for variable value
-      read -p "$1: " input_value </dev/tty
-      export $1="$input_value"
+    while [ $count -lt 3 ]; do
+        # Prompt user for variable value
+        read -p "$1: " input_value </dev/tty
+        if [ "$input_value" != "" ] ; then
+            export $1="$input_value"
+            break
+        fi
+        ((count++))
+    done
+    if [ $count -ge 3 ]; then
+      echo "You cannot use empty value for $1! Please retry."
+      rm -f ${SECRET_ENV_FILE}
+      exit 2
+    fi
   fi
 }
 
@@ -118,7 +131,7 @@ function uninstall_packages {
 }
 
 function install_app_deps {
-  source common.sh
+  source ${COMMON_SH_FILE}
   git config --global --add safe.directory $(pwd)
   echo "Checking Bluetooth Status..."
   sudo systemctl status bluetooth --no-pager
@@ -156,6 +169,14 @@ function uninstall_systemd_services {
   sudo rm -f /lib/systemd/system/rpi_*server.service
   sudo systemctl daemon-reload
 }
+
+echo "The directory of the current script is: $SCRIPT_DIR"
+
+if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
+  sudo mkdir -p ${DEFAULT_INSTALL_DIR}
+  sudo cp -r raspirri ${DEFAULT_INSTALL_DIR}
+  sudo cp -f ${SECRET_ENV_FILE} ${DEFAULT_INSTALL_DIR}
+fi
 
 if [ "$(basename "$0")" == "install.sh" ]; then
   check_for_secret_env

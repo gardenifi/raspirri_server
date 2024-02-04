@@ -1,1 +1,1 @@
-install.sh
+uninstall.sh

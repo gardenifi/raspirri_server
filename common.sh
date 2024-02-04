@@ -11,5 +11,10 @@ else
     virtualenv -p /usr/bin/python3 venv
     source venv/bin/activate
     arch=$(uname -m)
-    pip3 install -r requirements.txt.$arch --break-system-packages
+    if [ "$arch" != "x86_64" ]; then
+        ext=arm
+    else
+        ext=x86_64
+    fi
+    pip3 install -r requirements.txt.$ext --break-system-packages
 fi
