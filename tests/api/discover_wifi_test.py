@@ -27,8 +27,9 @@ THE SOFTWARE.
 import json
 import pytest
 from fastapi import status
-from app.main_app import discover_wifi
-from app.raspi.services import Services
+from raspirri.main_app import discover_wifi
+from raspirri.server.services import Services
+
 
 services = Services()
 

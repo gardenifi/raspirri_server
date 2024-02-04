@@ -19,12 +19,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
 
-    from app.ble.common import (
+    from raspirri.ble.common import (
         BLUEZ_SERVICE_NAME,
         LE_ADVERTISING_MANAGER_IFACE,
         DBUS_OM_IFACE,

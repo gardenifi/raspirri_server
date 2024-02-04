@@ -126,5 +126,4 @@ MAX_NUM_OF_BYTES_CHUNK = 512
 # number of extra bytes that will change the header size: e.g. 'pages' field
 MAX_NUM_OF_BUFFER_TO_ADD = 5
 
-RPI_SERVER_INIT_FILE = "app/rpi_server.init"
-RPI_SERVER_GIT_COMMIT = "app/git_commit_id.txt"
+RPI_SERVER_INIT_FILE = f"{os.getcwd()}/raspirri/rpi_server.init"

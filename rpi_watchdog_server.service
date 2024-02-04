@@ -7,9 +7,9 @@ After=rpi_server.service
 User=root
 Group=root
 Type=simple
-WorkingDirectory=/home/pi/raspirri_server/
-ExecStartPre=/bin/bash -c 'until [ -f /home/pi/raspirri_server/app/rpi_server.init ]; do echo "Waiting for rpi_server.init to be created"; sleep 1; done'
-ExecStart=/home/pi/raspirri_server/debug.sh watchdog
+WorkingDirectory=/usr/local/raspirri_server/
+ExecStartPre=/bin/bash -c 'until [ -f /usr/local/raspirri_server/raspirri/rpi_server.init ]; do echo "Waiting for rpi_server.init to be created"; sleep 1; done'
+ExecStart=/usr/local/raspirri_server/debug.sh watchdog
 Restart=always
 
 [Install]

@@ -27,16 +27,17 @@ THE SOFTWARE.
 import tempfile
 import pickle
 import unittest
+from unittest import mock
 from unittest.mock import patch, MagicMock
 import re
 import os
 import signal
 from datetime import datetime
 import pytest
-from app.raspi.helpers import logger
-from app.raspi.helpers import Helpers
-from app.raspi.const import RPI_HW_ID, ARCH, STATUSES_FILE, NETWORKS_FILE
-from app.main_app import setup_gpio
+from raspirri.server.helpers import logger
+from raspirri.server.helpers import Helpers
+from raspirri.server.const import RPI_HW_ID, ARCH, STATUSES_FILE, NETWORKS_FILE
+from raspirri.main_app import setup_gpio
 
 
 @pytest.fixture(autouse=True, scope="function")
@@ -110,7 +111,7 @@ class TestHelpers(unittest.TestCase):
         assert local_ip == "127.0.0.1"
 
     @patch("subprocess.run")
-    @patch("app.raspi.helpers.logger")
+    @patch("raspirri.server.helpers.logger")
     def test_get_uptime_success(self, mock_logger, mock_subprocess_run):
         """test get uptime"""
         # Mock the subprocess.run() to simulate a successful execution
@@ -126,7 +127,7 @@ class TestHelpers(unittest.TestCase):
         mock_logger.error.assert_not_called()
 
     @patch("subprocess.run")
-    @patch("app.raspi.helpers.logger")
+    @patch("raspirri.server.helpers.logger")
     def test_get_uptime_exception(self, mock_logger, mock_subprocess_run):
         """test get uptime"""
         # Mock the subprocess.run() to simulate an exception
@@ -157,14 +158,65 @@ class TestHelpers(unittest.TestCase):
         assert isinstance(uptime, str)
         assert uptime != "no uptime is supported!"
 
-    def test_get_git_commit_id_returns_commit_id(self):
-        """get_git_commit_id method returns the git commit ID of the codebase"""
+    @mock.patch("builtins.open")
+    def test_get_rpi_server_version(self, mock_open):
+        """test the get_rpi_server_version"""
+        # Mocking the content of the changelog file
+        changelog_content = "- Release 1.0.0\n- Release 1.1.0\n- Release 1.2.0\n"
 
-        commit_id = self.helpers_instance.get_git_commit_id()
-        assert isinstance(commit_id, str)
-        assert len(commit_id) > 0
-        pattern = re.compile(r"^[0-9a-fA-F]+$")
-        assert pattern.match(commit_id), "Invalid format"
+        # Creating a MagicMock object to mock the file
+        mock_file = mock.MagicMock()
+        mock_file.read.return_value = changelog_content
+        mock_open.return_value.__enter__.return_value = mock_file
+
+        # Calling the method to test
+        version = self.helpers_instance.get_rpi_server_version()
+
+        # Asserting the return value
+        self.assertEqual(version, "1.0.0")
+
+    @mock.patch("builtins.open")
+    def test_get_rpi_server_version_version_not_found(self, mock_open):
+        """test the get_rpi_server_version"""
+
+        # Mocking the content of the changelog file
+        changelog_content = ""
+
+        # Creating a MagicMock object to mock the file
+        mock_file = mock.MagicMock()
+        mock_file.read.return_value = changelog_content
+        mock_open.return_value.__enter__.return_value = mock_file
+
+        # Calling the method to test
+        version = self.helpers_instance.get_rpi_server_version()
+
+        # Asserting the return value
+        self.assertEqual(version, "Version not found in the changelog.")
+
+    @unittest.skip("Skipping this test since Github limits requests and the implementation is different now")
+    def test_get_rpi_server_version_returns_version(self):
+        """get_rpi_server_version method returns the latest release version"""
+
+        mock_requests_get = patch("requests.get").start()
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"tag_name": "v1.10.20"}
+
+        # Configure the mock to return the mock response
+        mock_requests_get.return_value = mock_response
+
+        # Call the method under test
+        version = self.helpers_instance.get_rpi_server_version()
+
+        logger.debug(f"version returned: {version}")
+        patch("requests.get").stop()
+
+        # Assert the expected behavior for a successful execution
+        assert isinstance(version, str)
+        assert len(version) > 0
+        pattern = re.compile(r"^v\d+\.\d+\.\d+$")
+        assert pattern.match(version), "Invalid format"
 
     def test_store_object_to_file_stores_object(self):
         """store_object_to_file method stores a local object to a file"""
@@ -254,21 +306,28 @@ class TestHelpers(unittest.TestCase):
         # Assert
         assert new_status != initial_status
 
-    @patch("subprocess.run")
-    @patch("app.raspi.helpers.logger")
-    def test_get_git_commit_id_success(self, mock_logger, mock_subprocess_run):
-        """test get git commit id"""
-        # Mock the subprocess.run() to simulate a successful execution
-        mock_result = MagicMock()
-        mock_result.stdout = "abcdef123456"
-        mock_subprocess_run.return_value = mock_result
+    @unittest.skip("Skipping this test since Github limits requests and the implementation is different now")
+    def test_get_rpi_server_version_success(self):
+        """test get rpi_server_version"""
+        # Mock the requests.get() to simulate a successful execution
+
+        mock_requests_get = patch("requests.get").start()
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"tag_name": "v1.0.0"}
+
+        # Configure the mock to return the mock response
+        mock_requests_get.return_value = mock_response
 
         # Call the method under test
-        commit_id = self.helpers_instance.get_git_commit_id()
+        version = self.helpers_instance.get_rpi_server_version()
+
+        logger.debug(f"version returned: {version}")
+        patch("requests.get").stop()
 
         # Assert the expected behavior for a successful execution
-        self.assertEqual(commit_id, "abcdef123456")
-        mock_logger.error.assert_not_called()
+        self.assertEqual(version, "v1.0.0")
 
     def test_get_toggle_statuses_returns_toggle_statuses(self):
         """
@@ -342,7 +401,7 @@ class TestHelpers(unittest.TestCase):
         assert self.helpers_instance.toggle_statuses == toggle_statuses
 
     @patch("builtins.open")
-    @patch("app.raspi.helpers.logger")
+    @patch("raspirri.server.helpers.logger")
     @patch("pickle.dump")
     def test_store_object_to_file_success_1(self, mock_pickle_dump, mock_logger, mock_open):
         """test store object to file"""
@@ -382,7 +441,7 @@ class TestHelpers(unittest.TestCase):
         """test store object to file"""
 
         # Test if the method logs the correct information
-        with unittest.mock.patch("app.raspi.helpers.logger.info") as mock_logger:
+        with unittest.mock.patch("raspirri.server.helpers.logger.info") as mock_logger:
             self.helpers_instance.store_object_to_file(self.test_file_path, self.test_data)
             mock_logger.assert_called_with(f"Stored local object file: {self.test_file_path}: {self.test_data}")
 
@@ -408,7 +467,7 @@ class TestHelpers(unittest.TestCase):
         """test load object from file"""
 
         # Test if the method logs the correct information
-        with unittest.mock.patch("app.raspi.helpers.logger.info") as mock_logger:
+        with unittest.mock.patch("raspirri.server.helpers.logger.info") as mock_logger:
             # Prepare a test file with data
             with open(self.test_file_path, "wb") as obj_file:
                 pickle.dump(self.test_data, obj_file)
@@ -420,7 +479,7 @@ class TestHelpers(unittest.TestCase):
         """test load object from file"""
 
         # Test if the method logs errors correctly and stores the default object
-        with unittest.mock.patch("app.raspi.helpers.logger.error") as mock_logger:
+        with unittest.mock.patch("raspirri.server.helpers.logger.error") as mock_logger:
             # Call the method with a non-existing file
             self.helpers_instance.load_object_from_file(self.empty_file_path)
             mock_logger.assert_called_once()  # Assuming only one error log entry is made
@@ -434,13 +493,13 @@ class TestHelpers(unittest.TestCase):
         """test store object to file"""
 
         # Test if the method logs errors correctly
-        with unittest.mock.patch("app.raspi.helpers.logger.error") as mock_logger:
+        with unittest.mock.patch("raspirri.server.helpers.logger.error") as mock_logger:
             with self.assertRaises(Exception):
                 self.helpers_instance.store_object_to_file("/invalid/path/test.pkl", self.test_data)
             mock_logger.assert_called_once()  # Assuming only one error log entry is made
 
     @patch("builtins.open")
-    @patch("app.raspi.helpers.logger")
+    @patch("raspirri.server.helpers.logger")
     @patch("pickle.load")
     def test_load_object_from_file_success_2(self, mock_pickle_load, mock_logger, mock_open):
         """test load object from file"""
@@ -466,21 +525,21 @@ class TestHelpers(unittest.TestCase):
             """test gpio outputs"""
 
             # Test when ARCH is not 'arm'
-            with patch("app.raspi.const.ARCH", "non-arm"):
+            with patch("raspirri.server.const.ARCH", "non-arm"):
                 result = self.helpers_instance.set_gpio_outputs(1, "out1")
                 self.assertEqual(result, 1)
                 mock_input.assert_not_called()
                 mock_output.assert_not_called()
 
             # Test when ARCH is 'arm' and valve is not 'out2'
-            with patch("app.raspi.const.ARCH", "arm"):
+            with patch("raspirri.server.const.ARCH", "arm"):
                 result = self.helpers_instance.set_gpio_outputs(1, "out1")
                 self.assertEqual(result, 1)
                 mock_input.assert_not_called()
                 mock_output.assert_not_called()
 
             # Test when ARCH is 'arm' and valve is 'out2'
-            with patch("app.raspi.const.ARCH", "arm"):
+            with patch("raspirri.server.const.ARCH", "arm"):
                 setup_gpio()
                 result = self.helpers_instance.set_gpio_outputs(1, "out2")
                 self.assertEqual(result, 1)
@@ -506,9 +565,9 @@ class TestHelpers(unittest.TestCase):
         connection_status = self.helpers_instance.is_connected_to_inet
         self.assertFalse(connection_status)
 
-    @patch("app.raspi.helpers.logger")
-    @patch("app.raspi.helpers.subprocess.run")
-    @patch("app.raspi.helpers.time.sleep", MagicMock())
+    @patch("raspirri.server.helpers.logger")
+    @patch("raspirri.server.helpers.subprocess.run")
+    @patch("raspirri.server.helpers.time.sleep", MagicMock())
     def test_system_reboot(self, mock_run, mock_logger):
         """test reboot"""
 
@@ -521,9 +580,9 @@ class TestHelpers(unittest.TestCase):
         # Ensure that subprocess.run was called with the expected arguments
         mock_run.assert_called_once_with(["reboot"], stdout=-1, text=True, check=True)
 
-    @patch("app.raspi.helpers.logger")
-    @patch("app.raspi.helpers.subprocess.run", side_effect=Exception("Mocked exception"))
-    @patch("app.raspi.helpers.time.sleep", MagicMock())
+    @patch("raspirri.server.helpers.logger")
+    @patch("raspirri.server.helpers.subprocess.run", side_effect=Exception("Mocked exception"))
+    @patch("raspirri.server.helpers.time.sleep", MagicMock())
     def test_system_reboot_error(self, mock_run, mock_logger):  # pylint: disable=unused-argument
         """test reboot with error"""
 
@@ -533,8 +592,8 @@ class TestHelpers(unittest.TestCase):
         # Ensure that the logger was called with the expected error message
         mock_logger.error.assert_called_once_with("Error rebooting: Mocked exception")
 
-    @patch("app.raspi.helpers.logger")
-    @patch("app.raspi.helpers.subprocess.run")
+    @patch("raspirri.server.helpers.logger")
+    @patch("raspirri.server.helpers.subprocess.run")
     def test_system_update(self, mock_run, mock_logger):
         """test system update"""
 
@@ -551,8 +610,8 @@ class TestHelpers(unittest.TestCase):
             # Assert that os.kill was called with the expected arguments
             mock_kill.assert_called_once_with(os.getpid(), signal.SIGTERM)
 
-    @patch("app.raspi.helpers.logger")
-    @patch("app.raspi.helpers.subprocess.run", side_effect=Exception("Mocked exception"))
+    @patch("raspirri.server.helpers.logger")
+    @patch("raspirri.server.helpers.subprocess.run", side_effect=Exception("Mocked exception"))
     def test_system_update_error(self, mock_run, mock_logger):  # pylint: disable=unused-argument
         """test system update with error"""
 
@@ -632,7 +691,7 @@ class TestHelpers(unittest.TestCase):
         self.helpers_instance.check_empty_toggle(valve)
         assert self.helpers_instance.toggle_statuses[valve] == 1
 
-    @patch("app.raspi.helpers.logger")
+    @patch("raspirri.server.helpers.logger")
     @patch("subprocess.Popen")
     def test_scan_rpi_wifi_networks_refresh_true(self, mock_popen, mock_logger):
         """test scan wifi networks with refresh=true"""
@@ -724,7 +783,7 @@ docker0   Interface doesn't support scanning.
         self.assertEqual(result, self.helpers_instance.ap_array)
 
     @patch("subprocess.Popen")
-    @patch("app.raspi.helpers.logger")
+    @patch("raspirri.server.helpers.logger")
     def test_scan_rpi_wifi_networks_popen_error(self, mock_logger, mock_popen):
         """test scan wifi networks with error"""
 

@@ -24,15 +24,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
 
-    from app.ble.wifi import WifiNetworksService
-    from app.ble.wifi import ConnectivityCharacteristic
-    from app.raspi.helpers import Helpers
-    from app.raspi.mqtt import Mqtt
+    from raspirri.ble.wifi import WifiNetworksService
+    from raspirri.ble.wifi import ConnectivityCharacteristic
+    from raspirri.server.helpers import Helpers
+    from raspirri.server.mqtt import Mqtt
 
     class TestReadValue:
         """ReadValue Test Class"""

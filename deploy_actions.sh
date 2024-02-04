@@ -2,13 +2,19 @@
 
 set +x
 
-SECRET_ENV_FILE="secret_env.sh"
-
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+SECRET_ENV_FILE="${SCRIPT_DIR}/secret_env.sh"
+COMMON_SH_FILE="${SCRIPT_DIR}/common.sh"
+DEFAULT_INSTALL_DIR="/usr/local/raspirri_server"
 SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
 # Reverse the order
 REVERSED_SERVICES=("${SERVICES[@]: -1:1}" "${SERVICES[@]: -2:1}" "${SERVICES[@]: -3:1}")
-
 PIP3_ARG=""
+ARCH=$(uname -m)
+if [ "$ARCH" != "x86_64" ]; then
+  ARCH=arm
+fi
+
 
 function version_compare() {
     local version1=$1
@@ -39,6 +45,29 @@ function version_compare() {
     return 0  # versions are equal
 }
 
+function check_variable_exists {
+  count=0
+  # Check if the variable is defined
+  if [[ -v $1 ]]; then
+      echo "$1 is defined: $1"
+  else
+    while [ $count -lt 3 ]; do
+        # Prompt user for variable value
+        read -p "$1: " input_value </dev/tty
+        if [ "$input_value" != "" ] ; then
+            export $1="$input_value"
+            break
+        fi
+        ((count++))
+    done
+    if [ $count -ge 3 ]; then
+      echo "You cannot use empty value for $1! Please retry."
+      rm -f ${SECRET_ENV_FILE}
+      exit 2
+    fi
+  fi
+}
+
 function check_for_secret_env {
   # Check if secret_env.sh file exists
   if [ -f "$SECRET_ENV_FILE" ]; then
@@ -46,11 +75,10 @@ function check_for_secret_env {
   else
       echo "File $SECRET_ENV_FILE does not exist. Please provide values for the following variables:"
 
-      # Prompt user for values
-      read -p "MQTT_HOST: " MQTT_HOST
-      read -p "MQTT_PORT: " MQTT_PORT
-      read -p "MQTT_USER: " MQTT_USER
-      read -p "MQTT_PASS: " MQTT_PASS
+      check_variable_exists MQTT_HOST
+      check_variable_exists MQTT_PORT
+      check_variable_exists MQTT_USER
+      check_variable_exists MQTT_PASS
 
       # Create secret_env.sh file
       echo "export MQTT_HOST=$MQTT_HOST" > "$SECRET_ENV_FILE"
@@ -61,6 +89,7 @@ function check_for_secret_env {
       echo "File $SECRET_ENV_FILE created with the following content:"
       cat "$SECRET_ENV_FILE"
   fi
+  sudo cp -f ${SECRET_ENV_FILE} ${DEFAULT_INSTALL_DIR}
 }
 
 function check_for_pip_version {
@@ -70,8 +99,8 @@ function check_for_pip_version {
   if [ $compare_result -eq 1 ]; then
       echo "PIP3 version is greater than 20"
       PIP3_ARG="--break-system-packages"
-      ARCH=$(uname -m)
-      if [ "$ARCH" == "armv6l" ]; then
+      uname_arch=$(uname -m)
+      if [ "$uname_arch" == "armv6l" ]; then
         PIP3_ARG=""
       fi
   else
@@ -83,7 +112,6 @@ function prerequisites {
   sudo apt update -y
   sudo apt upgrade -y
   sudo apt install -y python3-pip
-  sudo apt-get install lsofds
 }
 
 function install_packages {
@@ -98,26 +126,28 @@ function install_packages {
 }
 
 function uninstall_packages {
+  check_for_pip_version
   echo "Uninstall required packages..."
   pre-commit uninstall
   sudo pip3 uninstall pre-commit ${PIP3_ARG} -y
   sudo pip3 uninstall virtualenv ${PIP3_ARG} -y
-  sudo apt autoremove -y cmake build-essential libpython3-dev libdbus-1-dev python3-pip
+  sudo apt autoremove -y cmake build-essential libpython3-dev libdbus-1-dev
   sudo apt-get remove -y pkg-config libglib2.0-dev libcairo2-dev gcc python3-dev libgirepository1.0-dev ninja-build
   sudo apt autoremove -y
 }
 
 function install_app_deps {
-  source common.sh
+  source ${COMMON_SH_FILE}
   git config --global --add safe.directory $(pwd)
   echo "Checking Bluetooth Status..."
   sudo systemctl status bluetooth --no-pager
+  check_for_pip_version
+  sudo pip3 install -r requirements.txt.$ARCH ${PIP3_ARG}
 }
 
 function uninstall_app_deps {
-  arch=$(uname -m)
   check_for_pip_version
-  sudo pip3 uninstall -r requirements.txt.$arch ${PIP3_ARG} -y
+  sudo pip3 uninstall -r requirements.txt.$ARCH ${PIP3_ARG} -y
   sudo rm -rf venv
 }
 
@@ -146,19 +176,42 @@ function uninstall_systemd_services {
   sudo systemctl daemon-reload
 }
 
+echo "The directory of the current script is: $SCRIPT_DIR"
+
+if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
+  sudo mkdir -p ${DEFAULT_INSTALL_DIR}
+  sudo cp -r raspirri ${DEFAULT_INSTALL_DIR}
+  sudo cp -r certs ${DEFAULT_INSTALL_DIR}
+  sudo cp -f env.sh ${DEFAULT_INSTALL_DIR}
+  sudo cp -f common.sh ${DEFAULT_INSTALL_DIR}
+  sudo cp -f debug.sh ${DEFAULT_INSTALL_DIR}
+  sudo cp -f *.md ${DEFAULT_INSTALL_DIR}
+  sudo cp -f *.service ${DEFAULT_INSTALL_DIR}
+  sudo cp -f requirements.txt.* ${DEFAULT_INSTALL_DIR}
+fi
+
 if [ "$(basename "$0")" == "install.sh" ]; then
   check_for_secret_env
   install_packages
   install_app_deps
   install_systemd_services
-elif [ "$(basename "$0")" == "install_services.sh" ]; then
-  install_systemd_services
 elif [ "$(basename "$0")" == "uninstall.sh" ]; then
   uninstall_systemd_services
   uninstall_app_deps
   uninstall_packages
+elif [ "$(basename "$0")" == "install_services.sh" ]; then
+  install_systemd_services
 elif [ "$(basename "$0")" == "uninstall_services.sh" ]; then
   uninstall_systemd_services
+elif [ "$(basename "$0")" == "install_packages.sh" ]; then
+  install_packages
+  install_app_deps
+elif [ "$(basename "$0")" == "uninstall_packages.sh" ]; then
+  uninstall_app_deps
+  uninstall_packages
+elif [ "$(basename "$0")" == "install_prerequisites.sh" ]; then
+  check_for_secret_env
+  prerequisites
 fi
 
 echo "Completed"

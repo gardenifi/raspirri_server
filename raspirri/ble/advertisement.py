@@ -20,15 +20,15 @@ SOFTWARE.
 """
 
 from loguru import logger
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
     import dbus.service  # pylint: disable=import-error,useless-import-alias
 
-    from app.ble.bletools import BleTools
-    from app.ble.exceptions import InvalidArgsException
-    from app.ble.common import BLUEZ_SERVICE_NAME, LE_ADVERTISING_MANAGER_IFACE, LE_ADVERTISEMENT_IFACE, DBUS_PROP_IFACE
+    from raspirri.ble.bletools import BleTools
+    from raspirri.ble.exceptions import InvalidArgsException
+    from raspirri.ble.common import BLUEZ_SERVICE_NAME, LE_ADVERTISING_MANAGER_IFACE, LE_ADVERTISEMENT_IFACE, DBUS_PROP_IFACE
 
     class Advertisement(dbus.service.Object):  # pylint: disable=too-many-instance-attributes
         """Bluetooth Advertisement module."""

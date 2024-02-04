@@ -5,7 +5,8 @@ on:
     paths:
       - 'CHANGELOG.md'  # Adjust the path to match your specific file or directory
     branches:
-      - main  # Change this to your default branch
+      - main
+      - feature/create_releases
 
 jobs:
   common-steps:
@@ -14,41 +15,38 @@ jobs:
       fake-argument: 'fake'
 
   release:
+    needs: common-steps
     runs-on: ubuntu-latest
-
+    env:
+      GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
     steps:
-    - name: Check commit message
-      run: |
-        commit_message=$(git log -1 --pretty=%B)
-        if [[ $commit_message == *"[RELEASE]"* ]]; then
-          echo "Release commit detected. Running release workflow."
-        else
-          echo "No release commit detected. Skipping release workflow."
-          exit 0
-        fi
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Check commit message
+        run: |
+          commit_message=$(git log -1 --pretty=%B)
+          if [[ $commit_message == *"[RELEASE]"* ]]; then
+            echo "Release commit detected. Running release workflow."
+          else
+            echo "No release commit detected. Skipping release workflow."
+            exit 0
+          fi
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.x  # Change this to your Python version
+      - name: Install dependencies
+        run: |
+          git config --global user.email "mariosk@gmail.com"
+          git config --global user.name "Marios Karagiannopoulos"
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install -r requirements.txt.x86_64  # Adjust based on your project
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt.x86_64  # Adjust based on your project
-
-    - name: Bump version and create release
-      run: |
-        pip install bump2version
-        bump2version [major|minor|patch]  # Choose the appropriate version bump
-        git push --follow-tags
-        git push origin --tags
-
-    - name: Build and publish package
-      run: |
-        python setup.py sdist bdist_wheel
-        pip install twine
-        twine upload dist/*
+      - name: Bump version and create release
+        run: |
+          pip install bump2version
+          NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2 | head -1)
+          PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
+          bump2version --new-version ${NEW_VERSION} ${PART}
+          git push --follow-tags
+          git push origin --tags
+          NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github

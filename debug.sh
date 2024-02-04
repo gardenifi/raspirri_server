@@ -2,14 +2,6 @@
 
 cd "$(dirname "$(readlink -f "$0")")"
 
-GIT_COMMIT_ID=app/git_commit_id.txt
-
-# autoupdate after reboot...
-# git config --global credential.helper store
-# find .git/objects/ -size 0 -exec rm -f {} \;
-# git fetch origin
-# git pull
-
 source common.sh
 source env.sh
 if [ $? -ne 0 ]; then
@@ -25,17 +17,8 @@ else
 fi
 echo "Argument used: $ARG"
 
-if [ "$ARG" == "mqtt" ]; then
-  # Every time someone restarts the server
-  # we should keep the git commit id to propagate it to MQTT topic
-  /usr/bin/git config --global --add safe.directory /home/pi/raspirri_server
-  touch ${GIT_COMMIT_ID}
-  /usr/bin/git log -n 1 --pretty=format:"%H" | sudo tee ${GIT_COMMIT_ID} > /dev/null
-  echo "Git commit id: $(sudo cat ${GIT_COMMIT_ID})"
-fi
-
 if [ "$ARG" == "watchdog" ]; then
-    PYTHONPATH=$(pwd) python3 app/main_watchdog.py
+    PYTHONPATH=$(pwd) python3 raspirri/main_watchdog.py
 else
-    PYTHONPATH=$(pwd) python3 app/main_app.py $ARG
+    PYTHONPATH=$(pwd) python3 raspirri/main_app.py $ARG
 fi

@@ -45,13 +45,13 @@ from pydantic import BaseModel
 from loguru import logger
 
 
-from app.raspi.helpers import Helpers
-from app.raspi.services import Services
-from app.raspi.mqtt import Mqtt
-from app.raspi.const import ARCH, get_machine_architecture, RPI_SERVER_INIT_FILE
+from raspirri.server.helpers import Helpers
+from raspirri.server.services import Services
+from raspirri.server.mqtt import Mqtt
+from raspirri.server.const import ARCH, get_machine_architecture, RPI_SERVER_INIT_FILE
 
 if ARCH == "arm":
-    from app.ble.wifi import init_ble
+    from raspirri.ble.wifi import init_ble
     from RPi import GPIO as GPIO  # pylint: disable=import-error,useless-import-alias
 
 INVALID_DATA = "Invalid data: Unable to process the provided data"
@@ -211,14 +211,20 @@ async def check_mqtt():
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex)) from ex
 
 
+@app.on_event("startup")
+async def startup_event():
+    """Code to execute after the server is up and running."""
+    logger.info(f"Creating a new file (or overwriting existing content): {RPI_SERVER_INIT_FILE}")
+    with open(RPI_SERVER_INIT_FILE, "w", encoding="utf-8") as file:
+        file.write("Initialized")
+
+
 def web_server():
     """FastAPI Web Server."""
     try:
-        uvicorn.run(app, host="0.0.0.0", port=5000, ssl_keyfile="certs/key.pem", ssl_certfile="certs/cert.pem")
-    finally:
-        # Creating a new file (or overwriting existing content) after uvicorn.run
-        with open(RPI_SERVER_INIT_FILE, "w", encoding="utf-8") as file:
-            file.write("Initialized")
+        uvicorn.run(app, host="0.0.0.0", port=5000, ssl_keyfile="certs/key.pem", ssl_certfile="certs/cert.pem", lifespan="on")
+    except Exception as ex:
+        logger.error(f"Error occured: {ex}")
 
 
 def setup_gpio():
@@ -241,7 +247,7 @@ def parse_arguments():
         with the value of the "command" argument accessible through the `command` attribute.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["ble", "mqtt", "arch"], help="The command to execute")
+    parser.add_argument("command", choices=["ble", "mqtt"], help="The command to execute")
     return parser.parse_args()
 
 

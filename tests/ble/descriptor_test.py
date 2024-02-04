@@ -24,17 +24,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
     import pytest
 
-    from app.ble.service import Characteristic
-    from app.ble.service import Descriptor
-    from app.ble.service import GATT_DESC_IFACE
-    from app.ble.exceptions import InvalidArgsException
-    from app.ble.exceptions import NotSupportedException
+    from raspirri.ble.service import Characteristic
+    from raspirri.ble.service import Descriptor
+    from raspirri.ble.service import GATT_DESC_IFACE
+    from raspirri.ble.exceptions import InvalidArgsException
+    from raspirri.ble.exceptions import NotSupportedException
 
     class TestDescriptor:
         """Descriptor Test Class"""
