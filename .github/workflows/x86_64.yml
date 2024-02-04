@@ -1,5 +1,4 @@
 name: x86_64 CI
-extends: ./common-workflow.yml
 
 on:
   push:
@@ -9,3 +8,7 @@ on:
 
 jobs:
   x86_64_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/common-steps.yml@v1
+      # Other workflow-specific steps
