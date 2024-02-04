@@ -50,4 +50,4 @@ jobs:
         bump2version --new-version ${NEW_VERSION} ${PART}
         git push --follow-tags
         git push origin --tags
-        NEW_VERSION=${NEW_VERSION} invoke upload-to-github
+        NEW_VERSION=${NEW_VERSION} sudo -E invoke upload-to-github
