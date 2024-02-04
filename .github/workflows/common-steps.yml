@@ -30,4 +30,6 @@ jobs:
         pre-commit install
 
     - name: Run pre-commit
-      run: pre-commit run --all-files
+      run: |
+        pip install -r requirements.txt.x86_64  # Adjust based on your project
+        pre-commit run --all-files
