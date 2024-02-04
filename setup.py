@@ -1,8 +1,9 @@
 """File needed in release bumps through Github actions"""
 import os
-import sys
-import atexit
+import glob
 from setuptools import setup, find_packages
+
+DEFAULT_INSTALL_PATH = "//home/pi/raspirri_server"
 
 
 def read_requirements():
@@ -12,21 +13,23 @@ def read_requirements():
         return [line.strip() for line in f if line.strip()]
 
 
-def run_custom_command(command):
-    """Run custom command"""
-    print(f"setup.py: sys.argv:{sys.argv}")
-    script_path = os.path.join(os.path.dirname(__file__), command)
-    os.system(f"bash {script_path}")
+def get_files_with_extension(extension):
+    """Get a list of files with a specific extension in a folder."""
+    current_path = os.getcwd()
+    print("Current path:", current_path)
+    # Create the search pattern using glob
+    search_pattern = os.path.join(current_path, f"*.{extension}")
+    # Use glob to get the files that match the pattern
+    files_list = glob.glob(search_pattern)
+    print(f"Files list: {files_list}")
+    # Get the relative paths
+    relative_paths = [os.path.relpath(file_path, current_path) for file_path in files_list]
+    print(f"Relative paths: {relative_paths}")
+    return relative_paths
 
-
-# Run custom command before installation
-run_custom_command("install_prerequisites.sh")
-
-# Run custom command after installation
-atexit.register(run_custom_command, "install.sh")
 
 setup(
-    name="raspirri-server",
+    name="raspirri_server",
     version=os.getenv("NEW_VERSION", None),
     description="RaspirriV1 Server",
     author="Marios Karagiannopoulos",
@@ -34,5 +37,6 @@ setup(
     license="MIT",
     packages=find_packages(),
     install_requires=read_requirements(),
-    include_package_data=True,
+    data_files=[(DEFAULT_INSTALL_PATH, get_files_with_extension("sh"))],
+    # include_package_data=True,
 )
