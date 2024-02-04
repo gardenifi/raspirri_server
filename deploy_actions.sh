@@ -5,7 +5,7 @@ set +x
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SECRET_ENV_FILE="${SCRIPT_DIR}/secret_env.sh"
 COMMON_SH_FILE="${SCRIPT_DIR}/common.sh"
-DEFAULT_INSTALL_DIR="/home/pi/raspirri_server"
+DEFAULT_INSTALL_DIR="/usr/local/raspirri_server"
 SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
 # Reverse the order
 REVERSED_SERVICES=("${SERVICES[@]: -1:1}" "${SERVICES[@]: -2:1}" "${SERVICES[@]: -3:1}")

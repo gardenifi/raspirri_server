@@ -6,8 +6,8 @@ After=multi-user.target
 User=root
 Group=root
 Type=simple
-WorkingDirectory=/home/pi/raspirri_server/
-ExecStart=/home/pi/raspirri_server/debug.sh mqtt
+WorkingDirectory=/usr/local/raspirri_server/
+ExecStart=/usr/local/raspirri_server/debug.sh mqtt
 Restart=always
 
 [Install]
