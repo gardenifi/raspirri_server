@@ -10,6 +10,9 @@ jobs:
   x86_64_tests:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Run common steps
         uses: ./.github/actions
       # Additional steps specific to x86_64 workflow
