@@ -9,9 +9,6 @@ on:
       - feature/create_releases
 
 jobs:
-  common-steps:
-    extends: .github/workflows/common-steps.yml
-
   release:
     runs-on: ubuntu-latest
     needs: common-steps
@@ -39,3 +36,6 @@ jobs:
         git push --follow-tags
         git push origin --tags
         NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github
+
+  common-steps:
+    extends: .github/workflows/common-steps.yml
