@@ -50,10 +50,4 @@ jobs:
         bump2version --new-version ${NEW_VERSION} ${PART}
         git push --follow-tags
         git push origin --tags
-        NEW_VERSION=${NEW_VERSION} python setup.py sdist bdist_wheel
-
-    - name: Install twine
-      run: pip install twine
-
-    - name: Upload to PyPI
-      run: twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+        NEW_VERSION=${NEW_VERSION} invoke upload-to-github
