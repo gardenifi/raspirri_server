@@ -157,14 +157,29 @@ class TestHelpers(unittest.TestCase):
         assert isinstance(uptime, str)
         assert uptime != "no uptime is supported!"
 
-    def test_get_git_commit_id_returns_commit_id(self):
-        """get_git_commit_id method returns the git commit ID of the codebase"""
+    def test_get_rpi_server_version_returns_version(self):
+        """get_rpi_server_version method returns the latest release version"""
 
-        commit_id = self.helpers_instance.get_git_commit_id()
-        assert isinstance(commit_id, str)
-        assert len(commit_id) > 0
-        pattern = re.compile(r"^[0-9a-fA-F]+$")
-        assert pattern.match(commit_id), "Invalid format"
+        mock_requests_get = patch("requests.get").start()
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"tag_name": "v1.10.20"}
+
+        # Configure the mock to return the mock response
+        mock_requests_get.return_value = mock_response
+
+        # Call the method under test
+        version = self.helpers_instance.get_rpi_server_version()
+
+        logger.debug(f"version returned: {version}")
+        patch("requests.get").stop()
+
+        # Assert the expected behavior for a successful execution
+        assert isinstance(version, str)
+        assert len(version) > 0
+        pattern = re.compile(r"^v\d+\.\d+\.\d+$")
+        assert pattern.match(version), "Invalid format"
 
     def test_store_object_to_file_stores_object(self):
         """store_object_to_file method stores a local object to a file"""
@@ -254,21 +269,27 @@ class TestHelpers(unittest.TestCase):
         # Assert
         assert new_status != initial_status
 
-    @patch("subprocess.run")
-    @patch("raspirri.server.helpers.logger")
-    def test_get_git_commit_id_success(self, mock_logger, mock_subprocess_run):
-        """test get git commit id"""
-        # Mock the subprocess.run() to simulate a successful execution
-        mock_result = MagicMock()
-        mock_result.stdout = "abcdef123456"
-        mock_subprocess_run.return_value = mock_result
+    def test_get_rpi_server_version_success(self):
+        """test get rpi_server_version"""
+        # Mock the requests.get() to simulate a successful execution
+
+        mock_requests_get = patch("requests.get").start()
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"tag_name": "v1.0.0"}
+
+        # Configure the mock to return the mock response
+        mock_requests_get.return_value = mock_response
 
         # Call the method under test
-        commit_id = self.helpers_instance.get_git_commit_id()
+        version = self.helpers_instance.get_rpi_server_version()
+
+        logger.debug(f"version returned: {version}")
+        patch("requests.get").stop()
 
         # Assert the expected behavior for a successful execution
-        self.assertEqual(commit_id, "abcdef123456")
-        mock_logger.error.assert_not_called()
+        self.assertEqual(version, "v1.0.0")
 
     def test_get_toggle_statuses_returns_toggle_statuses(self):
         """

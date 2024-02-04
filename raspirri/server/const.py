@@ -127,4 +127,3 @@ MAX_NUM_OF_BYTES_CHUNK = 512
 MAX_NUM_OF_BUFFER_TO_ADD = 5
 
 RPI_SERVER_INIT_FILE = "raspirri/rpi_server.init"
-RPI_SERVER_GIT_COMMIT = "raspirri/git_commit_id.txt"

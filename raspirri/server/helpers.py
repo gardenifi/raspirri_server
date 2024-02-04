@@ -35,8 +35,9 @@ import ast
 import threading
 import traceback
 import signal
-
 from datetime import datetime
+import requests
+
 from loguru import logger
 from raspirri.server.const import (
     STATUSES_FILE,
@@ -47,7 +48,6 @@ from raspirri.server.const import (
     RUNNING_UNIT_TESTS,
     DUMMY_SSID,
     DUMMY_PASSKEY,
-    RPI_SERVER_GIT_COMMIT,
 )
 
 if ARCH == "arm":
@@ -216,29 +216,33 @@ class Helpers:
             logger.error(f"Error retrieving uptime: {e}")
             return str(e)
 
-    def get_git_commit_id(self):
+    def get_rpi_server_version(self):
         """
-        Get the Git commit ID of the current project.
+        Get the RPI server version.
 
         Returns:
-            str: The Git commit ID.
+            str: The RPI server version.
 
         Example:
-            commit_id = instance.get_git_commit_id()
+            version = instance.get_rpi_server_version()
         """
         # Open the file in read mode ('r')
         try:
-            with open(RPI_SERVER_GIT_COMMIT, encoding="utf-8") as file:
-                # Read the entire content of the file
-                content = file.read().replace("\n", "")
-                logger.debug(f"File content: {content}")
-                return content
-        except FileNotFoundError as e:
-            logger.error(f"The file '{RPI_SERVER_GIT_COMMIT}' does not exist.")
-            return str(e)
+            # URL for the GitHub API endpoint
+            url = "https://api.github.com/repos/gardenifi/raspirri_server/releases/latest"
+            # Send HTTP GET request to the URL
+            response = requests.get(url)
+            # Check if the request was successful (status code 200)
+            if response.status_code == 200:
+                # Parse the JSON response
+                latest_release = response.json()
+                return latest_release["tag_name"]
+            message = f"Failed to retrieve latest release information. Status code:{response.status_code}"
+            logger.error(message)
+            return message
         except Exception as e:
             traceback.print_exc()
-            logger.error(f"Error retrieving git log: {e}")
+            logger.error(f"Error retrieving latest release: {e}")
             return str(e)
 
     def store_object_to_file(self, filename, local_object):
