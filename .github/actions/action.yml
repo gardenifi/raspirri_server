@@ -1,0 +1,9 @@
+# actions/common-steps-action/action.yml
+
+name: Common Steps Action
+description: Run common steps for workflows
+runs:
+  using: 'composite'
+  steps:
+    - run: echo "Running common step 1"
+    - run: echo "Running common step 2"
