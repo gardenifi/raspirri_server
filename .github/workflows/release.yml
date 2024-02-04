@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Common steps
-        uses: ./actions/common-steps-action
+        uses: ./.github/actions/
 
       - name: Check commit message
         run: |
