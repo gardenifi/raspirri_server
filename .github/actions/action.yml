@@ -1,0 +1,7 @@
+# .github/actions/action.yml
+name: 'Common Steps'
+description: 'Contains common steps for workflows'
+runs:
+  using: 'composite'
+  steps:
+    - run: ./.github/actions/common-steps.yml
