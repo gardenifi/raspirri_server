@@ -8,10 +8,6 @@ on:
         description: "Fake argument"
         required: false
         type: string
-  push:
-    branches:
-      - main
-      - feature/create_releases
 
 jobs:
   common-job:
