@@ -7,5 +7,7 @@ on:
       - feature/create_releases
 
 jobs:
-  x86_64_tests:
+  common-steps:
     uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@feature/create_releases
+    with:
+      fake-argument: 'fake'

@@ -9,12 +9,15 @@ on:
       - feature/create_releases
 
 jobs:
+  common-steps:
+    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@feature/create_releases
+    with:
+      fake-argument: 'fake'
+
   release:
     runs-on: ubuntu-latest
-
     env:
       GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

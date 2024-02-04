@@ -4,8 +4,8 @@ on:
   workflow_call:
     # Introduced 'inputs' to define parameters that can be passed when calling this workflow
     inputs:
-      node-version:
-        description: "Node version"
+      fake-argument:
+        description: "Fake argument"
         required: false
         type: string
   push:
