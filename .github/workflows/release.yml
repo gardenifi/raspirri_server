@@ -1,12 +1,11 @@
 name: Release
 
 on:
-  push:
+  pull_request:
     paths:
       - 'CHANGELOG.md'  # Adjust the path to match your specific file or directory
     branches:
       - main
-      - feature/create_releases
 
 jobs:
   common-steps:
