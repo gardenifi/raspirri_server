@@ -3,7 +3,7 @@ import os
 import glob
 from setuptools import setup, find_packages
 
-DEFAULT_INSTALL_PATH = "//usr/local/raspirri_server"
+DEFAULT_INSTALL_PATH = os.environ.get("INSTALLATION_PATH", "//usr/local/raspirri_server")
 
 
 def read_requirements():
