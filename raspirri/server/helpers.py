@@ -232,30 +232,18 @@ class Helpers:
             with open(f"{os.getcwd()}/CHANGELOG.md", encoding="utf-8") as f:
                 changelog_content = f.read()
 
-            # logger.debug(f"changelog_content: {changelog_content}")
+            logger.debug(f"changelog_content: {changelog_content}")
             # Define the regex pattern to extract the version
-            pattern = r"- Release ([\d\.]+)"
-            matches = re.search(pattern, changelog_content, re.MULTILINE)
+            # Define the regex pattern to match version numbers
+            pattern = r"\[([\d.]+)\] - \d{4}-\d{2}-\d{2}"
+            # Find all matches in the changelog content
+            matches = re.findall(pattern, changelog_content)
 
-            if matches:
-                version = matches.group(1)
-                logger.info("Version extracted from changelog:", version)
-                return version
-            message = "Version not found in the changelog."
-            logger.error(message)
-            return message
-            # # URL for the GitHub API endpoint
-            # url = "https://api.github.com/repos/gardenifi/raspirri_server/releases/latest"
-            # # Send HTTP GET request to the URL
-            # response = requests.get(url)
-            # # Check if the request was successful (status code 200)
-            # if response.status_code == 200:
-            #     # Parse the JSON response
-            #     latest_release = response.json()
-            #     return latest_release["tag_name"]
-            # message = f"Failed to retrieve latest release information. Status code:{response.status_code}"
-            # logger.error(message)
-            # return message
+            # Extract the latest release version
+            latest_version = matches[0] if matches else None
+
+            logger.info(f"Latest version extracted from changelog: {latest_version}")
+            return latest_version
         except Exception as e:
             traceback.print_exc()
             logger.error(f"Error retrieving latest release: {e}")
