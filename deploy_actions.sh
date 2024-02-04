@@ -10,6 +10,11 @@ SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
 # Reverse the order
 REVERSED_SERVICES=("${SERVICES[@]: -1:1}" "${SERVICES[@]: -2:1}" "${SERVICES[@]: -3:1}")
 PIP3_ARG=""
+ARCH=$(uname -m)
+if [ "$ARCH" != "x86_64" ]; then
+  ARCH=arm
+fi
+
 
 function version_compare() {
     local version1=$1
@@ -84,6 +89,7 @@ function check_for_secret_env {
       echo "File $SECRET_ENV_FILE created with the following content:"
       cat "$SECRET_ENV_FILE"
   fi
+  sudo cp -f ${SECRET_ENV_FILE} ${DEFAULT_INSTALL_DIR}
 }
 
 function check_for_pip_version {
@@ -93,8 +99,8 @@ function check_for_pip_version {
   if [ $compare_result -eq 1 ]; then
       echo "PIP3 version is greater than 20"
       PIP3_ARG="--break-system-packages"
-      ARCH=$(uname -m)
-      if [ "$ARCH" == "armv6l" ]; then
+      uname_arch=$(uname -m)
+      if [ "$uname_arch" == "armv6l" ]; then
         PIP3_ARG=""
       fi
   else
@@ -136,12 +142,12 @@ function install_app_deps {
   echo "Checking Bluetooth Status..."
   sudo systemctl status bluetooth --no-pager
   check_for_pip_version
-  sudo pip3 install -r requirements.txt.$(uname -m) ${PIP3_ARG}
+  sudo pip3 install -r requirements.txt.$ARCH ${PIP3_ARG}
 }
 
 function uninstall_app_deps {
   check_for_pip_version
-  sudo pip3 uninstall -r requirements.txt.$(uname -m) ${PIP3_ARG} -y
+  sudo pip3 uninstall -r requirements.txt.$ARCH ${PIP3_ARG} -y
   sudo rm -rf venv
 }
 
@@ -175,7 +181,13 @@ echo "The directory of the current script is: $SCRIPT_DIR"
 if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
   sudo mkdir -p ${DEFAULT_INSTALL_DIR}
   sudo cp -r raspirri ${DEFAULT_INSTALL_DIR}
-  sudo cp -f ${SECRET_ENV_FILE} ${DEFAULT_INSTALL_DIR}
+  sudo cp -r certs ${DEFAULT_INSTALL_DIR}
+  sudo cp -f env.sh ${DEFAULT_INSTALL_DIR}
+  sudo cp -f common.sh ${DEFAULT_INSTALL_DIR}
+  sudo cp -f debug.sh ${DEFAULT_INSTALL_DIR}
+  sudo cp -f *.md ${DEFAULT_INSTALL_DIR}
+  sudo cp -f *.service ${DEFAULT_INSTALL_DIR}
+  sudo cp -f requirements.txt.* ${DEFAULT_INSTALL_DIR}
 fi
 
 if [ "$(basename "$0")" == "install.sh" ]; then

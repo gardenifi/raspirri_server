@@ -241,7 +241,7 @@ def parse_arguments():
         with the value of the "command" argument accessible through the `command` attribute.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["ble", "mqtt", "arch"], help="The command to execute")
+    parser.add_argument("command", choices=["ble", "mqtt"], help="The command to execute")
     return parser.parse_args()
 
 

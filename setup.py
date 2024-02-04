@@ -37,5 +37,9 @@ setup(
     license="MIT",
     packages=find_packages(),
     install_requires=read_requirements(),
-    data_files=[(DEFAULT_INSTALL_PATH, get_files_with_extension("sh"))],
+    data_files=[
+        (DEFAULT_INSTALL_PATH, get_files_with_extension("sh")),
+        (DEFAULT_INSTALL_PATH, get_files_with_extension("arm")),
+        (DEFAULT_INSTALL_PATH, get_files_with_extension("service")),
+    ],
 )
