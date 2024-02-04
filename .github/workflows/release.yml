@@ -8,6 +8,11 @@ on:
       - main  # Change this to your default branch
 
 jobs:
+  common-steps:
+    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@main
+    with:
+      fake-argument: 'fake'
+
   release:
     runs-on: ubuntu-latest
 
