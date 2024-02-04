@@ -211,14 +211,20 @@ async def check_mqtt():
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex)) from ex
 
 
+@app.on_event("startup")
+async def startup_event():
+    """Code to execute after the server is up and running."""
+    logger.info(f"Creating a new file (or overwriting existing content): {RPI_SERVER_INIT_FILE}")
+    with open(RPI_SERVER_INIT_FILE, "w", encoding="utf-8") as file:
+        file.write("Initialized")
+
+
 def web_server():
     """FastAPI Web Server."""
     try:
-        uvicorn.run(app, host="0.0.0.0", port=5000, ssl_keyfile="certs/key.pem", ssl_certfile="certs/cert.pem")
-    finally:
-        # Creating a new file (or overwriting existing content) after uvicorn.run
-        with open(RPI_SERVER_INIT_FILE, "w", encoding="utf-8") as file:
-            file.write("Initialized")
+        uvicorn.run(app, host="0.0.0.0", port=5000, ssl_keyfile="certs/key.pem", ssl_certfile="certs/cert.pem", lifespan="on")
+    except Exception as ex:
+        logger.error(f"Error occured: {ex}")
 
 
 def setup_gpio():

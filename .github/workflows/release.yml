@@ -45,7 +45,7 @@ jobs:
     - name: Bump version and create release
       run: |
         pip install bump2version --break-system-packages
-        NEW_VERSION=$(cat CHANGELOG.md | grep "\- version" | cut -d' ' -f3)
+        NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2)
         PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3)
         bump2version --new-version ${NEW_VERSION} ${PART}
         git push --follow-tags

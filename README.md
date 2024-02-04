@@ -69,8 +69,18 @@ export MQTT_PASS=broker_pass
 The above credentials are used to access your MQTT broker. In our experiments we used [HiveMQ platform](https://www.hivemq.com/).
 
 ### Installation
-Enter server folder and execute:
+Enter /var/tmp/ and download the latest release: https://github.com/gardenifi/raspirri_server/releases or do it programmatically:
 ```
+# Retrieve the latest release information
+latest_release=$(curl -s https://api.github.com/repos/gardenifi/raspirri_server/releases/latest)
+# Extract the download URL for the latest release asset
+download_url=$(echo "$latest_release" | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/')
+# Download the latest release asset
+curl -LO $download_url
+filename=$(basename $download_url)
+tar xvf $filename
+filename_without_extension=$(basename "$filename" .tar.gz)
+cd "$filename_without_extension"
 ./install.sh
 ```
 or
@@ -82,7 +92,7 @@ if you would like to uninstall it.
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
 ```
-pi@raspirriv1:~/raspirri_server $ ps -def | grep python
+pi@raspirriv1:/var/tmp/ $ ps -def | grep python
 root 5148 5138 16 11:29 ? 00:00:01 python3 raspirri/main_app.py mqtt
 root 5188 5179 14 11:29 ? 00:00:00 python3 raspirri/main_app.py ble
 ```

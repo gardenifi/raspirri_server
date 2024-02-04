@@ -36,7 +36,6 @@ import threading
 import traceback
 import signal
 from datetime import datetime
-import requests
 
 from loguru import logger
 from raspirri.server.const import (
@@ -228,18 +227,35 @@ class Helpers:
         """
         # Open the file in read mode ('r')
         try:
-            # URL for the GitHub API endpoint
-            url = "https://api.github.com/repos/gardenifi/raspirri_server/releases/latest"
-            # Send HTTP GET request to the URL
-            response = requests.get(url)
-            # Check if the request was successful (status code 200)
-            if response.status_code == 200:
-                # Parse the JSON response
-                latest_release = response.json()
-                return latest_release["tag_name"]
-            message = f"Failed to retrieve latest release information. Status code:{response.status_code}"
+            # Github has enabled rate limiting for such requests. Let's get the latest release from CHANGELOG.md
+            # Read the changelog file
+            with open(f"{os.getcwd()}/CHANGELOG.md", encoding="utf-8") as f:
+                changelog_content = f.read()
+
+            # logger.debug(f"changelog_content: {changelog_content}")
+            # Define the regex pattern to extract the version
+            pattern = r"- Release ([\d\.]+)"
+            matches = re.search(pattern, changelog_content, re.MULTILINE)
+
+            if matches:
+                version = matches.group(1)
+                logger.info("Version extracted from changelog:", version)
+                return version
+            message = "Version not found in the changelog."
             logger.error(message)
             return message
+            # # URL for the GitHub API endpoint
+            # url = "https://api.github.com/repos/gardenifi/raspirri_server/releases/latest"
+            # # Send HTTP GET request to the URL
+            # response = requests.get(url)
+            # # Check if the request was successful (status code 200)
+            # if response.status_code == 200:
+            #     # Parse the JSON response
+            #     latest_release = response.json()
+            #     return latest_release["tag_name"]
+            # message = f"Failed to retrieve latest release information. Status code:{response.status_code}"
+            # logger.error(message)
+            # return message
         except Exception as e:
             traceback.print_exc()
             logger.error(f"Error retrieving latest release: {e}")

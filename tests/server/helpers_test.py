@@ -27,6 +27,7 @@ THE SOFTWARE.
 import tempfile
 import pickle
 import unittest
+from unittest import mock
 from unittest.mock import patch, MagicMock
 import re
 import os
@@ -157,6 +158,42 @@ class TestHelpers(unittest.TestCase):
         assert isinstance(uptime, str)
         assert uptime != "no uptime is supported!"
 
+    @mock.patch("builtins.open")
+    def test_get_rpi_server_version(self, mock_open):
+        """test the get_rpi_server_version"""
+        # Mocking the content of the changelog file
+        changelog_content = "- Release 1.0.0\n- Release 1.1.0\n- Release 1.2.0\n"
+
+        # Creating a MagicMock object to mock the file
+        mock_file = mock.MagicMock()
+        mock_file.read.return_value = changelog_content
+        mock_open.return_value.__enter__.return_value = mock_file
+
+        # Calling the method to test
+        version = self.helpers_instance.get_rpi_server_version()
+
+        # Asserting the return value
+        self.assertEqual(version, "1.0.0")
+
+    @mock.patch("builtins.open")
+    def test_get_rpi_server_version_version_not_found(self, mock_open):
+        """test the get_rpi_server_version"""
+
+        # Mocking the content of the changelog file
+        changelog_content = ""
+
+        # Creating a MagicMock object to mock the file
+        mock_file = mock.MagicMock()
+        mock_file.read.return_value = changelog_content
+        mock_open.return_value.__enter__.return_value = mock_file
+
+        # Calling the method to test
+        version = self.helpers_instance.get_rpi_server_version()
+
+        # Asserting the return value
+        self.assertEqual(version, "Version not found in the changelog.")
+
+    @unittest.skip("Skipping this test since Github limits requests and the implementation is different now")
     def test_get_rpi_server_version_returns_version(self):
         """get_rpi_server_version method returns the latest release version"""
 
@@ -269,6 +306,7 @@ class TestHelpers(unittest.TestCase):
         # Assert
         assert new_status != initial_status
 
+    @unittest.skip("Skipping this test since Github limits requests and the implementation is different now")
     def test_get_rpi_server_version_success(self):
         """test get rpi_server_version"""
         # Mock the requests.get() to simulate a successful execution
