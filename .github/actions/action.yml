@@ -3,5 +3,6 @@ name: 'Common Steps'
 description: 'Contains common steps for workflows'
 runs:
   using: 'composite'
+  shell: bash # Specify the shell to use (e.g., bash)
   steps:
     - run: ./.github/actions/common-steps.yml
