@@ -24,7 +24,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Release v1.0.0
-- part majors
+- part major
 
 ### Fixed
 - Initial release

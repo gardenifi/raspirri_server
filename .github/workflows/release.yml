@@ -46,7 +46,7 @@ jobs:
       run: |
         pip install bump2version --break-system-packages
         NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2)
-        PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3)
+        PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
         bump2version --new-version ${NEW_VERSION} ${PART}
         git push --follow-tags
         git push origin --tags
