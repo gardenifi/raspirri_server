@@ -60,12 +60,12 @@ def upload_to_github(ctx):
 
     if response.status_code == 201:
         print(f"Release v{version} created successfully")
-
+        release_id = response.json()["id"]
         # Upload the installer file
         upload_url = (
             f"https://uploads.github.com/repos/{github_username}"
-            + "/{repository_name}/releases/{release_id}/assets?"
-            + "name={repository_name}-{version}.tar.gz"
+            + f"/{repository_name}/releases/{release_id}/assets?"
+            + f"name={repository_name}-{version}.tar.gz"
         )
         with open(installer_file, "rb") as file_content:
             upload_response = requests.post(
