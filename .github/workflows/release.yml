@@ -33,6 +33,14 @@ jobs:
             exit 0
           fi
 
+      - name: Install dependencies
+        run: |
+          git config --global user.email "mariosk@gmail.com"
+          git config --global user.name "Marios Karagiannopoulos"
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install -r requirements.txt.x86_64  # Adjust based on your project
+
       - name: Bump version and create release
         run: |
           pip install bump2version

@@ -23,14 +23,6 @@ jobs:
       with:
         python-version: 3.11
 
-    - name: Install dependencies
-      run: |
-        git config --global user.email "mariosk@gmail.com"
-        git config --global user.name "Marios Karagiannopoulos"
-        python -m pip install --upgrade pip
-        pip install wheel
-        pip install -r requirements.txt.x86_64  # Adjust based on your project
-
     - name: Install pre-commit
       run: |
         python -m pip install --upgrade pip
