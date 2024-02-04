@@ -1,7 +1,8 @@
-# .github/actions/action.yml
+# /.github/actions/action.yml
 name: 'Common Steps'
 description: 'Contains common steps for workflows'
 runs:
   using: 'composite'
+  shell: bash  # Specify the shell you want to use
   steps:
     - run: ./.github/actions/common-steps.yml
