@@ -38,5 +38,4 @@ setup(
     packages=find_packages(),
     install_requires=read_requirements(),
     data_files=[(DEFAULT_INSTALL_PATH, get_files_with_extension("sh"))],
-    # include_package_data=True,
 )
