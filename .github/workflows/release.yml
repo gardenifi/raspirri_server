@@ -9,16 +9,17 @@ on:
       - feature/create_releases
 
 jobs:
+  common-steps:
+    extends: .github/workflows/common-steps.yml
+
   release:
     runs-on: ubuntu-latest
+    needs: common-steps
 
     env:
       GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
     - name: Check commit message
       run: |
         commit_message=$(git log -1 --pretty=%B)
@@ -28,19 +29,6 @@ jobs:
           echo "No release commit detected. Skipping release workflow."
           exit 0
         fi
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.x  # Change this to your Python version
-
-    - name: Install dependencies
-      run: |
-        git config --global user.email "mariosk@gmail.com"
-        git config --global user.name "Marios Karagiannopoulos"
-        python -m pip install --upgrade pip
-        pip install wheel
-        pip install -r requirements.txt.x86_64  # Adjust based on your project
 
     - name: Bump version and create release
       run: |
