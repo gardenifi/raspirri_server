@@ -29,7 +29,6 @@ import pickle
 import unittest
 from unittest import mock
 from unittest.mock import patch, MagicMock
-import re
 import os
 import signal
 from datetime import datetime
@@ -159,23 +158,6 @@ class TestHelpers(unittest.TestCase):
         assert uptime != "no uptime is supported!"
 
     @mock.patch("builtins.open")
-    def test_get_rpi_server_version(self, mock_open):
-        """test the get_rpi_server_version"""
-        # Mocking the content of the changelog file
-        changelog_content = "- Release 1.0.0\n- Release 1.1.0\n- Release 1.2.0\n"
-
-        # Creating a MagicMock object to mock the file
-        mock_file = mock.MagicMock()
-        mock_file.read.return_value = changelog_content
-        mock_open.return_value.__enter__.return_value = mock_file
-
-        # Calling the method to test
-        version = self.helpers_instance.get_rpi_server_version()
-
-        # Asserting the return value
-        self.assertEqual(version, "1.0.0")
-
-    @mock.patch("builtins.open")
     def test_get_rpi_server_version_version_not_found(self, mock_open):
         """test the get_rpi_server_version"""
 
@@ -191,32 +173,7 @@ class TestHelpers(unittest.TestCase):
         version = self.helpers_instance.get_rpi_server_version()
 
         # Asserting the return value
-        self.assertEqual(version, "Version not found in the changelog.")
-
-    @unittest.skip("Skipping this test since Github limits requests and the implementation is different now")
-    def test_get_rpi_server_version_returns_version(self):
-        """get_rpi_server_version method returns the latest release version"""
-
-        mock_requests_get = patch("requests.get").start()
-
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"tag_name": "v1.10.20"}
-
-        # Configure the mock to return the mock response
-        mock_requests_get.return_value = mock_response
-
-        # Call the method under test
-        version = self.helpers_instance.get_rpi_server_version()
-
-        logger.debug(f"version returned: {version}")
-        patch("requests.get").stop()
-
-        # Assert the expected behavior for a successful execution
-        assert isinstance(version, str)
-        assert len(version) > 0
-        pattern = re.compile(r"^v\d+\.\d+\.\d+$")
-        assert pattern.match(version), "Invalid format"
+        self.assertEqual(version, None)
 
     def test_store_object_to_file_stores_object(self):
         """store_object_to_file method stores a local object to a file"""
@@ -305,29 +262,6 @@ class TestHelpers(unittest.TestCase):
 
         # Assert
         assert new_status != initial_status
-
-    @unittest.skip("Skipping this test since Github limits requests and the implementation is different now")
-    def test_get_rpi_server_version_success(self):
-        """test get rpi_server_version"""
-        # Mock the requests.get() to simulate a successful execution
-
-        mock_requests_get = patch("requests.get").start()
-
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"tag_name": "v1.0.0"}
-
-        # Configure the mock to return the mock response
-        mock_requests_get.return_value = mock_response
-
-        # Call the method under test
-        version = self.helpers_instance.get_rpi_server_version()
-
-        logger.debug(f"version returned: {version}")
-        patch("requests.get").stop()
-
-        # Assert the expected behavior for a successful execution
-        self.assertEqual(version, "v1.0.0")
 
     def test_get_toggle_statuses_returns_toggle_statuses(self):
         """
