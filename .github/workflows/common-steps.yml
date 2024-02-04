@@ -1,6 +1,13 @@
 name: Common Steps
 
 on:
+  workflow_call:
+    # Introduced 'inputs' to define parameters that can be passed when calling this workflow
+    inputs:
+      node-version:
+        description: "Node version"
+        required: false
+        type: string
   push:
     branches:
       - main
