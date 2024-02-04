@@ -3,9 +3,5 @@ name: x86_64 CI
 on: [push]
 
 jobs:
-  x86_64_tests:
-    runs-on: ubuntu-latest
-    needs: common-steps
-
-  common-steps:
-    extends: .github/workflows/common-steps.yml
+  build:
+    uses: .github/workflows/common-steps.yml

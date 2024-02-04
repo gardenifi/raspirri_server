@@ -9,13 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Implemented the release functionality and uploads to Github
 
 ### Changed
-- Release v1.0.7
+- Release v1.0.8
 - part patch
 
 ### Fixed
 - Bug in release.yml workflow
 
-## [1.0.7] - 2024-02-06
+## [1.0.8] - 2024-02-06
 
 ### Added
 - Storing/Loading program from JSON files (program_N.json where N=[1..4])
