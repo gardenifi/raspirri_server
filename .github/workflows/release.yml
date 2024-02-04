@@ -15,8 +15,11 @@ jobs:
       GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Run common steps
-        uses: ./.github/workflows/common-steps.yml
+        uses: ./.github/actions/common-steps.yml
 
       - name: Check commit message
         run: |
