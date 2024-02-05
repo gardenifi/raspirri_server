@@ -127,3 +127,6 @@ MAX_NUM_OF_BYTES_CHUNK = 512
 MAX_NUM_OF_BUFFER_TO_ADD = 5
 
 RPI_SERVER_INIT_FILE = f"{os.getcwd()}/raspirri/rpi_server.init"
+
+GITHUB_FEED_URL = "https://github.com/gardenifi/raspirri_server/releases.atom"
+BUMP_VERSION_CFG = f"{os.getcwd()}/.bumpversion.cfg"

@@ -33,9 +33,10 @@ import socket
 import re
 import ast
 import threading
-import traceback
 import signal
+import configparser
 from datetime import datetime
+import feedparser
 
 from loguru import logger
 from raspirri.server.const import (
@@ -47,6 +48,8 @@ from raspirri.server.const import (
     RUNNING_UNIT_TESTS,
     DUMMY_SSID,
     DUMMY_PASSKEY,
+    GITHUB_FEED_URL,
+    BUMP_VERSION_CFG,
 )
 
 if ARCH == "arm":
@@ -215,37 +218,53 @@ class Helpers:
             logger.error(f"Error retrieving uptime: {e}")
             return str(e)
 
-    def get_rpi_server_version(self):
+    def get_rpi_server_current_version(self):
         """
-        Get the RPI server version.
+        Get the RPI server current version.
 
         Returns:
-            str: The RPI server version.
+            str: The RPI server current version.
 
         Example:
-            version = instance.get_rpi_server_version()
+            version = instance.get_rpi_server_current_version()
+        """
+        try:
+            # Create a ConfigParser object
+            config = configparser.ConfigParser()
+            # Read the configuration file
+            config.read(BUMP_VERSION_CFG)
+            # Get the current version from the [bumpversion] section
+            current_version = config.get("bumpversion", "current_version")
+            logger.debug(f"Current Release: {current_version}")
+            return current_version
+        except Exception as e:
+            logger.error(f"Error retrieving latest release: {e}")
+            return str(e)
+
+    def get_rpi_server_latest_version(self):
+        """
+        Get the RPI server latest version.
+
+        Returns:
+            str: The RPI server latest version.
+
+        Example:
+            version = instance.get_rpi_server_latest_version()
         """
         # Open the file in read mode ('r')
         try:
-            # Github has enabled rate limiting for such requests. Let's get the latest release from CHANGELOG.md
-            # Read the changelog file
-            with open(f"{os.getcwd()}/CHANGELOG.md", encoding="utf-8") as f:
-                changelog_content = f.read()
+            # Parse the RSS feed
+            feed = feedparser.parse(GITHUB_FEED_URL)
 
-            logger.debug(f"changelog_content: {changelog_content}")
-            # Define the regex pattern to extract the version
-            # Define the regex pattern to match version numbers
-            pattern = r"\[([\d.]+)\] - \d{4}-\d{2}-\d{2}"
-            # Find all matches in the changelog content
-            matches = re.findall(pattern, changelog_content)
-
-            # Extract the latest release version
-            latest_version = matches[0] if matches else None
-
-            logger.info(f"Latest version extracted from changelog: {latest_version}")
-            return latest_version
+            # Extract information about the latest release
+            if len(feed.entries) > 0:
+                latest_release = feed.entries[0]
+                logger.debug(f"Latest Release: {latest_release}, {latest_release.title}, {latest_release.link}")
+                latest_version = latest_release.title.replace("Release v", "")
+                return latest_version
+            logger.warning("No releases found in Github atom RSS feed!")
+            return "NO_VERSION_FOUND"
         except Exception as e:
-            traceback.print_exc()
             logger.error(f"Error retrieving latest release: {e}")
             return str(e)
 
