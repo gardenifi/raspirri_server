@@ -93,7 +93,7 @@ or
 if you would like to uninstall it.
 
 ### How to trigger a new release
-If you add a new section in CHANGELOG.md(https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md) like this:
+If you add a new section in [CHANGELOG.md](https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md) like this:
 
 ```
 ### Added
@@ -108,7 +108,7 @@ If you add a new section in CHANGELOG.md(https://github.com/gardenifi/raspirri_s
 
 ## [X.Y.Z] - 2024-02-06
 ```
-then a new version will be created (from Github actions) in the releases assets(https://github.com/gardenifi/raspirri_server/releases) with the same number.
+then a new version will be created (from Github actions) in the releases [assets](https://github.com/gardenifi/raspirri_server/releases) with the same number.
 
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
