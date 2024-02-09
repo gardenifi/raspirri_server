@@ -9,7 +9,7 @@ on:
 
 jobs:
   common-steps:
-    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@main
+    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@${{ github.ref }}
     with:
       fake-argument: 'fake'
 
@@ -18,10 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
+    steps:
       - name: Install dependencies
         run: |
           git config --global user.email "mariosk@gmail.com"
@@ -36,8 +34,6 @@ jobs:
           NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2 | head -1)
           PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
           bump2version --new-version ${NEW_VERSION} ${PART}
-          git config pull.rebase true
-          git pull origin main
-          git push --follow-tags origin HEAD:main
+          git push --follow-tags
           git push origin --tags
           NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github
