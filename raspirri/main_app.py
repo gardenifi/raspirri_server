@@ -31,6 +31,7 @@ import subprocess
 import os
 import sys
 import time
+from threading import Thread
 
 from distutils.util import strtobool
 from typing import Optional
@@ -302,7 +303,8 @@ def main():
             logger.debug(f"MQTT client initialized: {mqtt_instance.client}")
             # signal.signal(signal.SIGTERM, lambda signum, frame: Mqtt.on_shutdown(Mqtt.client, None, None))
             # signal.signal(signal.SIGINT, Mqtt.on_shutdown(Mqtt.client, None, None))
-            web_server()
+            web_thread = Thread(target=web_server(), daemon=True, name="Web_Main_Thread")
+            web_thread.start()
         elif args.command == "arch":
             logger.debug(f"CPU Architecture: {get_machine_architecture()}")
             return

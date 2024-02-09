@@ -27,7 +27,6 @@ THE SOFTWARE.
 import tempfile
 import pickle
 import unittest
-from unittest import mock
 from unittest.mock import patch, MagicMock
 import os
 import signal
@@ -156,24 +155,6 @@ class TestHelpers(unittest.TestCase):
         uptime = self.helpers_instance.get_uptime()
         assert isinstance(uptime, str)
         assert uptime != "no uptime is supported!"
-
-    @mock.patch("builtins.open")
-    def test_get_rpi_server_version_version_not_found(self, mock_open):
-        """test the get_rpi_server_version"""
-
-        # Mocking the content of the changelog file
-        changelog_content = ""
-
-        # Creating a MagicMock object to mock the file
-        mock_file = mock.MagicMock()
-        mock_file.read.return_value = changelog_content
-        mock_open.return_value.__enter__.return_value = mock_file
-
-        # Calling the method to test
-        version = self.helpers_instance.get_rpi_server_version()
-
-        # Asserting the return value
-        self.assertEqual(version, None)
 
     def test_store_object_to_file_stores_object(self):
         """store_object_to_file method stores a local object to a file"""

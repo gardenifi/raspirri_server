@@ -1,11 +1,9 @@
 name: Release
 
 on:
-  pull_request:
+  push:
     paths:
-      - 'CHANGELOG.md'  # Adjust the path to match your specific file or directory
-    branches:
-      - main
+      - 'CHANGELOG.md'
 
 jobs:
   common-steps:
@@ -18,19 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Check commit message
-        run: |
-          commit_message=$(git log -1 --pretty=%B)
-          if [[ $commit_message == *"[RELEASE]"* ]]; then
-            echo "Release commit detected. Running release workflow."
-          else
-            echo "No release commit detected. Skipping release workflow."
-            exit 0
-          fi
+        with:
+          ref: ${{ github.ref }}
 
       - name: Install dependencies
         run: |

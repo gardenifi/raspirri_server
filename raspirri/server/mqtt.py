@@ -278,6 +278,7 @@ class Mqtt:
     @staticmethod
     def publish_to_topic(client, topic, data, retained=True):
         """Publish to MQTT Topic."""
+        logger.debug(f"Publishing to Topic: {topic} the following data: {data}")
         client.publish(topic, data, qos=2, retain=retained)
 
     # The callback for when a PUBLISH message is received from the server.
@@ -309,7 +310,8 @@ class Mqtt:
                 metadata = {}
                 metadata["ip_address"] = Helpers().extract_local_ip()
                 metadata["uptime"] = Helpers().get_uptime()
-                metadata["version"] = Helpers().get_rpi_server_version()
+                metadata["latest_version"] = Helpers().get_rpi_server_latest_version()
+                metadata["version"] = Helpers().get_rpi_server_current_version()
                 Mqtt.publish_to_topic(client, MQTT_TOPIC_METADATA, str(metadata))
                 if "valves" in statuses:
                     Mqtt.publish_to_topic(client, MQTT_TOPIC_VALVES, str(statuses["valves"]))
