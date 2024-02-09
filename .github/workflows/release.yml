@@ -9,7 +9,7 @@ on:
 
 jobs:
   common-steps:
-    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@$main
+    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@main
     with:
       fake-argument: 'fake'
 
