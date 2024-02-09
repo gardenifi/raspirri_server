@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Released]
 
-## [1.0.1] - 2023-12-06
+## [1.0.1] - 2024-02-07
 
 ### Added
 - Storing/Loading program from JSON files (program_N.json where N=[1..4])
