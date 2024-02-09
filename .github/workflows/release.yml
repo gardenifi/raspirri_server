@@ -22,16 +22,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check commit message
-        run: |
-          commit_message=$(git log -1 --pretty=%B)
-          if [[ $commit_message == *"[RELEASE]"* ]]; then
-            echo "Release commit detected. Running release workflow."
-          else
-            echo "No release commit detected. Skipping release workflow."
-            exit 0
-          fi
-
       - name: Install dependencies
         run: |
           git config --global user.email "mariosk@gmail.com"
