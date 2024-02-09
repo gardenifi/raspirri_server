@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.4] - 2024-02-09
 
 ### Added
-- Github actions workflow changes 3
+- Github actions workflow changes
 
 ### Changed
 - Release v1.0.4
