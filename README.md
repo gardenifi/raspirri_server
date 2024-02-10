@@ -4,8 +4,8 @@
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
 [![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/raspirri_server/Python-Project-Template-Eng/branch/master/graph/badge.svg)](https://codecov.io/gh/franneck94/Python-Project-Template-Eng)
-[![Documentation](https://img.shields.io/badge/ref-Documentation-blue)](https://franneck94.github.io/Python-Project-Template-Eng/)
+[![codecov](https://codecov.io/gh/raspirri_server/branch/main/graph/badge.svg)](https://codecov.io/gh/gardenifi/raspirri_server/)
+[![Documentation](https://img.shields.io/badge/ref-Documentation-blue)](https://gardenifi.github.io/raspirri_server/)
 
 # Raspberry Pi-based Smart Irrigation System (RaspirriV1)
 

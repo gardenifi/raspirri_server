@@ -12,3 +12,10 @@ jobs:
     uses: gardenifi/raspirri_server/.github/workflows/precommit.yml@fix/update-readme
     with:
       fake-argument: 'fake'
+
+  steps:
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      env:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: gardenifi/raspirri_server
