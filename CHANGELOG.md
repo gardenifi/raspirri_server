@@ -5,6 +5,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Released]
 
+## [1.0.4] - 2024-02-11
+
+### Added
+- N/A
+
+### Changed
+- Release v1.0.4
+- part patch
+
+### Fixed
+- Adding bumpversion.cfg in installer
+
 ## [1.0.3] - 2024-02-11
 
 ### Added

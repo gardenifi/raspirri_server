@@ -36,7 +36,7 @@ jobs:
           pip install bump2version
           NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2 | head -1)
           PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
-          bump2version --new-version ${NEW_VERSION} ${PART}
+          bump2version --new-version ${NEW_VERSION} ${PART} --config-file bumpversion.cfg
           git push --follow-tags
           git push origin --tags
           NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github

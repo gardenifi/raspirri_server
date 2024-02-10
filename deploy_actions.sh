@@ -180,6 +180,7 @@ if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
   sudo cp -f common.sh ${DEFAULT_INSTALL_DIR}
   sudo cp -f debug.sh ${DEFAULT_INSTALL_DIR}
   sudo cp -f *.md ${DEFAULT_INSTALL_DIR}
+  sudo cp -f *.cfg ${DEFAULT_INSTALL_DIR}
   sudo cp -f *.service ${DEFAULT_INSTALL_DIR}
   sudo cp -f requirements*.txt ${DEFAULT_INSTALL_DIR}
 fi

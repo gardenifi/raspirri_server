@@ -46,6 +46,7 @@ setup(
         (DEFAULT_INSTALL_PATH, get_files_with_extension("txt")),
         (DEFAULT_INSTALL_PATH, get_files_with_extension("service")),
         (DEFAULT_INSTALL_PATH, get_files_with_extension("md")),
+        (DEFAULT_INSTALL_PATH, get_files_with_extension("cfg")),
         (DEFAULT_INSTALL_PATH + "/certs", ["certs/cert.pem", "certs/key.pem"]),
     ],
 )
