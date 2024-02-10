@@ -1,11 +1,12 @@
 [![](https://img.shields.io/badge/Buy%20me%20-coffee!-orange.svg?logo=buy-me-a-coffee&color=795548)](https://buymeacoff.ee/mariosk6)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
 [![PRs welcome!](https://img.shields.io/badge/contributions-welcome-green.svg?style=flat)](https://github.com/gardenifi/raspirri_server/issues)
+[![Documentation](https://img.shields.io/badge/ref-Documentation-blue)](https://gardenifi.github.io/raspirri_server/)
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
 [![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/raspirri_server/branch/main/graph/badge.svg)](https://codecov.io/gh/gardenifi/raspirri_server/)
-[![Documentation](https://img.shields.io/badge/ref-Documentation-blue)](https://gardenifi.github.io/raspirri_server/)
+[![codecov](https://codecov.io/gh/gardenifi/raspirri_server/graph/badge.svg?token=W913MJNRPW)](https://codecov.io/gh/gardenifi/raspirri_server)
+
 
 # Raspberry Pi-based Smart Irrigation System (RaspirriV1)
 
