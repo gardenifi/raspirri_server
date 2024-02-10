@@ -2,7 +2,6 @@ name: Precommit
 
 on:
   workflow_call:
-    # Introduced 'inputs' to define parameters that can be passed when calling this workflow
     inputs:
       fake-argument:
         description: "Fake argument"
@@ -39,5 +38,5 @@ jobs:
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       env:
-        token: ${{ secrets.CODECOV_TOKEN }}
+        token: 35e7625a-90fe-44e3-aff3-d09c7bb83743
         slug: gardenifi/raspirri_server
