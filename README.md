@@ -81,25 +81,19 @@ export MQTT_PASS=broker_pass
 The above credentials are used to access your MQTT broker. In our experiments we used [HiveMQ platform](https://www.hivemq.com/).
 
 ### Installation
-Enter /var/tmp/ and download the latest release: https://github.com/gardenifi/raspirri_server/releases or do it programmatically:
+Enter /var/tmp/ and download the latest release: https://github.com/gardenifi/raspirri_server/releases and after untar enter the folder and execute:
 ```
-# Retrieve the latest release information
-latest_release=$(curl -s https://api.github.com/repos/gardenifi/raspirri_server/releases/latest)
-# Extract the download URL for the latest release asset
-download_url=$(echo "$latest_release" | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/')
-# Download the latest release asset
-curl -LO $download_url
-filename=$(basename $download_url)
-tar xvf $filename
-filename_without_extension=$(basename "$filename" .tar.gz)
-cd "$filename_without_extension"
 ./install.sh
 ```
-or
+or do it programmatically:
+```
+./download_and_upgrade.sh
+```
+
+If you would like to uninstall it.
 ```
 ./uninstall.sh
 ```
-if you would like to uninstall it.
 
 ### How to trigger a new release
 If you add a new section in [CHANGELOG.md](https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md) like this:

@@ -43,3 +43,4 @@ jobs:
           env_vars: OS,PYTHON
           files: coverage.xml
           flags: tests
+          gcov_ignore: ./tests

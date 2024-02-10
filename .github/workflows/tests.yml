@@ -1,7 +1,7 @@
 name: Tests
 
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths-ignore:
@@ -9,6 +9,6 @@ on:
 
 jobs:
   pre-commit:
-    uses: gardenifi/raspirri_server/.github/workflows/precommit.yml@fix/update-readme
+    uses: gardenifi/raspirri_server/.github/workflows/precommit.yml@main
     with:
       fake-argument: 'fake'

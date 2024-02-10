@@ -132,12 +132,11 @@ function uninstall_packages {
 }
 
 function install_app_deps {
-  source ${COMMON_SH_FILE}
-  git config --global --add safe.directory $(pwd)
+  cd ${DEFAULT_INSTALL_DIR}
+  sudo ./common.sh
   echo "Checking Bluetooth Status..."
   sudo systemctl status bluetooth --no-pager
-  check_for_pip_version
-  sudo pip3 install -r requirements.txt ${PIP3_ARG}
+  cd ${SCRIPT_DIR}
 }
 
 function uninstall_app_deps {
@@ -182,7 +181,7 @@ if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
   sudo cp -f debug.sh ${DEFAULT_INSTALL_DIR}
   sudo cp -f *.md ${DEFAULT_INSTALL_DIR}
   sudo cp -f *.service ${DEFAULT_INSTALL_DIR}
-  sudo cp -f requirements.txt ${DEFAULT_INSTALL_DIR}
+  sudo cp -f requirements*.txt ${DEFAULT_INSTALL_DIR}
 fi
 
 if [ "$(basename "$0")" == "install.sh" ]; then
@@ -194,6 +193,7 @@ elif [ "$(basename "$0")" == "uninstall.sh" ]; then
   uninstall_systemd_services
   uninstall_app_deps
   uninstall_packages
+  sudo rm -rf ${DEFAULT_INSTALL_DIR}
 elif [ "$(basename "$0")" == "install_services.sh" ]; then
   install_systemd_services
 elif [ "$(basename "$0")" == "uninstall_services.sh" ]; then

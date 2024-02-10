@@ -520,7 +520,7 @@ class TestHelpers(unittest.TestCase):
             mock_logger.info.assert_called_once_with("Git update code and restart...")
 
             # Ensure that subprocess.run was called with the expected arguments
-            mock_run.assert_called_once_with(["/usr/bin/git", "pull"], stdout=-1, text=True, check=True)
+            mock_run.assert_called_once_with(["/usr/local/raspirri_server/download_and_upgrade.sh"], stdout=-1, text=True, check=True)
 
             # Assert that os.kill was called with the expected arguments
             mock_kill.assert_called_once_with(os.getpid(), signal.SIGTERM)
