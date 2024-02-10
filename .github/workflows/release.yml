@@ -7,7 +7,7 @@ on:
 
 jobs:
   common-steps:
-    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@main
+    uses: gardenifi/raspirri_server/.github/workflows/precommit.yml@fix/update-readme
     with:
       fake-argument: 'fake'
 

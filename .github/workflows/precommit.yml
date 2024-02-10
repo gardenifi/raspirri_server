@@ -12,7 +12,7 @@ on:
 jobs:
   common-job:
     runs-on: ubuntu-latest
-    name: Build, Check Code Conventions, Formatting, Linting, run Unit Tests and check UT code coverage on ubuntu-latest x86_64
+    name: Build, Check Code Conventions, Formatting, Linting, run Unit Tests and check UT code coverage on ubuntu-latest
 
     steps:
     - name: Checkout code
