@@ -490,7 +490,7 @@ class Helpers:
         """
         logger.info("Git update code and restart...")
         try:
-            subprocess.run(["/usr/bin/git", "pull"], stdout=subprocess.PIPE, text=True, check=True)
+            subprocess.run(["/usr/local/raspirri_server/download_and_upgrade.sh"], stdout=subprocess.PIPE, text=True, check=True)
             os.kill(os.getpid(), signal.SIGTERM)
         except Exception as e:
             logger.error(f"Error updating git: {e}")
