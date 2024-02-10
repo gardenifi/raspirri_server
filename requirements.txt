@@ -1,0 +1,7 @@
+# Runtime requirements
+--requirement requirements-dev.txt
+dbus-python==1.3.2
+PyGObject==3.46.0
+
+# ARM requirements
+RPi.GPIO==0.7.1

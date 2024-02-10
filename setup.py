@@ -8,7 +8,7 @@ DEFAULT_INSTALL_PATH = os.environ.get("INSTALLATION_PATH", "//usr/local/raspirri
 
 def read_requirements():
     """Read requirements from requirements.txt file"""
-    requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt.arm")
+    requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
     with open(requirements_path, encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip()]
 
@@ -39,7 +39,7 @@ setup(
     install_requires=read_requirements(),
     data_files=[
         (DEFAULT_INSTALL_PATH, get_files_with_extension("sh")),
-        (DEFAULT_INSTALL_PATH, get_files_with_extension("arm")),
+        (DEFAULT_INSTALL_PATH, get_files_with_extension("txt")),
         (DEFAULT_INSTALL_PATH, get_files_with_extension("service")),
         (DEFAULT_INSTALL_PATH, get_files_with_extension("md")),
         (DEFAULT_INSTALL_PATH + "/certs", ["certs/cert.pem", "certs/key.pem"]),
