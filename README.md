@@ -268,7 +268,7 @@ sonarsource/sonar-scanner-cli -Dsonar.projectKey=9475199c-9132-11ee-a11b-9f71450
 -Dsonar.host.url=http://${SONARQUBE_URL} \
 -Dsonar.token=sqp_b3a1f41488c19e81ce2d45ceb90a0b4a4028a3be \
 -Dsonar.scm.provider=git \
--Dsonar.python.version=3.11
+-Dsonar.python.version=3.9
 -Dsonar.projectBaseDir=/usr/src
 docker logs -f sonar-scanner
 ```
