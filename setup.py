@@ -6,9 +6,9 @@ from setuptools import setup, find_packages
 DEFAULT_INSTALL_PATH = os.environ.get("INSTALLATION_PATH", "//usr/local/raspirri_server")
 
 
-def read_requirements():
+def read_requirements(requirements_file):
     """Read requirements from requirements.txt file"""
-    requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
+    requirements_path = os.path.join(os.path.dirname(__file__), requirements_file)
     with open(requirements_path, encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip()]
 
@@ -28,6 +28,10 @@ def get_files_with_extension(extension):
     return relative_paths
 
 
+requirements = []
+requirements.append(read_requirements("requirements-dev.txt"))
+requirements.append(read_requirements("requirements-arm.txt"))
+
 setup(
     name="raspirri_server",
     version=os.getenv("NEW_VERSION", None),
@@ -36,7 +40,7 @@ setup(
     author_email="mariosk@gmail.com",
     license="MIT",
     packages=find_packages(),
-    install_requires=read_requirements(),
+    install_requires=requirements,
     data_files=[
         (DEFAULT_INSTALL_PATH, get_files_with_extension("sh")),
         (DEFAULT_INSTALL_PATH, get_files_with_extension("txt")),
