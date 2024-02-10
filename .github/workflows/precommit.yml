@@ -1,8 +1,7 @@
-name: Common Steps
+name: Precommit
 
 on:
   workflow_call:
-    # Introduced 'inputs' to define parameters that can be passed when calling this workflow
     inputs:
       fake-argument:
         description: "Fake argument"
@@ -12,7 +11,7 @@ on:
 jobs:
   common-job:
     runs-on: ubuntu-latest
-    name: Build, Check Code Conventions, Formatting, Linting, run Unit Tests and check UT code coverage on ubuntu-latest x86_64
+    name: Build, Check Code Conventions, Formatting, Linting, run Unit Tests and check UT code coverage on ubuntu-latest
 
     steps:
     - name: Checkout code
@@ -20,11 +19,10 @@ jobs:
       with:
         ref: ${{ github.ref }}
 
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.11
+        python-version: 3.9
 
     - name: Install pre-commit
       run: |
@@ -34,5 +32,14 @@ jobs:
 
     - name: Run pre-commit
       run: |
-        pip install -r requirements.txt.x86_64  # Adjust based on your project
+        pip install -r requirements-dev.txt  # Adjust based on your project
         pre-commit run --all-files
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3.1.0
+      with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./
+          env_vars: OS,PYTHON
+          files: coverage.xml
+          flags: tests

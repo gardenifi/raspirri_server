@@ -10,11 +10,6 @@ SERVICES=("rpi_server" "rpi_ble_server" "rpi_watchdog_server")
 # Reverse the order
 REVERSED_SERVICES=("${SERVICES[@]: -1:1}" "${SERVICES[@]: -2:1}" "${SERVICES[@]: -3:1}")
 PIP3_ARG=""
-ARCH=$(uname -m)
-if [ "$ARCH" != "x86_64" ]; then
-  ARCH=arm
-fi
-
 
 function version_compare() {
     local version1=$1
@@ -142,12 +137,12 @@ function install_app_deps {
   echo "Checking Bluetooth Status..."
   sudo systemctl status bluetooth --no-pager
   check_for_pip_version
-  sudo pip3 install -r requirements.txt.$ARCH ${PIP3_ARG}
+  sudo pip3 install -r requirements.txt ${PIP3_ARG}
 }
 
 function uninstall_app_deps {
   check_for_pip_version
-  sudo pip3 uninstall -r requirements.txt.$ARCH ${PIP3_ARG} -y
+  sudo pip3 uninstall -r requirements.txt ${PIP3_ARG} -y
   sudo rm -rf venv
 }
 
@@ -187,7 +182,7 @@ if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
   sudo cp -f debug.sh ${DEFAULT_INSTALL_DIR}
   sudo cp -f *.md ${DEFAULT_INSTALL_DIR}
   sudo cp -f *.service ${DEFAULT_INSTALL_DIR}
-  sudo cp -f requirements.txt.* ${DEFAULT_INSTALL_DIR}
+  sudo cp -f requirements.txt ${DEFAULT_INSTALL_DIR}
 fi
 
 if [ "$(basename "$0")" == "install.sh" ]; then

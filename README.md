@@ -1,9 +1,12 @@
 [![](https://img.shields.io/badge/Buy%20me%20-coffee!-orange.svg?logo=buy-me-a-coffee&color=795548)](https://buymeacoff.ee/mariosk6)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
 [![PRs welcome!](https://img.shields.io/badge/contributions-welcome-green.svg?style=flat)](https://github.com/gardenifi/raspirri_server/issues)
+[![Documentation](https://img.shields.io/badge/ref-Documentation-blue)](https://gardenifi.github.io/raspirri_server/)
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
 [![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/gardenifi/raspirri_server/graph/badge.svg?token=W913MJNRPW)](https://codecov.io/gh/gardenifi/raspirri_server)
+
 
 # Raspberry Pi-based Smart Irrigation System (RaspirriV1)
 
@@ -24,7 +27,13 @@ RaspirriV1 is an intelligent irrigation system powered by RaspirriV1, a versatil
 
 ## Getting Started
 
-To get a copy of the project up and running on your local machine, follow these steps.
+To get a copy of the project up and running on your local machine, follow these steps. This project includes:
+- Source code and test code is seperated in different directories.
+- External libraries installed and managed by [Pip](https://pypi.org/project/pip/) and [setuptools](https://setuptools.pypa.io/en/latest/) in a pyproject.toml.
+- Setup for tests using [Pytest](https://docs.pytest.org/en/stable/) and coverage with [Pytest-Cov](https://github.com/pytest-dev/pytest-cov).
+- Continuous testing with [Github-Actions](https://github.com/features/actions/) including [pre-commit](https://github.com/pre-commit/pre-commit).
+- Code coverage reports, including automatic upload to [Codecov](https://codecov.io).
+- Code documentation with [Mkdocs](https://www.mkdocs.org/).
 
 ### Prerequisites
 
@@ -96,8 +105,10 @@ if you would like to uninstall it.
 If you add a new section in [CHANGELOG.md](https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md) like this:
 
 ```
+## [X.Y.Z] - 2024-02-06
+
 ### Added
-- Implemented the XYZ-functionality
+- Implemented the ???-functionality
 
 ### Changed
 - Release vX.Y.Z
@@ -106,9 +117,8 @@ If you add a new section in [CHANGELOG.md](https://github.com/gardenifi/raspirri
 ### Fixed
 - Bug explanation
 
-## [X.Y.Z] - 2024-02-06
 ```
-then a new version will be created (from Github actions) in the releases [assets](https://github.com/gardenifi/raspirri_server/releases) with the same number.
+then a new version will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.
 
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
@@ -196,7 +206,7 @@ You may run unit tests in a Python virtual environment:
 sudo rm -rf venv
 virtualenv -p /usr/bin/python3 venv
 source venv/bin/activate
-pip3 install -r requirements.txt.$(uname -m) --break-system-packages
+pip3 install -r requirements.txt --break-system-packages
 RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage run --include='raspirri/*' -m pytest -rA -s -vv tests
 ```
 ### Unit Tests Code Coverage
@@ -258,7 +268,7 @@ sonarsource/sonar-scanner-cli -Dsonar.projectKey=9475199c-9132-11ee-a11b-9f71450
 -Dsonar.host.url=http://${SONARQUBE_URL} \
 -Dsonar.token=sqp_b3a1f41488c19e81ce2d45ceb90a0b4a4028a3be \
 -Dsonar.scm.provider=git \
--Dsonar.python.version=3.11
+-Dsonar.python.version=3.9
 -Dsonar.projectBaseDir=/usr/src
 docker logs -f sonar-scanner
 ```
@@ -292,8 +302,8 @@ Here is the folder/files structure explanation:
 ├── LICENSE.md
 ├── README.md
 ├── CHANGELOG.md
-├── requirements.txt.arm
-├── requirements.txt.x86_64
+├── requirements.txt
+├── requirements-dev.txt
 ├── rpi_ble_server.service
 ├── rpi_server.service
 ├── secret_env.sh
@@ -369,7 +379,7 @@ This project is licensed under the [Your License] - see the [LICENSE.md](LICENSE
 
 ## Build Status
 
-[![Workflow Status](https://github.com/gardenifi/raspirri_server/actions/workflows/x86_64.yml/badge.svg)](https://github.com/gardenifi/raspirri_server/actions/workflows/x86_64.yml)
+[![Workflow Status](https://github.com/gardenifi/raspirri_server/actions/workflows/common-steps.yml/badge.svg)](https://github.com/gardenifi/raspirri_server/actions/workflows/common-steps.yml)
 
 ## Contact
 

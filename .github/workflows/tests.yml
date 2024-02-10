@@ -8,7 +8,7 @@ on:
       - 'CHANGELOG.md'
 
 jobs:
-  common-steps:
-    uses: gardenifi/raspirri_server/.github/workflows/common-steps.yml@main
+  pre-commit:
+    uses: gardenifi/raspirri_server/.github/workflows/precommit.yml@fix/update-readme
     with:
       fake-argument: 'fake'

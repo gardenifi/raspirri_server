@@ -10,9 +10,5 @@ else
     echo "Could not find a Virtual Environment. Creating one now..."
     virtualenv -p /usr/bin/python3 venv
     source venv/bin/activate
-    ARCH=$(uname -m)
-    if [ "$ARCH" != "x86_64" ]; then
-        ARCH=arm
-    fi
-    pip3 install -r requirements.txt.$ARCH --break-system-packages
+    pip3 install -r requirements.txt --break-system-packages
 fi
