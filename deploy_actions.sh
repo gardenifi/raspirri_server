@@ -177,6 +177,7 @@ if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
   sudo cp -r raspirri ${DEFAULT_INSTALL_DIR}
   sudo cp -r certs ${DEFAULT_INSTALL_DIR}
   sudo cp -f env.sh ${DEFAULT_INSTALL_DIR}
+  sudo cp -f env.sh ${DEFAULT_INSTALL_DIR}
   sudo cp -f common.sh ${DEFAULT_INSTALL_DIR}
   sudo cp -f debug.sh ${DEFAULT_INSTALL_DIR}
   sudo cp -f *.md ${DEFAULT_INSTALL_DIR}

@@ -87,7 +87,7 @@ Enter /var/tmp/ and download the latest release: https://github.com/gardenifi/ra
 ```
 or do it programmatically:
 ```
-./download_and_upgrade.sh
+./upgrade.sh
 ```
 
 If you would like to uninstall it.
