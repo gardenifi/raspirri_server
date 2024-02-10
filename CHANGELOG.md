@@ -15,7 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - part patch
 
 ### Fixed
-- Adding bumpversion.cfg in installer
+- Adding bumpversion.cfg in installer without "."
 
 ## [1.0.3] - 2024-02-11
 
