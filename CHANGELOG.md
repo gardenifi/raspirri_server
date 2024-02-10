@@ -5,6 +5,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Released]
 
+## [1.0.3] - 2024-02-11
+
+### Added
+- No new features implemented
+
+### Changed
+- Release v1.0.3
+- part patch
+
+### Fixed
+- Added new github action workflows (codeql and documentation)
+
+
 ## [1.0.2] - 2024-02-11
 
 ### Added
