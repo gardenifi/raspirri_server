@@ -134,9 +134,9 @@ function uninstall_packages {
 function install_app_deps {
   cd ${DEFAULT_INSTALL_DIR}
   sudo ./common.sh
-  echo "Checking Bluetooth Status..."
-  sudo systemctl status bluetooth --no-pager
   cd ${SCRIPT_DIR}
+  # echo "Checking Bluetooth Status..."
+  # sudo systemctl status bluetooth --no-pager
 }
 
 function uninstall_app_deps {

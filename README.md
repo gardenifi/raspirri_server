@@ -61,11 +61,6 @@ Add it in the /bootfs of the SDRAM and rebooot
 - Enter RPi and install git:
     ```
     sudo apt -y update
-    pip install raspirri-server --target=~/.local/raspirri-server
-
-    pip uninstall raspirri-server --break-system-packages
-
-
     sudo apt -y install git
     git --version
     git clone https://github.com/gardenifi/raspirri_server.git
@@ -112,7 +107,7 @@ If you add a new section in [CHANGELOG.md](https://github.com/gardenifi/raspirri
 - Bug explanation
 
 ```
-then a new version will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.
+then a new release will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.
 
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
