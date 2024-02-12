@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.3] - 2024-02-12
 
 ### Added
-- No new features implemented
+- No new features.
 
 ### Changed
 - Release v1.0.3
@@ -20,7 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.2] - 2024-02-11
 
 ### Added
-- No new features implemented
+- No new features.
 
 ### Changed
 - Release v1.0.2
