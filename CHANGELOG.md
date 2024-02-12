@@ -5,6 +5,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Released]
 
+## [1.0.4] - 2024-02-12
+
+### Added
+- No new features
+
+### Changed
+- Release v1.0.4
+- part patch
+
+### Fixed
+- No bug fixes. Triggered a failed release workflow.
+
 ## [1.0.3] - 2024-02-12
 
 ### Added
