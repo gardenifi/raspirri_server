@@ -15,7 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - part patch
 
 ### Fixed
-- No bug fixes. Triggered a failed release workflow.
+- No bug fixes. Triggered a failed release.
 
 ## [1.0.3] - 2024-02-12
 
