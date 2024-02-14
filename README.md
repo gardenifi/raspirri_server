@@ -358,7 +358,9 @@ This project is licensed under the [Your License] - see the [LICENSE.md](LICENSE
 
 ## Build Status
 
-[![Workflow Status](https://github.com/gardenifi/raspirri_server/actions/workflows/common-steps.yml/badge.svg)](https://github.com/gardenifi/raspirri_server/actions/workflows/common-steps.yml)
+![Python](https://img.shields.io/badge/python-3.9+-blue)
+[![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/gardenifi/raspirri_server/graph/badge.svg?token=W913MJNRPW)](https://codecov.io/gh/gardenifi/raspirri_server)
 
 ## Contact
 
