@@ -90,25 +90,6 @@ If you would like to uninstall it.
 ./uninstall.sh
 ```
 
-### How to trigger a new release
-If you add a new section in [CHANGELOG.md](https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md) like this:
-
-```
-## [X.Y.Z] - 2024-02-06
-
-### Added
-- Implemented the ???-functionality
-
-### Changed
-- Release vX.Y.Z
-- part patch
-
-### Fixed
-- Bug explanation
-
-```
-then a new release will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.
-
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
 ```
@@ -343,7 +324,7 @@ https://RPI_IP_ADDRESS:5000/openapi.json
 
 ## Releases
 
-Every time you need to create a new release, you should execute the following commands and a new CHANGELOG.md and release will be created:
+Every time you need to create a new release, you should execute the following commands and a new CHANGELOG.md(https://github.com/gardenifi/raspirri_server/CHANGELOG.md) will be created:
 
 Example:
 ```
@@ -353,6 +334,9 @@ bump2version --new-version ${NEW_VERSION} ${PART} --config-file bumpversion.cfg
 git add bumpversion.cfg && git commit -m "Bumping version to v${NEW_VERSION}" && git push
 git tag "v${NEW_VERSION}" && git push origin "v${NEW_VERSION}"
 ```
+
+then a new release will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.
+
 
 ## Contributing
 
