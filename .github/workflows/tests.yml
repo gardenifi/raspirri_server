@@ -5,6 +5,8 @@ on:
     branches:
       - main
     tags: [] # Exclude tag pushes
+    paths-ignore:
+      - 'bumpversion.cfg'
 
 jobs:
   pre-commit:
