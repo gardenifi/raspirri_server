@@ -324,7 +324,7 @@ https://RPI_IP_ADDRESS:5000/openapi.json
 
 ## Releases
 
-Every time you need to create a new release, you should execute the following commands and a new [CHANGELOG.md](https://github.com/gardenifi/raspirri_server/CHANGELOG.md) will be created:
+Every time you need to create a new release, you should execute the following commands and a new [CHANGELOG.md](https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md) will be created:
 
 Example:
 ```
