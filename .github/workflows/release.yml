@@ -2,10 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'CHANGELOG.md'
+    tags:
+      - '*' # Listen for all tag pushes
 
 jobs:
   pre-commit:
@@ -33,13 +31,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install wheel
           pip install -r requirements-dev.txt  # Adjust based on your project
+          npm install -g github-changelog-generator
 
-      - name: Bump version and create release
+      - name: Generate Changelog and Upload new release
         run: |
-          pip install bump2version
-          NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2 | head -1)
-          PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
-          bump2version --new-version ${NEW_VERSION} ${PART} --config-file bumpversion.cfg
-          git push --follow-tags
-          git push origin --tags
-          NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github
+          github_changelog_generator
+          git add CHANGELOG.md
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit -m "Auto-generated changelog"
+          git push
+          NEW_VERSION=$(git describe --abbrev=0 --tags) INSTALLATION_PATH=./tmp invoke upload-to-github
+
+      # - name: Bump version and create release
+      #   run: |
+      #     pip install bump2version
+      #     NEW_VERSION=$(cat CHANGELOG.md | grep "\- Release" | cut -d' ' -f3 | cut -d'v' -f2 | head -1)
+      #     PART=$(cat CHANGELOG.md | grep "\- part" | cut -d' ' -f3 | head -1)
+      #     bump2version --new-version ${NEW_VERSION} ${PART} --config-file bumpversion.cfg
+      #     git push --follow-tags
+      #     git push origin --tags
+      #     NEW_VERSION=${NEW_VERSION} INSTALLATION_PATH=./tmp invoke upload-to-github
