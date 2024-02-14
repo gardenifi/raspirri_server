@@ -36,6 +36,12 @@ jobs:
       - name: Generate Changelog
         run: |
           auto-changelog --template keepachangelog
+          # Check if there are changes to the changelog
+          if git diff --exit-code CHANGELOG.md; then
+            echo "No changes to CHANGELOG.md"
+            exit 0
+          fi
+          # Add, commit, and push the changes
           git add CHANGELOG.md
           git commit -m "Auto-generated changelog"
           git push
