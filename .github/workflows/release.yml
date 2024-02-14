@@ -28,17 +28,15 @@ jobs:
         run: |
           git config --global user.email "mariosk@gmail.com"
           git config --global user.name "Marios Karagiannopoulos"
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements-dev.txt  # Adjust based on your project
-          npm install -g github-changelog-generator
+          npm install -g auto-changelog
 
-      - name: Generate Changelog and Upload new release
+      - name: Generate Changelog
         run: |
-          github_changelog_generator
+          auto-changelog --template keepachangelog
           git add CHANGELOG.md
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
           git commit -m "Auto-generated changelog"
           git push
+
+      - name: Upload new release to assets
+        run: |
           NEW_VERSION=$(git describe --abbrev=0 --tags) INSTALLATION_PATH=./tmp invoke upload-to-github
