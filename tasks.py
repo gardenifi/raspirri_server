@@ -36,7 +36,7 @@ def upload_to_github(ctx):
     Upload the installer to GitHub Releases
     """
     ctx.run("echo 'Uploading release tarball to release assets...'")
-    github_username = "gardenifi"
+    organization = "gardenifi"
     repository_name = "raspirri_server"
     github_token = os.environ.get("GITHUB_ACCESS_TOKEN", None)
     version = os.environ.get("NEW_VERSION", None)
@@ -45,7 +45,7 @@ def upload_to_github(ctx):
     installer_file = f"dist/{repository_name}-{version}.tar.gz"
 
     # GitHub API endpoint to create a release
-    release_url = f"https://api.github.com/repos/{github_username}/{repository_name}/releases"
+    release_url = f"https://api.github.com/repos/{organization}/{repository_name}/releases"
 
     # Create a release
     response = requests.post(
@@ -63,7 +63,7 @@ def upload_to_github(ctx):
         release_id = response.json()["id"]
         # Upload the installer file
         upload_url = (
-            f"https://uploads.github.com/repos/{github_username}"
+            f"https://uploads.github.com/repos/{organization}"
             + f"/{repository_name}/releases/{release_id}/assets?"
             + f"name={repository_name}-{version}.tar.gz"
         )
