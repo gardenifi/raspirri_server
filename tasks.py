@@ -52,8 +52,10 @@ def upload_to_github(ctx):
     # Remove dots from the version
     version_numbers = version.replace(".", "")
     # Concatenate the components
-    release_description = f'<a href="https://github.com/gardenifi/raspirri_server/blob/main/\
-        CHANGELOG.md#v{version_numbers}---{today_date}">Release Description</a>'
+    release_description = (
+        f'<a href="https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md#v{version_numbers}---{today_date}">'
+        "Release Description</a>"
+    )
 
     # Create a release
     response = requests.post(
