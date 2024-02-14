@@ -42,4 +42,4 @@ jobs:
 
       - name: Upload new release to assets
         run: |
-          NEW_VERSION=$(git describe --abbrev=0 --tags) INSTALLATION_PATH=./tmp invoke upload-to-github
+          NEW_VERSION=$(git describe --abbrev=0 --tags | cut -d'v' -f2) INSTALLATION_PATH=./tmp invoke upload-to-github
