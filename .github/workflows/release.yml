@@ -29,6 +29,9 @@ jobs:
           git config --global user.email "mariosk@gmail.com"
           git config --global user.name "Marios Karagiannopoulos"
           npm install -g auto-changelog
+          python -m pip install --upgrade pip
+          pip install wheel==0.42.0
+          pip install invoke==2.2.0
 
       - name: Generate Changelog
         run: |
