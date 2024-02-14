@@ -343,10 +343,16 @@ https://RPI_IP_ADDRESS:5000/openapi.json
 
 ## Releases
 
-Every time you need to create a new release, you should follow the steps below:
+Every time you need to create a new release, you should execute the following commands and a new CHANGELOG.md and release will be created:
 
-1. Make changes in CHANGELOG.md
-2. git add --all . && git commit -m "Creating new RELEASE" && git push
+Example:
+```
+export NEW_VERSION=1.0.5
+export PART=patch
+bump2version --new-version ${NEW_VERSION} ${PART} --config-file bumpversion.cfg
+git add bumpversion.cfg && git commit -m "Bumping version to v${NEW_VERSION}" && git push
+git tag "v${NEW_VERSION}" && git push origin "v${NEW_VERSION}"
+```
 
 ## Contributing
 

@@ -1,5 +1,6 @@
 """Task module for the installer"""
 import os
+import datetime
 import requests
 from invoke import task
 
@@ -47,6 +48,13 @@ def upload_to_github(ctx):
     # GitHub API endpoint to create a release
     release_url = f"https://api.github.com/repos/{organization}/{repository_name}/releases"
 
+    today_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    # Remove dots from the version
+    version_numbers = version.replace(".", "")
+    # Concatenate the components
+    release_description = f'<a href="https://github.com/gardenifi/raspirri_server/blob/main/\
+        CHANGELOG.md#v{version_numbers}---{today_date}">Release Description</a>'
+
     # Create a release
     response = requests.post(
         release_url,
@@ -54,7 +62,7 @@ def upload_to_github(ctx):
         json={
             "tag_name": f"v{version}",  # Tag for the release
             "name": f"Release v{version}",  # Name of the release
-            "body": "Release Description",  # Description of the release
+            "body": f"{release_description}",  # Description of the release
         },
     )
 
