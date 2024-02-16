@@ -5,9 +5,8 @@ on:
     branches:
       - main
     paths-ignore:
-      - '!**'
       - 'raspirri/**'
-      - '.github/workflows'
+      - '.github/workflows/**'
 
 jobs:
   pre-commit:
