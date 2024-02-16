@@ -88,7 +88,7 @@ class TestSaveWifi:
             with pytest.raises(HTTPException) as exc_info:
                 await save_wifi(data)
             assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-            assert exc_info.value.detail == ""
+            assert exc_info.value.detail == "500: Invalid request"
         else:
             with pytest.raises(
                 HTTPException,
@@ -104,7 +104,7 @@ class TestSaveWifi:
         with pytest.raises(HTTPException) as exc_info:
             await save_wifi(data)
         assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert exc_info.value.detail == ""
+        assert exc_info.value.detail == "500: Invalid request"
 
     @pytest.mark.asyncio
     async def test_save_wifi_data_empty_ssid_and_wifi_key(self):
@@ -115,4 +115,4 @@ class TestSaveWifi:
         with pytest.raises(HTTPException) as exc_info:
             await save_wifi(data)
         assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert exc_info.value.detail == ""
+        assert exc_info.value.detail == "500: Invalid request"

@@ -104,7 +104,7 @@ class TestTurn:
         with pytest.raises(HTTPException) as exc:
             await turn(data)
         assert exc.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-        assert exc.value.detail == ""
+        assert exc.value.detail == "422: Invalid data: Unable to process the provided data"
 
     @pytest.mark.asyncio
     async def test_invalid_data_types_raises_validation_exception(self):

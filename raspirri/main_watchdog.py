@@ -54,7 +54,7 @@ def check_process(process_name):
         return False
 
 
-def check_health(endpoint):
+def check_health(endpoint) -> bool:
     """
     Check the health of an API endpoint.
 
