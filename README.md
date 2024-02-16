@@ -178,6 +178,7 @@ virtualenv -p /usr/bin/python3 venv
 source venv/bin/activate
 pip3 install -r requirements.txt --break-system-packages
 RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage run --include='raspirri/*' -m pytest -rA -s -vv tests
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) pytest --cov=./tests --cov-report=xml
 ```
 ### Unit Tests Code Coverage
 You may create Unit Test Code Coverage reports by executing:
