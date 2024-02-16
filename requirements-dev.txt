@@ -11,7 +11,7 @@ Deprecated==1.2.13
 distro==1.7.0
 
 # Raspirri
-fastapi[all]==0.104.1
+fastapi[all]==0.109.1
 feedparser==6.0.11
 future==0.18.3
 getmac==0.8.3
