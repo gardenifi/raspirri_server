@@ -48,6 +48,5 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
           files: ./coverage.xml
-          directory: ./raspirri
           env_vars: OS,PYTHON
           gcov_include: ./raspirri
