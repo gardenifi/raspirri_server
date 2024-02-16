@@ -41,20 +41,12 @@ jobs:
         pip install pytest-cov
         RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) pytest --cov=./raspirri --cov-report=xml
 
-    - name: Upload coverage reports to Codecov
-      run: |
-        # Replace `linux` below with the appropriate OS
-        # Options are `alpine`, `linux`, `macos`, `windows`
-        curl -Os https://uploader.codecov.io/latest/linux/codecov
-        chmod +x codecov
-        ./codecov -t ${{ secrets.CODECOV_TOKEN }} -e OS,PYTHON -F tests --gcov-root ./raspirri
-
-    # - name: Upload coverage to Codecov
-    #   uses: codecov/codecov-action@v3.1.0
-    #   with:
-    #       token: ${{ secrets.CODECOV_TOKEN }}
-    #       fail_ci_if_error: true # optional (default = false)
-    #       verbose: true # optional (default = false)
-    #       files: ./coverage.xml
-    #       env_vars: OS,PYTHON
-    #       gcov_include: ./raspirri
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3.1.0
+      with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
+          files: ./coverage.xml
+          env_vars: OS,PYTHON
+          gcov_include: ./raspirri
