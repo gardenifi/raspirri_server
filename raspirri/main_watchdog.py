@@ -35,7 +35,7 @@ RETRY_INTERVAL = 30  # seconds
 CHECK_INTERVAL = 30  # seconds
 
 
-def check_process(process_name):
+def check_process(process_name) -> bool:
     """
     Check if a process is running.
 
