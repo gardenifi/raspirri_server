@@ -2,5 +2,6 @@
 
 ## RaspirriV1
 
-::: raspirri
+::: raspirri.main_app
     :docstring:
+    :members:

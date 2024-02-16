@@ -5,8 +5,9 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'bumpversion.cfg'
-      - 'CHANGELOG.md'
+      - '!**'
+      - 'raspirri/**'
+      - '.github/workflows'
 
 jobs:
   pre-commit:
