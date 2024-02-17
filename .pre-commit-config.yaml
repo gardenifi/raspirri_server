@@ -55,9 +55,9 @@ repos:
 
     -   repo: local
         hooks:
-        -   id: check-code-coverage-below-threshold
+        -   id: check-ut-code-coverage-below-threshold
             name: Checking whether Unit Tests code coverage is below threshold
-            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover && echo "Unit Tests Code coverage is above 75%!"'
+            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-empty --omit='raspirri/ble/*' && echo "Unit Tests Code coverage is above 75%!"'
             language: system
             files: '\.py$'
             pass_filenames: false

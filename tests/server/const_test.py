@@ -26,10 +26,13 @@ THE SOFTWARE.
 
 import os
 import math
-from raspirri.server.const import load_env_variable
+import unittest
+import subprocess
+from unittest.mock import patch, MagicMock
+from raspirri.server.const import load_env_variable, get_machine_architecture, ARCH
 
 
-class TestLoadEnvVariable:
+class TestConstants(unittest.TestCase):
 
     """Load Env Variable Test Class"""
 
@@ -75,3 +78,37 @@ class TestLoadEnvVariable:
         assert load_env_variable("VARNAME", 3.14) == 3.14
         assert math.isclose(load_env_variable("VARNAME", 3.14), 3.14, rel_tol=1e-09, abs_tol=1e-09)
         assert load_env_variable("VARNAME", True)
+
+    # Returns the machine architecture when 'uname -m' command succeeds.
+    def test_returns_machine_architecture_when_uname_m_succeeds(self):
+        architecture = get_machine_architecture()
+        assert architecture is not None
+
+    @patch('subprocess.run')
+    def test_get_machine_architecture_success(self, mock_subprocess_run):
+        # Arrange
+        expected_architecture = 'x86_64'
+        mock_result = MagicMock()
+        mock_result.stdout = expected_architecture
+        mock_subprocess_run.return_value = mock_result
+
+        # Act
+        result = get_machine_architecture()
+
+        # Assert
+        self.assertEqual(result, expected_architecture)
+        mock_subprocess_run.assert_called_once_with(["uname", "-m"], stdout=subprocess.PIPE, text=True, check=True)
+
+    @patch('subprocess.run')
+    def test_get_machine_architecture_exception(self, mock_subprocess_run):
+        # Arrange
+        expected_error_message = "Some error message"
+        mock_subprocess_run.side_effect = Exception(expected_error_message)
+
+        # Act
+        result = get_machine_architecture()
+
+        # Assert
+        self.assertIsNone(result)
+        mock_subprocess_run.assert_called_once_with(["uname", "-m"], stdout=subprocess.PIPE, text=True, check=True)
+        # You may want to add more specific assertions based on your requirements
