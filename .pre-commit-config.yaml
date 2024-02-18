@@ -48,7 +48,7 @@ repos:
         hooks:
         -   id: run-unit-tests
             name: Run unit tests
-            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) pytest --cov=./raspirri --cov-report=xml -rA -s -vv tests'
+            entry: bash -c 'RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) coverage run --include=./raspirri/* --omit=./raspirri/ble/* -m pytest -rA -s -vv'
             language: system
             files: '\.py$'
             pass_filenames: false

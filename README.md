@@ -181,9 +181,9 @@ RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) pytest --cov=./raspirri --
 ```
 
 ### Unit Tests Code Coverage
-You may create Unit Test Code Coverage reports by executing:
+You may create Unit Test Code Coverage reports by executing in Raspberry Pi:
 ```bash
-RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-covered
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-covered --skip-empty'
 
 Name                            Stmts   Miss  Cover   Missing
 -------------------------------------------------------------
