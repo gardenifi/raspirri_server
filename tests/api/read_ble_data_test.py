@@ -33,7 +33,7 @@ from raspirri.main_app import read_ble_data
 client = TestClient(app)
 
 
-class TestReadBleData():
+class TestReadBleData:
     """
     Test class for the 'read_ble_data' function.
     """
@@ -69,6 +69,9 @@ class TestReadBleData():
 
     @pytest.mark.asyncio
     async def test_read_ble_data_success(self, mocker):
+        """
+        Test read BLE data with success.
+        """
         # Arrange
         expected_response = {"wifi_networks": ["network1", "network2"]}  # Example response
         mocker.patch("raspirri.server.services.Services.discover_wifi_networks", return_value=expected_response)
@@ -82,6 +85,9 @@ class TestReadBleData():
 
     @pytest.mark.asyncio
     async def test_read_ble_data_exception(self, mocker):
+        """
+        Test read BLE data with exception.
+        """
         # Arrange
         mocker.patch("raspirri.server.services.Services.discover_wifi_networks", side_effect=Exception("Something went wrong"))
 

@@ -34,7 +34,7 @@ from raspirri.main_app import app
 client = TestClient(app)
 
 
-class TestHealthCheck():
+class TestHealthCheck:
     """
     Test class for the Index API endpoints.
     """
@@ -95,6 +95,9 @@ class TestHealthCheck():
 
     @pytest.mark.asyncio
     def test_health_check_when_healthy(self, mocker):
+        """
+        HealthCheck Test when healthy response.
+        """
         # Arrange
         mocker.patch("raspirri.main_app.Mqtt.is_healthy", return_value=True)
 
@@ -107,6 +110,9 @@ class TestHealthCheck():
 
     @pytest.mark.asyncio
     def test_health_check_when_not_healthy(self, mocker):
+        """
+        HealthCheck Test when not healthy response.
+        """
         # Arrange
         mocker.patch("raspirri.main_app.Mqtt.is_healthy", return_value=False)
 

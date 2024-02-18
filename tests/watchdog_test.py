@@ -24,24 +24,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import subprocess
+import requests
 from fastapi.testclient import TestClient
 from raspirri.main_app import app
 from raspirri.main_watchdog import check_process, check_health, restart_process, reboot_machine
-import subprocess
-import requests
 
 
 client = TestClient(app)
 
-class TestWatchdog():
-        
+
+class TestWatchdog:
+
     """
     Test class for the Watchdog API client.
     """
+
     def test_check_process_running(self, mocker):
+        """
+        Mock subprocess.check_output with success result.
+        """
         # Arrange
-        mock_check_output = mocker.patch('subprocess.check_output')
-        mock_check_output.return_value = b'active\n'
+        mock_check_output = mocker.patch("subprocess.check_output")
+        mock_check_output.return_value = b"active\n"
 
         # Act
         result = check_process("some_process")
@@ -51,8 +56,11 @@ class TestWatchdog():
         mock_check_output.assert_called_once_with(["systemctl", "is-active", "some_process"])
 
     def test_check_process_not_running(self, mocker):
+        """
+        Mock subprocess.check_output with not-running result.
+        """
         # Arrange
-        mock_check_output = mocker.patch('subprocess.check_output')
+        mock_check_output = mocker.patch("subprocess.check_output")
         mock_check_output.side_effect = subprocess.CalledProcessError(returncode=1, cmd=["systemctl", "is-active", "some_process"])
 
         # Act
@@ -62,10 +70,12 @@ class TestWatchdog():
         assert result is False
         mock_check_output.assert_called_once_with(["systemctl", "is-active", "some_process"])
 
-
     def test_check_health_success(self, mocker):
+        """
+        Mock requests.get with success result.
+        """
         # Arrange
-        mocker.patch('requests.get').return_value.status_code = requests.codes.ok
+        mocker.patch("requests.get").return_value.status_code = requests.codes.ok
 
         # Act
         result = check_health("https://example.com/api/health")
@@ -74,8 +84,11 @@ class TestWatchdog():
         assert result is True
 
     def test_check_health_failure(self, mocker):
+        """
+        Mock requests.get with error result.
+        """
         # Arrange
-        mocker.patch('requests.get').return_value.status_code = requests.codes.bad_request
+        mocker.patch("requests.get").return_value.status_code = requests.codes.bad_request
 
         # Act
         result = check_health("https://example.com/api/health")
@@ -84,8 +97,11 @@ class TestWatchdog():
         assert result is False
 
     def test_restart_process(self, mocker):
+        """
+        Mock subprocess.run with success result.
+        """
         # Arrange
-        mock_subprocess_run = mocker.patch('subprocess.run')
+        mock_subprocess_run = mocker.patch("subprocess.run")
 
         # Act
         restart_process("some_process")
@@ -94,8 +110,11 @@ class TestWatchdog():
         mock_subprocess_run.assert_called_once_with(["systemctl", "restart", "some_process"], check=True)
 
     def test_reboot_machine(self, mocker):
+        """
+        Mock subprocess.run with success result.
+        """
         # Arrange
-        mock_subprocess_run = mocker.patch('subprocess.run')
+        mock_subprocess_run = mocker.patch("subprocess.run")
 
         # Act
         reboot_machine()

@@ -29,7 +29,7 @@ import math
 import unittest
 import subprocess
 from unittest.mock import patch, MagicMock
-from raspirri.server.const import load_env_variable, get_machine_architecture, ARCH
+from raspirri.server.const import load_env_variable, get_machine_architecture
 
 
 class TestConstants(unittest.TestCase):
@@ -81,13 +81,19 @@ class TestConstants(unittest.TestCase):
 
     # Returns the machine architecture when 'uname -m' command succeeds.
     def test_returns_machine_architecture_when_uname_m_succeeds(self):
+        """
+        Test "uname -m" with success.
+        """
         architecture = get_machine_architecture()
         assert architecture is not None
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_get_machine_architecture_success(self, mock_subprocess_run):
+        """
+        Mock subprocess.run with success result.
+        """
         # Arrange
-        expected_architecture = 'x86_64'
+        expected_architecture = "x86_64"
         mock_result = MagicMock()
         mock_result.stdout = expected_architecture
         mock_subprocess_run.return_value = mock_result
@@ -99,8 +105,11 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(result, expected_architecture)
         mock_subprocess_run.assert_called_once_with(["uname", "-m"], stdout=subprocess.PIPE, text=True, check=True)
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_get_machine_architecture_exception(self, mock_subprocess_run):
+        """
+        Mock subprocess.run with exception result.
+        """
         # Arrange
         expected_error_message = "Some error message"
         mock_subprocess_run.side_effect = Exception(expected_error_message)
