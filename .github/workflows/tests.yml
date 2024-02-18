@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - 'tests/**'
       - 'raspirri/**'
       - '.github/workflows/**'
 
