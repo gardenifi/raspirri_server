@@ -8,6 +8,7 @@ on:
       - 'tests/**'
       - 'raspirri/**'
       - '.github/workflows/**'
+      - '.pre-commit-config.yaml'
 
 jobs:
   pre-commit:
