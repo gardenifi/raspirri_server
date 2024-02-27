@@ -174,6 +174,7 @@ echo "The directory of the current script is: $SCRIPT_DIR"
 
 if [ "${SCRIPT_DIR}" != ${DEFAULT_INSTALL_DIR} ]; then
   sudo mkdir -p ${DEFAULT_INSTALL_DIR}
+  sudo rm -f /etc/timezone
   sudo cp -r raspirri ${DEFAULT_INSTALL_DIR}
   sudo cp -r certs ${DEFAULT_INSTALL_DIR}
   sudo cp -f env.sh ${DEFAULT_INSTALL_DIR}
