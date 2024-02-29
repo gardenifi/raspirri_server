@@ -334,6 +334,7 @@ Every time you need to create a new release, you should execute the following co
 
 Example:
 ```
+pip install bump2version
 export NEW_VERSION=1.0.5
 export PART=patch
 bump2version --new-version ${NEW_VERSION} ${PART} --config-file bumpversion.cfg
