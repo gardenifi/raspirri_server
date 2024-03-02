@@ -183,34 +183,24 @@ For Raspbian OS dev environment:
 RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) coverage run --include=./raspirri/* -m pytest -rA -s -vv && coverage xml
 ```
 
-For the coverage reporting:
-```
-RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-empty --omit='raspirri/ble/*' && echo "Unit Tests Code coverage is above 75%!"'
-```
-
 ### Unit Tests Code Coverage
 You may create Unit Test Code Coverage reports by executing in Raspberry Pi:
-```bash
-RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-covered --skip-empty'
-
+```
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-empty --omit='raspirri/ble/*' && echo "Unit Tests Code coverage is above 75%!"
 Name                            Stmts   Miss  Cover   Missing
 -------------------------------------------------------------
-raspirri/ble/advertisement.py      81     81     0%   22-143
-raspirri/ble/bletools.py           24     24     0%   22-65
-raspirri/ble/common.py              5      5     0%   27-31
-raspirri/ble/exceptions.py          8      8     0%   22-49
-raspirri/ble/service.py           189    189     0%   22-340
-raspirri/ble/wifi.py              124    124     0%   22-195
-raspirri/main_watchdog.py          51     51     0%   27-126
-raspirri/main_app.py              191     69    64%   55-56, 112, 130-133, 152-154, 156, 170-171, 218-220, 225-228, 234-239, 250-252, 263-318, 322
-raspirri/server/mqtt.py           231     70    70%   119-120, 201-213, 218-224, 236-241, 249-276, 293, 296-299, 319, 323-325, 341-342, 347-350, 388-397
+raspirri/main_watchdog.py          51     18    65%   86-87, 103-122, 126
+raspirri/main_app.py              191     65    66%   55-56, 132, 152-154, 156, 170-171, 218-220, 225-228, 234-239, 250-252, 263-318, 322
+raspirri/server/mqtt.py           231     71    69%   119-120, 201-213, 218-224, 236-241, 249-276, 293, 296-299, 319, 323-327, 341-342, 347-350, 388-397
 raspirri/server/helpers.py        284     79    72%   56, 240-242, 265-269, 423-427, 533, 536-551, 588-590, 592-594, 604-615, 627-635, 654, 658-666, 670-687, 696
-raspirri/server/const.py           68     10    85%   57-59, 64, 70-80, 112, 118-119
+raspirri/server/const.py           68      7    90%   64, 70-80, 112, 118-119
 raspirri/server/services.py       229     11    95%   501-504, 522-530
+raspirri/server/exceptions.py       8      0   100%
 -------------------------------------------------------------
-TOTAL                            1493    721    52%
-Coverage failure: total of 52 is less than fail-under=75
+TOTAL                            1062    251    76%
 
+2 empty files skipped.
+Unit Tests Code coverage is above 75%!
 ```
 In column "Missing" you can see the code lines that are not covered so you can write more Unit Tests to increase the code coverage. The current threshold to pass Github actions is 75%.
 
