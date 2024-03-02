@@ -80,12 +80,7 @@ Enter /var/tmp/ and download the latest release: https://github.com/gardenifi/ra
 ```
 ./install.sh
 ```
-or do it programmatically:
-```
-./upgrade.sh
-```
-
-If you would like to uninstall it.
+If you would like to uninstall it:
 ```
 ./uninstall.sh
 ```
@@ -334,12 +329,7 @@ Every time you need to create a new release, you should execute the following co
 
 Example:
 ```
-pip install bump2version
-export NEW_VERSION=1.0.5
-export PART=patch
-bump2version --new-version ${NEW_VERSION} ${PART} --config-file bumpversion.cfg
-git add bumpversion.cfg && git commit -m "Bumping version to v${NEW_VERSION}" && git push
-git tag "v${NEW_VERSION}" && git push origin "v${NEW_VERSION}"
+NEW_VERSION=1.0.13 ./new_release.sh
 ```
 
 then a new release will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.

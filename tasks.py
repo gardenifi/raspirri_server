@@ -74,8 +74,8 @@ def upload_to_github(ctx):
         # Upload the installer file
         upload_url = (
             f"https://uploads.github.com/repos/{organization}"
-            + f"/{repository_name}/releases/{release_id}/assets?"
-            + f"name={repository_name}-{version}.tar.gz"
+            + f"/{repository_name}/releases/{release_id}/assets?name="
+            + f"{repository_name}-{version}.tar.gz"
         )
         with open(installer_file, "rb") as file_content:
             upload_response = requests.post(

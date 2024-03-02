@@ -1,12 +1,16 @@
 name: Precommit
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tests/**'
+      - 'raspirri/**'
+      - '.github/workflows/**'
+      - '.pre-commit-config.yaml'  
+  workflow_dispatch:
   workflow_call:
-    inputs:
-      fake-argument:
-        description: "Fake argument"
-        required: false
-        type: string
 
 jobs:
   common-job:

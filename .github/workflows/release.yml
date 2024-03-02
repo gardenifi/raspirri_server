@@ -8,8 +8,6 @@ on:
 jobs:
   pre-commit:
     uses: gardenifi/raspirri_server/.github/workflows/precommit.yml@main
-    with:
-      fake-argument: 'fake'
 
   release:
     needs: pre-commit
