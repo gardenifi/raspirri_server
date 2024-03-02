@@ -172,7 +172,20 @@ sudo rm -rf venv
 virtualenv -p /usr/bin/python3 venv
 source venv/bin/activate
 pip3 install -r requirements.txt --break-system-packages
-RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) pytest --cov=./raspirri --cov-report=xml -rA -s -vv tests
+```
+For x86_64 dev environment:
+```
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) coverage run --include=./raspirri/* --omit=./raspirri/ble/* -m pytest -rA -s -vv && coverage xml
+```
+
+For Raspbian OS dev environment:
+```
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) coverage run --include=./raspirri/* -m pytest -rA -s -vv && coverage xml
+```
+
+For the coverage reporting:
+```
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-empty --omit='raspirri/ble/*' && echo "Unit Tests Code coverage is above 75%!"'
 ```
 
 ### Unit Tests Code Coverage

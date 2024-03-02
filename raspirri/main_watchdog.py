@@ -68,9 +68,9 @@ def check_health(endpoint) -> bool:
         logger.info(f"Checking HTTP request: {endpoint}")
         response = requests.get(endpoint, verify=False)
         return response.status_code == status.HTTP_200_OK
-    except requests.RequestException as reqex:
+    except Exception as reqex:
         logger.error(f"Error HTTP request: {reqex}")
-        return False
+    return False
 
 
 def restart_process(process_name):
