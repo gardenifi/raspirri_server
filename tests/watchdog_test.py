@@ -25,27 +25,43 @@ THE SOFTWARE.
 """
 
 import subprocess
+import unittest
+from unittest.mock import patch
 import requests
+from loguru import logger
 from fastapi.testclient import TestClient
 from raspirri.main_app import app
 from raspirri.main_watchdog import check_process, check_health, restart_process, reboot_machine
 
-
 client = TestClient(app)
 
 
-class TestWatchdog:
+class TestWatchdog(unittest.TestCase):
 
     """
     Test class for the Watchdog API client.
     """
 
-    def test_check_process_running(self, mocker):
+    def setUp(self):
+        # Create a list to capture log records
+        self.log_records = []
+
+        # Patch the logger to use a custom sink for testing
+        def testing_sink(record):
+            self.log_records.append(record)
+
+        logger.add(testing_sink, level="INFO", catch=True)
+
+    def tearDown(self):
+        # Remove the testing sink from the logger
+        logger.remove()
+
+    @patch("subprocess.check_output")
+    def test_check_process_running(self, mock_check_output):
         """
         Mock subprocess.check_output with success result.
         """
         # Arrange
-        mock_check_output = mocker.patch("subprocess.check_output")
         mock_check_output.return_value = b"active\n"
 
         # Act
@@ -55,12 +71,12 @@ class TestWatchdog:
         assert result is True
         mock_check_output.assert_called_once_with(["systemctl", "is-active", "some_process"])
 
-    def test_check_process_not_running(self, mocker):
+    @patch("subprocess.check_output")
+    def test_check_process_not_running(self, mock_check_output):
         """
         Mock subprocess.check_output with not-running result.
         """
         # Arrange
-        mock_check_output = mocker.patch("subprocess.check_output")
         mock_check_output.side_effect = subprocess.CalledProcessError(returncode=1, cmd=["systemctl", "is-active", "some_process"])
 
         # Act
@@ -70,12 +86,13 @@ class TestWatchdog:
         assert result is False
         mock_check_output.assert_called_once_with(["systemctl", "is-active", "some_process"])
 
-    def test_check_health_success(self, mocker):
+    @patch("requests.get")
+    def test_check_health_success(self, mock_get):
         """
         Mock requests.get with success result.
         """
         # Arrange
-        mocker.patch("requests.get").return_value.status_code = requests.codes.ok
+        mock_get.return_value.status_code = requests.codes.ok
 
         # Act
         result = check_health("https://example.com/api/health")
@@ -83,12 +100,13 @@ class TestWatchdog:
         # Assert
         assert result is True
 
-    def test_check_health_failure(self, mocker):
+    @patch("requests.get")
+    def test_check_health_failure(self, mock_get):
         """
         Mock requests.get with error result.
         """
         # Arrange
-        mocker.patch("requests.get").return_value.status_code = requests.codes.bad_request
+        mock_get.return_value.status_code = requests.codes.bad_request
 
         # Act
         result = check_health("https://example.com/api/health")
@@ -96,28 +114,42 @@ class TestWatchdog:
         # Assert
         assert result is False
 
-    def test_restart_process(self, mocker):
+    @patch("subprocess.run")
+    def test_restart_process(self, mock_subprocess_run):
         """
         Mock subprocess.run with success result.
         """
-        # Arrange
-        mock_subprocess_run = mocker.patch("subprocess.run")
-
         # Act
         restart_process("some_process")
 
         # Assert
         mock_subprocess_run.assert_called_once_with(["systemctl", "restart", "some_process"], check=True)
 
-    def test_reboot_machine(self, mocker):
+    @patch("subprocess.run")
+    def test_reboot_machine(self, mock_subprocess_run):
         """
         Mock subprocess.run with success result.
         """
-        # Arrange
-        mock_subprocess_run = mocker.patch("subprocess.run")
-
         # Act
         reboot_machine()
 
         # Assert
         mock_subprocess_run.assert_called_once_with(["sudo", "reboot"], check=True)
+
+    @patch("requests.get")
+    def test_exception_handling(self, mock_get):
+        """
+        Mock requests.get to check exception handler.
+        """
+        # Mocking a request exception
+        mock_get.side_effect = Exception("Mocked Request Exception")
+
+        # Endpoint to test
+        endpoint = "http://example.com/api"
+
+        # Calling the function and asserting the return value
+        self.assertFalse(check_health(endpoint))
+
+        # Asserting that the logger.error is called with the appropriate message
+        self.assertTrue(any("Error HTTP request:"), self.log_records)
+        self.assertTrue(any("Mocked Request Exceptiont"), self.log_records)
