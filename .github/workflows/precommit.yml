@@ -40,11 +40,12 @@ jobs:
         pre-commit run --all-files
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3.1.0
+      uses: codecov/codecov-action@v4
       with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
-          files: ./coverage.xml
-          env_vars: OS,PYTHON
-          gcov_include: ./raspirri
+        token: ${{ secrets.CODECOV_TOKEN }} # required
+        fail_ci_if_error: true # optional (default = false)
+        files: ./coverage.xml # optional
+        flags: unittests # optional
+        name: raspirri-server-codecov-umbrella # optional
+        env_vars: OS,PYTHON
+        verbose: true # optional (default = false)
