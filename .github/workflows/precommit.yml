@@ -39,16 +39,6 @@ jobs:
         pip install -r requirements-dev.txt  # Adjust based on your project
         pre-commit run --all-files
 
-    # - name: Upload coverage to Codecov
-    #   uses: codecov/codecov-action@v3.1.0
-    #   with:
-    #       token: ${{ secrets.CODECOV_TOKEN }}
-    #       fail_ci_if_error: true # optional (default = false)
-    #       verbose: true # optional (default = false)
-    #       files: ./coverage.xml
-    #       env_vars: OS,PYTHON
-    #       gcov_include: ./raspirri
-
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
