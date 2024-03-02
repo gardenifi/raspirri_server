@@ -4,7 +4,7 @@
 [![Documentation](https://img.shields.io/badge/ref-Documentation-blue)](https://gardenifi.github.io/raspirri_server/)
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
-[![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml)
+[![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml)
 [![codecov](https://codecov.io/gh/gardenifi/raspirri_server/graph/badge.svg?token=W913MJNRPW)](https://codecov.io/gh/gardenifi/raspirri_server)
 
 
@@ -369,7 +369,7 @@ This project is licensed under the [Your License] - see the [LICENSE.md](LICENSE
 ## Build Status
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue)
-[![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/tests.yml)
+[![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml)
 [![codecov](https://codecov.io/gh/gardenifi/raspirri_server/graph/badge.svg?token=W913MJNRPW)](https://codecov.io/gh/gardenifi/raspirri_server)
 
 ## Contact
