@@ -332,7 +332,7 @@ Every time you need to create a new release, you should execute the following co
 
 Example:
 ```
-NEW_VERSION=1.0.13 ./new_release.sh
+./new_release.sh patch
 ```
 
 then a new release will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.
