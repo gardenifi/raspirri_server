@@ -24,12 +24,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
 
-    from app.ble.exceptions import NotPermittedException
+    from raspirri.ble.exceptions import NotPermittedException
 
     NOT_PERMITTED_EXCEPTION_PREFIX = "org.bluez.Error.NotPermitted: "
 

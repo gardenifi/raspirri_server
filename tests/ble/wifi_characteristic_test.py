@@ -25,12 +25,12 @@ THE SOFTWARE.
 """
 
 import random
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
     import pytest
-    from app.ble.wifi import WifiCharacteristic, WifiNetworksService
+    from raspirri.ble.wifi import WifiCharacteristic, WifiNetworksService
 
     class TestWifiCharacteristic:
         """Wifi Characteristic Test Class"""

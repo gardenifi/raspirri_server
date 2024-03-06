@@ -1,0 +1,37 @@
+site_name: Raspirri Server
+site_description: "RaspirriV1 smart irrigator system."
+
+repo_url: https://github.com/gardenifi/raspirri_server
+repo_name: gardenifi/raspirri_server
+
+theme:
+  icon:
+    repo: fontawesome/brands/github
+  name: "material"
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      primary: "blue"
+      accent: "grey"
+      scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: "blue"
+      accent: "white"
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+plugins:
+  - search
+  - mkdocstrings
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - "Start": index.md
+  - "API": api.md

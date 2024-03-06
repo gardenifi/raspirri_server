@@ -139,4 +139,4 @@ networks.pkl
 .scannerwork/
 
 secret_env.sh
-app/rpi_server.init
+raspirri/rpi_server.init

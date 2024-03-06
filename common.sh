@@ -10,6 +10,5 @@ else
     echo "Could not find a Virtual Environment. Creating one now..."
     virtualenv -p /usr/bin/python3 venv
     source venv/bin/activate
-    arch=$(uname -m)
-    pip3 install -r requirements.txt.$arch --break-system-packages
+    pip3 install -r requirements.txt --break-system-packages
 fi

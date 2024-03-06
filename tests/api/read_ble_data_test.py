@@ -25,10 +25,12 @@ THE SOFTWARE.
 """
 
 import pytest
-from fastapi import HTTPException
+from fastapi import HTTPException, status
+from fastapi.testclient import TestClient
+from raspirri.main_app import app
+from raspirri.main_app import read_ble_data
 
-
-from app.main_app import read_ble_data
+client = TestClient(app)
 
 
 class TestReadBleData:
@@ -48,7 +50,7 @@ class TestReadBleData:
             await read_ble_data()
 
         # Assert
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == "'>' not supported between instances of 'NoneType' and 'int'"
 
     @pytest.mark.asyncio
@@ -62,5 +64,36 @@ class TestReadBleData:
         # Act and Assert
         with pytest.raises(HTTPException) as exc_info:
             await read_ble_data(invalid_arguments)
-        assert exc_info.value.status_code == 500
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert exc_info.value.detail == "'>' not supported between instances of 'str' and 'int'"
+
+    @pytest.mark.asyncio
+    async def test_read_ble_data_success(self, mocker):
+        """
+        Test read BLE data with success.
+        """
+        # Arrange
+        expected_response = {"wifi_networks": ["network1", "network2"]}  # Example response
+        mocker.patch("raspirri.server.services.Services.discover_wifi_networks", return_value=expected_response)
+
+        # Act
+        response = client.get("/api/read_ble_data")
+
+        # Assert
+        assert response.status_code == 200
+        assert response.json() == expected_response
+
+    @pytest.mark.asyncio
+    async def test_read_ble_data_exception(self, mocker):
+        """
+        Test read BLE data with exception.
+        """
+        # Arrange
+        mocker.patch("raspirri.server.services.Services.discover_wifi_networks", side_effect=Exception("Something went wrong"))
+
+        # Act
+        response = client.get("/api/read_ble_data")
+
+        # Assert
+        assert response.status_code == 500
+        assert "Something went wrong" in response.text

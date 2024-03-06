@@ -1,10 +1,16 @@
 [![](https://img.shields.io/badge/Buy%20me%20-coffee!-orange.svg?logo=buy-me-a-coffee&color=795548)](https://buymeacoff.ee/mariosk6)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
 [![PRs welcome!](https://img.shields.io/badge/contributions-welcome-green.svg?style=flat)](https://github.com/gardenifi/raspirri_server/issues)
+[![Documentation](https://img.shields.io/badge/ref-Documentation-blue)](https://gardenifi.github.io/raspirri_server/)
+
+![Python](https://img.shields.io/badge/python-3.9+-blue)
+[![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml)
+[![codecov](https://codecov.io/gh/gardenifi/raspirri_server/graph/badge.svg?token=W913MJNRPW)](https://codecov.io/gh/gardenifi/raspirri_server)
+
 
 # Raspberry Pi-based Smart Irrigation System (RaspirriV1)
 
-RaspirriV1 is an intelligent irrigation system powered by RaspirriV1, a versatile server software designed for Raspberry Pi. Compatible with Raspbian OS and tested on both Raspberry Pi Zero and Raspberry Pi 4 models, RaspirriV1 offers a robust solution for automating irrigation. Notably, this system can be easily adapted for use with other IoT devices, requiring minimal modifications for scheduling specific date and time-based activations or deactivations. Leverage the flexibility of RaspirriV1 to enhance the efficiency of your irrigation system or adapt it for various IoT applications with ease.
+RaspirriV1 is an intelligent irrigation system powered by RaspirriV1, a versatile server software designed for Raspberry Pi. Compatible with Raspbian OS and tested on Raspberry Pi 4 models, RaspirriV1 offers a robust solution for automating irrigation. Notably, this system can be easily adapted for use with other IoT devices, requiring minimal modifications for scheduling specific date and time-based activations or deactivations. Leverage the flexibility of RaspirriV1 to enhance the efficiency of your irrigation system or adapt it for various IoT applications with ease.
 
 ## Table of Contents
 
@@ -21,7 +27,13 @@ RaspirriV1 is an intelligent irrigation system powered by RaspirriV1, a versatil
 
 ## Getting Started
 
-To get a copy of the project up and running on your local machine, follow these steps.
+To get a copy of the project up and running on your local machine, follow these steps. This project includes:
+- Source code and test code is seperated in different directories.
+- External libraries installed and managed by [Pip](https://pypi.org/project/pip/) and [setuptools](https://setuptools.pypa.io/en/latest/) in a pyproject.toml.
+- Setup for tests using [Pytest](https://docs.pytest.org/en/stable/) and coverage with [Pytest-Cov](https://github.com/pytest-dev/pytest-cov).
+- Continuous testing with [Github-Actions](https://github.com/features/actions/) including [pre-commit](https://github.com/pre-commit/pre-commit).
+- Code coverage reports, including automatic upload to [Codecov](https://codecov.io).
+- Code documentation with [Mkdocs](https://www.mkdocs.org/).
 
 ### Prerequisites
 
@@ -64,22 +76,21 @@ export MQTT_PASS=broker_pass
 The above credentials are used to access your MQTT broker. In our experiments we used [HiveMQ platform](https://www.hivemq.com/).
 
 ### Installation
-Enter server folder and execute:
+Enter /var/tmp/ and download the latest release: https://github.com/gardenifi/raspirri_server/releases and after untar enter the folder and execute:
 ```
 ./install.sh
 ```
-or
+If you would like to uninstall it:
 ```
 ./uninstall.sh
 ```
-if you would like to uninstall it.
 
 ### Verify that Python services are running
 You should have 2 python linux services running on your RPi board:
 ```
-pi@raspirriv1:~/raspirri_server $ ps -def | grep python
-root 5148 5138 16 11:29 ? 00:00:01 python3 app/main_app.py mqtt
-root 5188 5179 14 11:29 ? 00:00:00 python3 app/main_app.py ble
+pi@raspirriv1:/var/tmp/ $ ps -def | grep python
+root 5148 5138 16 11:29 ? 00:00:01 python3 raspirri/main_app.py mqtt
+root 5188 5179 14 11:29 ? 00:00:00 python3 raspirri/main_app.py ble
 ```
 
 ### View logs
@@ -157,29 +168,39 @@ Most of the Unit Tests have been written with [Codium.AI](https://codium.ai/). T
 ### Unit Testing
 You may run unit tests in a Python virtual environment:
 ```bash
+sudo rm -rf venv
 virtualenv -p /usr/bin/python3 venv
 source venv/bin/activate
-pip3 install -r requirements.txt.$(uname -m) --break-system-packages
-RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/app coverage run --include='app/*' -m pytest -rA -s -vv tests
+pip3 install -r requirements.txt --break-system-packages
 ```
-### Unit Tests Code Coverage
-You may create Unit Test Code Coverage reports by executing:
-```bash
-PYTHONPATH=$(pwd)/app coverage report --fail-under=75 --include='app/*' --skip-covered --sort=Cover -m
+For x86_64 dev environment:
+```
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) coverage run --include=./raspirri/* --omit=./raspirri/ble/* -m pytest -rA -s -vv && coverage xml
+```
 
-Name                       Stmts   Miss  Cover   Missing
---------------------------------------------------------
-app/ble/wifi.py              130     42    68%   52, 56, 98-99, 101-106, 109, 127, 131-132, 166-201
-app/raspi/mqtt.py            202     61    70%   164-179, 190-195, 200-207, 209-210, 215, 220-222, 227-244, 259, 262-265, 279, 283-285, 301-302, 335-344
-app/raspi/helpers.py         250     74    70%   192-193, 211-213, 228-230, 249-251, 297-300, 392, 425, 431-436, 452-455, 473, 476-492, 521-527, 565, 581-589, 611-627, 636
-app/main_app.py              164     38    77%   120, 140-142, 144, 158-159, 205, 227-229, 240-277, 281
-app/ble/bletools.py           24      4    83%   52-53, 56, 65
-app/raspi/const.py            55      9    84%   38-40, 47, 61-63, 92, 98-99
-app/ble/advertisement.py      81     10    88%   64, 90-92, 115-118, 123, 127, 131
-app/ble/service.py           189     22    88%   38-39, 68, 92, 96, 100-109, 113, 117-118, 173, 230, 245, 250, 255, 272-273, 307
-app/raspi/services.py        166     11    93%   105-108, 165-167, 341, 364-367
---------------------------------------------------------
-TOTAL                       1278    271    79%
+For Raspbian OS dev environment:
+```
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd) coverage run --include=./raspirri/* -m pytest -rA -s -vv && coverage xml
+```
+
+### Unit Tests Code Coverage
+You may create Unit Test Code Coverage reports by executing in Raspberry Pi:
+```
+RUNNING_UNIT_TESTS=1 LOGLEVEL=debug PYTHONPATH=$(pwd)/raspirri coverage report -m --fail-under=75 --include='raspirri/*' --sort=Cover --skip-empty --omit='raspirri/ble/*' && echo "Unit Tests Code coverage is above 75%!"
+Name                            Stmts   Miss  Cover   Missing
+-------------------------------------------------------------
+raspirri/main_watchdog.py          51     18    65%   86-87, 103-122, 126
+raspirri/main_app.py              191     65    66%   55-56, 132, 152-154, 156, 170-171, 218-220, 225-228, 234-239, 250-252, 263-318, 322
+raspirri/server/mqtt.py           231     71    69%   119-120, 201-213, 218-224, 236-241, 249-276, 293, 296-299, 319, 323-327, 341-342, 347-350, 388-397
+raspirri/server/helpers.py        284     79    72%   56, 240-242, 265-269, 423-427, 533, 536-551, 588-590, 592-594, 604-615, 627-635, 654, 658-666, 670-687, 696
+raspirri/server/const.py           68      7    90%   64, 70-80, 112, 118-119
+raspirri/server/services.py       229     11    95%   501-504, 522-530
+raspirri/server/exceptions.py       8      0   100%
+-------------------------------------------------------------
+TOTAL                            1062    251    76%
+
+2 empty files skipped.
+Unit Tests Code coverage is above 75%!
 ```
 In column "Missing" you can see the code lines that are not covered so you can write more Unit Tests to increase the code coverage. The current threshold to pass Github actions is 75%.
 
@@ -221,7 +242,7 @@ sonarsource/sonar-scanner-cli -Dsonar.projectKey=9475199c-9132-11ee-a11b-9f71450
 -Dsonar.host.url=http://${SONARQUBE_URL} \
 -Dsonar.token=sqp_b3a1f41488c19e81ce2d45ceb90a0b4a4028a3be \
 -Dsonar.scm.provider=git \
--Dsonar.python.version=3.11
+-Dsonar.python.version=3.9
 -Dsonar.projectBaseDir=/usr/src
 docker logs -f sonar-scanner
 ```
@@ -235,9 +256,9 @@ After installation there are two services that implement two major modules:
 
 Here is the folder/files structure explanation:
 ```bash
-├── app
+├── raspirri
 │   ├── ble (bluetooth modules)
-│   ├── raspi (RPi and MQTT modules)
+│   ├── server (RPi and MQTT modules)
 │   └── main_app.py (FastAPI module)
 ├── certs (SSL certificates for the FastAPI server)
 │   ├── cert.pem
@@ -245,7 +266,7 @@ Here is the folder/files structure explanation:
 ├── tests (unit tests)
 │   ├── api (FastAPI & MQTT Unit Tests)
 │   ├── ble (Bluetooth Unit Tests)
-│   ├── raspi (RPi Unit Tests)
+│   ├── server (RPi Unit Tests)
 │   └── conftest.py
 ├── common.sh
 ├── debug.sh
@@ -255,11 +276,8 @@ Here is the folder/files structure explanation:
 ├── LICENSE.md
 ├── README.md
 ├── CHANGELOG.md
-├── requirements.txt.aarch64 -> requirements.txt.arm
-├── requirements.txt.arm
-├── requirements.txt.armv6l
-├── requirements.txt.armv7l -> requirements.txt.arm
-├── requirements.txt.x86_64
+├── requirements.txt
+├── requirements-dev.txt
 ├── rpi_ble_server.service
 ├── rpi_server.service
 ├── secret_env.sh
@@ -276,7 +294,7 @@ sudo systemctl stop rpi_watchdog_server.service
 ```
 1. BLE module
 ```bash
-^[[A(venv) pi@raspberrypi:~/raspirri_server $ ./debug.sh ble
+(venv) pi@raspberrypi:~/raspirri_server $ ./debug.sh ble
 /home/pi/raspirri_server
 Virtual Environment Found...
 Argument provided: ble
@@ -310,10 +328,15 @@ https://RPI_IP_ADDRESS:5000/openapi.json
 
 ## Releases
 
-Every time you need to create a new release, you should follow the steps below:
+Every time you need to create a new release, you should execute the following commands and a new [CHANGELOG.md](https://github.com/gardenifi/raspirri_server/blob/main/CHANGELOG.md) will be created:
 
-1. Make changes in CHANGELOG.md
-2. git add --all . && git commit -m "Creating new RELEASE" && git push
+Example:
+```
+./new_release.sh patch
+```
+
+then a new release will be created (from Github actions) in the releases section [assets](https://github.com/gardenifi/raspirri_server/releases) with the same version number.
+
 
 ## Contributing
 
@@ -335,7 +358,9 @@ This project is licensed under the [Your License] - see the [LICENSE.md](LICENSE
 
 ## Build Status
 
-[![Workflow Status](https://github.com/gardenifi/raspirri_server/actions/workflows/x86_64.yml/badge.svg)](https://github.com/gardenifi/raspirri_server/actions/workflows/x86_64.yml)
+![Python](https://img.shields.io/badge/python-3.9+-blue)
+[![Build](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml/badge.svg?branch=main)](https://github.com/gardenifi/raspirri_server/actions/workflows/precommit.yml)
+[![codecov](https://codecov.io/gh/gardenifi/raspirri_server/graph/badge.svg?token=W913MJNRPW)](https://codecov.io/gh/gardenifi/raspirri_server)
 
 ## Contact
 

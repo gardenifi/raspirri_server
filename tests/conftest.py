@@ -27,7 +27,7 @@ THE SOFTWARE.
 import random
 from loguru import logger
 import pytest
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -39,8 +39,8 @@ def setup():
 if ARCH == "arm":
     import dbus
     from gi.repository import GObject
-    from app.ble.service import Service
-    from app.ble.wifi import WifiNetworksAdvertisement
+    from raspirri.ble.service import Service
+    from raspirri.ble.wifi import WifiNetworksAdvertisement
 
     RANDOM_SVC_INDEX = []
 

@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
 

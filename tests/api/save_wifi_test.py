@@ -27,10 +27,10 @@ THE SOFTWARE.
 import json
 import pytest
 from pydantic import ValidationError as PydanticValidationError
-from fastapi import HTTPException
-from app.main_app import WifiData, save_wifi
-from app.raspi.services import Services
-from app.raspi.const import DUMMY_SSID, DUMMY_PASSKEY, ARCH
+from fastapi import HTTPException, status
+from raspirri.main_app import WifiData, save_wifi
+from raspirri.server.services import Services
+from raspirri.server.const import DUMMY_SSID, DUMMY_PASSKEY, ARCH
 
 services = Services()
 
@@ -63,7 +63,7 @@ class TestSaveWifi:
         data = WifiData(ssid=DUMMY_SSID, wifi_key=DUMMY_PASSKEY)
         if ARCH == "arm":
             response = await save_wifi(data)
-            assert response.status_code == 200
+            assert response.status_code == status.HTTP_200_OK
         else:
             with pytest.raises(
                 HTTPException,
@@ -87,8 +87,8 @@ class TestSaveWifi:
         if ARCH == "arm":
             with pytest.raises(HTTPException) as exc_info:
                 await save_wifi(data)
-            assert exc_info.value.status_code == 500
-            assert exc_info.value.detail == ""
+            assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+            assert exc_info.value.detail == "500: Invalid request"
         else:
             with pytest.raises(
                 HTTPException,
@@ -103,8 +103,8 @@ class TestSaveWifi:
         data = WifiData(ssid=DUMMY_SSID, wifi_key="")
         with pytest.raises(HTTPException) as exc_info:
             await save_wifi(data)
-        assert exc_info.value.status_code == 500
-        assert exc_info.value.detail == ""
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        assert exc_info.value.detail == "500: Invalid request"
 
     @pytest.mark.asyncio
     async def test_save_wifi_data_empty_ssid_and_wifi_key(self):
@@ -114,5 +114,5 @@ class TestSaveWifi:
         data = WifiData(ssid="", wifi_key="")
         with pytest.raises(HTTPException) as exc_info:
             await save_wifi(data)
-        assert exc_info.value.status_code == 500
-        assert exc_info.value.detail == ""
+        assert exc_info.value.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        assert exc_info.value.detail == "500: Invalid request"

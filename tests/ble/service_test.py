@@ -25,15 +25,15 @@ THE SOFTWARE.
 """
 
 
-from app.raspi.const import ARCH
+from raspirri.server.const import ARCH
 
 if ARCH == "arm":
     import dbus
     import pytest
 
-    from app.ble.service import GATT_SERVICE_IFACE
-    from app.ble.bletools import BleTools
-    from app.ble.service import Characteristic, Service
+    from raspirri.ble.service import GATT_SERVICE_IFACE
+    from raspirri.ble.bletools import BleTools
+    from raspirri.ble.service import Characteristic, Service
 
     class TestService:
         """Service Test Class"""
