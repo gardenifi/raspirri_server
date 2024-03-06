@@ -33,6 +33,8 @@ import sys
 from threading import Thread
 from loguru import logger
 import paho.mqtt.client as mqtt
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 from raspirri.server.services import Services
 from raspirri.server.const import (
     MQTT_CLIENT_ID,
@@ -52,6 +54,7 @@ from raspirri.server.const import (
     MQTT_PASS,
     MQTT_HOST,
     MQTT_PORT,
+    STATUSES_FILE,
 )
 from raspirri.server.helpers import Helpers
 from raspirri.server.const import Command
@@ -62,6 +65,10 @@ class Mqtt:
 
     _instance = None
     _lock = threading.Lock()
+    _send_mqtt_msg_lock = threading.Lock()
+    _mqtt_thread = None
+    _periodic_updates_thread = None
+    _file_watchdog_thread = None
     _mqtt_healthiness = True
     client = None
 
@@ -77,7 +84,8 @@ class Mqtt:
         """
         if cls._instance is None:
             with cls._lock:
-                cls._instance = super().__new__(cls)  # pylint: disable=duplicate-code
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
                 cls._mqtt_thread = None
                 cls._periodic_updates_thread = None
 
@@ -107,6 +115,7 @@ class Mqtt:
         logger.debug(f"Destroying Mqtt Object Class: {cls._instance}")
         cls._instance = None
         cls._mqtt_thread = None
+        cls._file_watchdog_thread = None
         cls._periodic_updates_thread = None
 
     def is_healthy(self) -> bool:
@@ -120,22 +129,28 @@ class Mqtt:
         self._mqtt_healthiness = healthy
 
     def get_mqtt_thread(self):
-        """Getter."""
-        logger.debug(f"Getting current thread: {self._mqtt_thread}")
+        """_mqtt_thread getter"""
         return self._mqtt_thread
 
     def set_mqtt_thread(self, mqtt_thread):
-        """Setter."""
-        logger.debug(f"Setting new thread: {mqtt_thread}")
+        """_mqtt_thread setter"""
         self._mqtt_thread = mqtt_thread
 
     def get_periodic_updates_thread(self):
         """Getter."""
         return self._periodic_updates_thread
 
-    def set_periodic_updates_thread(self, periodic_updates_thread):
-        """Setter."""
-        self._periodic_updates_thread = periodic_updates_thread
+    def set_periodic_updates_thread(self, thread):
+        """_periodic_updates_thread setter"""
+        self._periodic_updates_thread = thread
+
+    def get_file_watchdog_thread(self):
+        """_file_watchdog_thread getter"""
+        return self._file_watchdog_thread
+
+    def set_file_watchdog_thread(self, thread):
+        """_file_watchdog_thread setter"""
+        self._file_watchdog_thread = thread
 
     def is_running(self):
         """Check whether mqtt thread state."""
@@ -143,6 +158,51 @@ class Mqtt:
         # logger.info(str(mqtt_thread is not None))
         # logger.info(str(mqtt_thread.is_alive()))
         return self._mqtt_thread is not None and self._mqtt_thread.is_alive()
+
+    @staticmethod
+    def on_file_change(event):
+        """This function will be called when the monitored file is changed"""
+        logger.debug(f"File {event.src_path} has been changed")
+
+        # Call your custom function here
+        # For example, you can replace the following line with your own function call
+        Mqtt().handle_file_change()
+
+    @staticmethod
+    def handle_file_change():
+        """Implement your custom logic to handle the file change here"""
+        statuses = Helpers().get_toggle_statuses(False)
+        logger.info(f"{STATUSES_FILE} changed! Publishing right away Statuses to MQTT topic: {MQTT_TOPIC_STATUS}: {statuses}")
+        Mqtt.publish_to_topic(Mqtt.client, MQTT_TOPIC_STATUS, str(statuses))
+
+    @staticmethod
+    def create_file_watchdog():
+        """Create a file watchdog."""
+        # Create a watchdog observer
+        observer = Observer()
+
+        # Schedule the event handler to watch for file changes
+        event_handler = FileSystemEventHandler()
+        event_handler.on_modified = Mqtt.on_file_change
+
+        # Start watching the specified file
+        observer.schedule(event_handler, path=os.path.abspath(STATUSES_FILE), recursive=False)
+        observer.start()
+
+        try:
+            # Keep the script running
+            while True:
+                time.sleep(1)
+                logger.info(
+                    f"Monitoring file: \
+{os.path.abspath(STATUSES_FILE)} for changes...If it changes, a new MQTT message will be send to {MQTT_TOPIC_STATUS}"
+                )
+        except KeyboardInterrupt:
+            # Stop the observer when the script is interrupted
+            observer.stop()
+
+        # Wait for the observer to finish
+        observer.join()
 
     @staticmethod
     def on_disconnect(client, data, return_code=0):
@@ -178,6 +238,9 @@ class Mqtt:
                     Thread(daemon=True, name="PeriodicUpdatesThread", target=Mqtt.send_periodic_updates, args=(client,))
                 )
                 Mqtt().get_periodic_updates_thread().start()
+            if Mqtt().get_file_watchdog_thread() is None:
+                Mqtt().set_file_watchdog_thread(Thread(daemon=True, name="PeriodicUpdatesThread", target=Mqtt.create_file_watchdog))
+                Mqtt().get_file_watchdog_thread().start()
         else:
             logger.info(f"Connect returned result code: {return_code}")
 
@@ -243,9 +306,7 @@ class Mqtt:
 
             if command in (Command.TURN_ON_VALVE, Command.TURN_OFF_VALVE):
                 Helpers().toggle(cmd, "out" + str(valve))
-                statuses = Helpers().get_toggle_statuses()
-                logger.info(f"Publishing right away Statuses to MQTT topic: {MQTT_TOPIC_STATUS}: {statuses}")
-                Mqtt.publish_to_topic(client, MQTT_TOPIC_STATUS, str(statuses))
+                Helpers().get_toggle_statuses()
             elif command == Command.SEND_PROGRAM:
                 logger.info(f"Looking for {file_path}")
                 if os.path.exists(file_path):
@@ -278,8 +339,9 @@ class Mqtt:
     @staticmethod
     def publish_to_topic(client, topic, data, retained=True):
         """Publish to MQTT Topic."""
-        logger.debug(f"Publishing to Topic: {topic} the following data: {data}")
-        client.publish(topic, data, qos=2, retain=retained)
+        with Mqtt._send_mqtt_msg_lock:
+            logger.debug(f"Publishing to Topic: {topic} the following data: {data}")
+            client.publish(topic, data, qos=2, retain=retained)
 
     # The callback for when a PUBLISH message is received from the server.
     @staticmethod
@@ -333,8 +395,7 @@ class Mqtt:
             logger.info("Trying to start MQTT Thread...")
             while Mqtt().get_mqtt_thread() is None:
                 logger.info("Mqtt thread is None. Creating a new one!")
-                new_thread = Thread(target=Mqtt.mqtt_init, daemon=True, name="MQTT_Main_Thread")
-                Mqtt().set_mqtt_thread(new_thread)
+                Mqtt().set_mqtt_thread(Thread(target=Mqtt.mqtt_init, daemon=True, name="MQTT_Main_Thread"))
                 time.sleep(3)
             if not Mqtt().get_mqtt_thread().is_alive():
                 Mqtt().get_mqtt_thread().start()

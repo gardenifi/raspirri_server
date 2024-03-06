@@ -45,3 +45,4 @@ ruff>=0.0.270
 setuptools>=67.8.0
 subprocess.run==0.0.8
 uvicorn==0.27.0
+watchdog==3.0.0

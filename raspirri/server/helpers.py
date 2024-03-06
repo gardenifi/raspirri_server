@@ -376,7 +376,7 @@ class Helpers:
             self._toggle_statuses[valve] = 0
         self._toggle_statuses[valve] = self.set_gpio_outputs(self._toggle_statuses[valve], valve)
 
-    def get_toggle_statuses(self):
+    def get_toggle_statuses(self, store_file=True):
         """
         Get and update toggle statuses, system information, and store them to a file.
 
@@ -399,7 +399,8 @@ class Helpers:
         self._toggle_statuses["hw_id"] = RPI_HW_ID
 
         logger.info(f"Valves statuses:{self._toggle_statuses}")
-        self.store_toggle_statuses_to_file()
+        if store_file:
+            self.store_toggle_statuses_to_file()
 
         return self._toggle_statuses
 
