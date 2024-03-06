@@ -35,8 +35,8 @@ from loguru import logger
 import paho.mqtt.client as mqtt
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from app.raspi.services import Services
-from app.raspi.const import (
+from raspirri.server.services import Services
+from raspirri.server.const import (
     MQTT_CLIENT_ID,
     MQTT_TOPIC_STATUS,
     MQTT_TOPIC_METADATA,
@@ -63,9 +63,9 @@ from raspirri.server.const import Command
 class Mqtt:
     """MQTT Methods Class."""
 
-    __instance = None
-    __lock = threading.Lock()
-    __send_mqtt_msg_lock = threading.Lock()
+    _instance = None
+    _lock = threading.Lock()
+    _send_mqtt_msg_lock = threading.Lock()
     _mqtt_thread = None
     _periodic_updates_thread = None
     _file_watchdog_thread = None
@@ -82,10 +82,10 @@ class Mqtt:
         Example Usage:
             instance = Mqtt()
         """
-        if cls.__instance is None:
-            with cls.__lock:
-                if cls.__instance is None:
-                    cls.__instance = super().__new__(cls)
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
                 cls._mqtt_thread = None
                 cls._periodic_updates_thread = None
 
@@ -339,7 +339,7 @@ class Mqtt:
     @staticmethod
     def publish_to_topic(client, topic, data, retained=True):
         """Publish to MQTT Topic."""
-        with Mqtt.__send_mqtt_msg_lock:
+        with Mqtt._send_mqtt_msg_lock:
             logger.debug(f"Publishing to Topic: {topic} the following data: {data}")
             client.publish(topic, data, qos=2, retain=retained)
 
