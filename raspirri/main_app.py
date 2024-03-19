@@ -62,7 +62,7 @@ class GlobalVars:
     """Global Variables"""
 
     def __init__(self):
-        self._refresh_set = False  # Use a private attribute with a leading underscore
+        self._refresh_set = True  # Use a private attribute with a leading underscore
 
     @property
     def refresh_set(self):

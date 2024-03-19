@@ -83,7 +83,7 @@ class WifiCharacteristic(Characteristic):
     def __init__(self, service):
         super().__init__(self.WIFI_CHARACTERISTIC_UUID, ["read", "write", "write-without-response"], service)
         self._page_set = 1
-        self._refresh_set = False
+        self._refresh_set = True
         self._services = Services()
         logger.info("Adding WifiCharacteristic completed.")
 
